@@ -2,5 +2,11 @@
 
 [ext_resource path="res://src/main.gd" type="Script" id=1]
 
-[node name="main" type="Spatial"]
+[node name="main" type="Node"]
+pause_mode = 2
 script = ExtResource( 1 )
+
+[node name="Spatial" type="Spatial" parent="."]
+pause_mode = 1
+
+[node name="Camera" type="Camera" parent="Spatial"]

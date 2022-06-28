@@ -19,6 +19,7 @@
 extends Object
 class_name Constants
 
-# Shouldn't ever create a constants object
+
+# You shouldn't ever create a constants object.
 func _init() -> void:
   assert(false)

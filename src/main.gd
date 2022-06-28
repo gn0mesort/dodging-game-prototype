@@ -16,8 +16,36 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
-extends Spatial
+extends Node
 
-func _init() -> void:
-  pass
+var _debug_prompt_scene: PackedScene = preload("res://scenes/debug_prompt.tscn")
+var _debug_prompt: Control = null
 
+func _ready() -> void:
+  if OS.is_debug_build():
+    _debug_prompt = _debug_prompt_scene.instance()
+    _debug_prompt.interpreter = get_path()
+    add_child(_debug_prompt)
+
+func pause_scene() -> void:
+  set_paused(true)
+
+func resume_scene() -> void:
+  set_paused(false)
+
+func set_paused(paused: bool) -> void:
+  var tree: SceneTree = get_tree()
+  tree.paused = paused
+  _debug_prompt.print_message("Scene is %s." % ("paused" if tree.paused else "running"))
+
+func hide_node(args: String) -> void:
+  get_tree().root.get_node(args).hide()
+
+func show_node(args: String) -> void:
+  get_tree().root.get_node(args).hide()
+
+func echo(args: String) -> void:
+  _debug_prompt.print_message(args)
+
+func clear(_args: String) -> void:
+  _debug_prompt.clear_output()
