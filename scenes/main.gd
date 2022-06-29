@@ -18,34 +18,28 @@
 """
 extends Node
 
-var _debug_prompt_scene: PackedScene = preload("res://scenes/debug_prompt.tscn")
+var _debug_prompt_scene: PackedScene = preload("res://scenes/debug/debug_prompt.tscn")
 var _debug_prompt: Control = null
+
+onready var _tree: SceneTree = get_tree()
+
+func _on_debug_prompt_visibility_changed() -> void:
+  _set_paused(_debug_prompt.visible)
+
+func _exit_command(_parameters: Array) -> void:
+  _tree.quit(0)
 
 func _ready() -> void:
   if OS.is_debug_build():
     _debug_prompt = _debug_prompt_scene.instance()
-    _debug_prompt.interpreter = get_path()
+    var err: int = _debug_prompt.connect("visibility_changed", self, "_on_debug_prompt_visibility_changed")
+    assert(!err)
+    err = _debug_prompt.register_command("exit", DebugCommand.new(self, "_exit_command", "", "Exit the program."))
+    assert(!err)
     add_child(_debug_prompt)
 
-func pause_scene() -> void:
-  set_paused(true)
+func _set_paused(paused: bool) -> void:
+  _tree.paused = paused
+  if _debug_prompt:
+    _debug_prompt.print_log("Scene is %s." % ("paused" if _tree.paused else "running"))
 
-func resume_scene() -> void:
-  set_paused(false)
-
-func set_paused(paused: bool) -> void:
-  var tree: SceneTree = get_tree()
-  tree.paused = paused
-  _debug_prompt.print_message("Scene is %s." % ("paused" if tree.paused else "running"))
-
-func hide_node(args: String) -> void:
-  get_tree().root.get_node(args).hide()
-
-func show_node(args: String) -> void:
-  get_tree().root.get_node(args).hide()
-
-func echo(args: String) -> void:
-  _debug_prompt.print_message(args)
-
-func clear(_args: String) -> void:
-  _debug_prompt.clear_output()

@@ -9,13 +9,37 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Reference",
+"class": "BaseParameterParser",
+"language": "GDScript",
+"path": "res://src/debug/parameter_parsers/base_parameter_parser.gd"
+}, {
+"base": "BaseParameterParser",
+"class": "CommaSeparatedSplitParameterParser",
+"language": "GDScript",
+"path": "res://src/debug/parameter_parsers/comma_separated_split_parameter_parser.gd"
+}, {
 "base": "Object",
 "class": "Constants",
 "language": "GDScript",
 "path": "res://src/constants.gd"
+}, {
+"base": "Reference",
+"class": "DebugCommand",
+"language": "GDScript",
+"path": "res://src/debug/debug_command.gd"
+}, {
+"base": "BaseParameterParser",
+"class": "PassthroughParameterParser",
+"language": "GDScript",
+"path": "res://src/debug/parameter_parsers/passthrough_parameter_parser.gd"
 } ]
 _global_script_class_icons={
-"Constants": ""
+"BaseParameterParser": "",
+"CommaSeparatedSplitParameterParser": "",
+"Constants": "",
+"DebugCommand": "",
+"PassthroughParameterParser": ""
 }
 
 [application]

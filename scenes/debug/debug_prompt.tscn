@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://src/debug_prompt.gd" type="Script" id=1]
+[ext_resource path="res://scenes/debug/debug_prompt.gd" type="Script" id=1]
 
 [node name="debug_prompt" type="LineEdit"]
 pause_mode = 2
@@ -15,7 +15,6 @@ script = ExtResource( 1 )
 anchor_right = 1.0
 anchor_bottom = 8.0
 margin_top = 24.0
-margin_bottom = 64.0
 readonly = true
 draw_tabs = true
 draw_spaces = true
