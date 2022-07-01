@@ -26,6 +26,10 @@ ui_toggle_debug_prompt={
  ]
 }
 
+[mono]
+
+profiler/enabled=true
+
 [physics]
 
 common/enable_pause_aware_picking=true
