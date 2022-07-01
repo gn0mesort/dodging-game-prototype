@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 using System;
+using System.Diagnostics;
 using Godot;
 
 public class Main : Node {
@@ -28,6 +29,26 @@ public class Main : Node {
 
   private void OnDebugConsoleVisibilityChanged() {
     Paused = _debugConsole.Visible;
+  }
+
+  private uint LoadScene(string path) {
+    Debug.Assert(path != null);
+    Debug.Assert(path != "");
+    var scene = GD.Load<PackedScene>(path);
+    if (scene != null)
+    {
+      if (_currentScene != null)
+      {
+        CallDeferred("remove_child", _currentScene);
+      }
+      _currentScene = scene.InstanceOrNull<Spatial>();
+      if (_currentScene != null)
+      {
+        CallDeferred("add_child", _currentScene);
+        return 0;
+      }
+    }
+    return 1;
   }
 
   public override void _Ready() {
@@ -58,21 +79,7 @@ public class Main : Node {
         var path = args.Length > 0 ? args[0].Trim() : null;
         if (path != null && path != "")
         {
-          var scene = GD.Load<PackedScene>($"res://scenes/{path}.tscn");
-          if (scene != null)
-          {
-            if (_currentScene != null)
-            {
-              CallDeferred("remove_child", _currentScene);
-            }
-            _currentScene = scene.InstanceOrNull<Spatial>();
-            if (_currentScene != null)
-            {
-              CallDeferred("add_child", _currentScene);
-              output.WriteLine($"Loading scene \"{path}\".");
-              return 0;
-            }
-          }
+          return LoadScene($"res://scenes/{path}.tscn");
         }
         return 1;
       }, "load_scene", "<SCENE>", "Instances a scene below the main node."));

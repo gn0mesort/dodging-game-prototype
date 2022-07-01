@@ -1,0 +1,6 @@
+[gd_scene format=2]
+
+[node name="Empty" type="Spatial"]
+pause_mode = 1
+
+[node name="Camera" type="Camera" parent="."]
