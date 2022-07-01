@@ -1,7 +1,26 @@
+/** Player entity.
+ *
+ * Copyright (C) 2022 Alexander Rothman <gnomesort@megate.ch>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 using Godot;
-using System;
 
 public class Player : KinematicBody {
+  /**
+   * NodePath indicating the GridMap on which this entity exists.
+   */
   [Export]
   public NodePath Map { get; set; }
 
@@ -9,6 +28,11 @@ public class Player : KinematicBody {
 
   private Vector3 _direction = new Vector3();
 
+  /**
+   * Read a Controller and update entity state.
+   *
+   * @param controller A Controller structure containing the current input state.
+   */
   public void IntegrateControls(Controller controller) {
     if (controller.IsSet(Controller.Control.LEFT))
     {
@@ -36,10 +60,16 @@ public class Player : KinematicBody {
     }
   }
 
+  /**
+   * Post-_EnterTree initialization.
+   */
   public override void _Ready() {
     _map = GetNode<GridMap>(Map);
   }
 
+  /**
+   * Per physics frame processing.
+   */
   public override void _PhysicsProcess(float delta) {
     Translation = _map.MapToWorld((int) _direction.x, (int) _direction.y, 0);
   }

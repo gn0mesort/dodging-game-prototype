@@ -20,14 +20,25 @@ using Godot;
 public class DebugOutput : Control {
   private TextEdit _text_area = null;
 
+  /**
+   * Post-_EnterTree initialization.
+   */
   public override void _Ready() {
     _text_area = GetNode<TextEdit>("Container/TextArea");
   }
 
+  /**
+   * Clear the DebugOutput.
+   */
   public void Clear() {
     _text_area.Text = "";
   }
 
+  /**
+   * Write a string followed by a newline to the DebugOutput.
+   *
+   * @param message The string to write.
+   */
   public void WriteLine(string message) {
     _text_area.Text += $"{message}{System.Environment.NewLine}";
     _text_area.ScrollVertical = _text_area.GetLineCount();

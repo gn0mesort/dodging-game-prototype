@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 using Godot;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,6 +25,9 @@ public class DebugConsole : Control {
   private LineEdit _input = null;
   private readonly Dictionary<string, DebugCommand> _commands = new Dictionary<string, DebugCommand>();
 
+  /**
+   * The Output window associated with the DebugConsole. This is only set *after* _Ready() is executed.
+   */
   public DebugOutput Output { get; private set; } = null;
 
   private void OnTextEntered(string newText) {
@@ -45,15 +47,26 @@ public class DebugConsole : Control {
     Output.WriteLine($"Invalid command \"{newText}\".");
   }
 
+  /**
+   * Create a new DebugConsole.
+   */
   public DebugConsole() {
     var res = _command_pattern.Compile(@"^\s*(?<command>[A-Za-z][A-Za-z0-9_]+)(?<parameters>.*)$");
     Debug.Assert(res == Error.Ok);
   }
 
+  /**
+   * Register a DebugCommand for use in the DebugConsole.
+   *
+   * @param command The DebugCommand to register.
+   */
   public void RegisterCommand(DebugCommand command) {
     _commands.Add(command.Name, command);
   }
 
+  /**
+   * Post-_EnterTree initialization.
+   */
   public override void _Ready() {
     _input = GetNode<LineEdit>("DebugInput");
     Output = GetNode<DebugOutput>("DebugOutput");
@@ -92,6 +105,11 @@ public class DebugConsole : Control {
     }, "clear", "", "Clear the output window."));
   }
 
+  /**
+   * Input processing.
+   *
+   * @param ev An input event that triggered processing.
+   */
   public override void _Input(InputEvent ev) {
     if (ev.IsActionPressed("ui_toggle_debug_prompt") && !ev.IsEcho())
     {

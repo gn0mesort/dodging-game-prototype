@@ -20,6 +20,9 @@ using System.Diagnostics;
 using Godot;
 
 public class Main : Node {
+  /**
+   * A Scene to load immediately at program start.
+   */
   [Export]
   public PackedScene InitialScene{ get; set; } = null;
 
@@ -28,12 +31,22 @@ public class Main : Node {
   private DebugConsole _debugConsole = null;
   private Spatial _currentScene = null;
 
+  /**
+   * Whether or not the game is paused.
+   */
   public bool Paused { get { return _tree.Paused; } set { _tree.Paused = value; } }
 
   private void OnDebugConsoleVisibilityChanged() {
     Paused = _debugConsole.Visible;
   }
 
+  /**
+   * Load a 3D scene from resource path.
+   *
+   * @param path The resource (res://) path of the scene to load.
+   *
+   * @return 0 on success. Otherwise 1.
+   */
   private uint LoadSceneFromPath(string path) {
     Debug.Assert(path != null);
     Debug.Assert(path != "");
@@ -54,6 +67,14 @@ public class Main : Node {
     return 1;
   }
 
+
+  /**
+   * Load a 3D scene.
+   *
+   * @param scene a Spatial indicating the root of the scene to load.
+   *
+   * @return 0 on success. Otherwise 1.
+   */
   private uint LoadScene(Spatial scene) {
     Debug.Assert(scene != null);
     if (_currentScene != null)
@@ -69,6 +90,9 @@ public class Main : Node {
     return 1;
   }
 
+  /**
+   * Post-_EnterTree initialization.
+   */
   public override void _Ready() {
     _tree = GetTree();
     if (OS.IsDebugBuild())

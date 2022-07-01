@@ -18,12 +18,26 @@
 using Godot;
 
 public class DebugCommand : Reference {
+  /**
+   * Command procedure to be executed during calls to Invoke.
+   */
   public delegate uint Command(DebugOutput output, string parameters);
 
   private Command _command = null;
 
+  /**
+   * A unique DebugCommand name.
+   */
   public string Name { get; private set; } = "";
+
+  /**
+   * A message describing the usage of the DebugCommand.
+   */
   public string Usage { get; private set; } = "";
+
+  /**
+   * A message describing the functionality of the DebugCommand.
+   */
   public string Description { get; private set; } = "";
 
   public DebugCommand(Command cmd, string name, string usage, string description) {
@@ -33,10 +47,21 @@ public class DebugCommand : Reference {
     Description = description;
   }
 
+  /**
+   * Get a help message.
+   *
+   * @return A help message based on the value of Name, Usage, and Description.
+   */
   public string Help() {
     return $"{Name}{System.Environment.NewLine}Usage: {Name} {Usage}{System.Environment.NewLine}{Description}";
   }
 
+  /**
+   * Invoke the DebugCommand.
+   *
+   * @param output The DebugOutput to write into.
+   * @param parameters a string containing any parameters the command expects during processing.
+   */
   public void Invoke(DebugOutput output, string parameters) {
     var res = _command(output, parameters);
     if (res != 0)
