@@ -28,7 +28,7 @@ ui_toggle_debug_prompt={
 
 [mono]
 
-profiler/enabled=true
+export/aot/enabled=true
 
 [physics]
 

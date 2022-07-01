@@ -20,15 +20,13 @@ using Godot;
 public class DebugCommand : Reference {
   public delegate uint Command(DebugOutput output, string parameters);
 
-  private DebugOutput _output = null;
   private Command _command = null;
 
   public string Name { get; private set; } = "";
   public string Usage { get; private set; } = "";
   public string Description { get; private set; } = "";
 
-  public DebugCommand(DebugOutput output, Command cmd, string name, string usage, string description) {
-    _output = output;
+  public DebugCommand(Command cmd, string name, string usage, string description) {
     _command = cmd;
     Name = name;
     Usage = usage;
@@ -39,12 +37,12 @@ public class DebugCommand : Reference {
     return $"{Name}{System.Environment.NewLine}Usage: {Name} {Usage}{System.Environment.NewLine}{Description}";
   }
 
-  public void Invoke(string parameters) {
-    var res = _command(_output, parameters);
+  public void Invoke(DebugOutput output, string parameters) {
+    var res = _command(output, parameters);
     if (res != 0)
     {
-      _output.WriteLine($"Command \"{Name}\" failed with code 0x{res:x8}.");
-      _output.WriteLine(Help());
+      output.WriteLine($"Command \"{Name}\" failed with code 0x{res:x8}.");
+      output.WriteLine(Help());
     }
   }
 }

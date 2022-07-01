@@ -22,6 +22,7 @@ public class Main : Node {
   private readonly PackedScene _debugConsoleScene = GD.Load<PackedScene>("res://scenes/debug/DebugConsole.tscn");
   private SceneTree _tree = null;
   private DebugConsole _debugConsole = null;
+  private Spatial _currentScene = null;
 
   public bool Paused { get { return _tree.Paused; } set { _tree.Paused = value; } }
 
@@ -33,9 +34,9 @@ public class Main : Node {
     _tree = GetTree();
     if (OS.IsDebugBuild())
     {
-      _debugConsole = _debugConsoleScene.Instance() as DebugConsole;
+      _debugConsole = _debugConsoleScene.Instance<DebugConsole>();
       _debugConsole.Connect("visibility_changed", this, "OnDebugConsoleVisibilityChanged");
-      _debugConsole.RegisterCommand(new DebugCommand(_debugConsole.Output, (output, parameters) => {
+      _debugConsole.RegisterCommand(new DebugCommand((output, parameters) => {
         var args = parameters.Trim().Split(" ");
         if (args.Length > 0 && args[0] != "")
         {
@@ -52,7 +53,30 @@ public class Main : Node {
         _tree.Notification(MainLoop.NotificationWmQuitRequest);
         return 0;
       }, "exit", "[CODE]", "Exit with the given return code."));
-      AddChild(_debugConsole);
+      _debugConsole.RegisterCommand(new DebugCommand((output, parameters) => {
+        var args = parameters.Trim().Split(" ");
+        var path = args.Length > 0 ? args[0].Trim() : null;
+        if (path != null && path != "")
+        {
+          var scene = GD.Load<PackedScene>($"res://scenes/{path}.tscn");
+          if (scene != null)
+          {
+            if (_currentScene != null)
+            {
+              CallDeferred("remove_child", _currentScene);
+            }
+            _currentScene = scene.InstanceOrNull<Spatial>();
+            if (_currentScene != null)
+            {
+              CallDeferred("add_child", _currentScene);
+              output.WriteLine($"Loading scene \"{path}\".");
+              return 0;
+            }
+          }
+        }
+        return 1;
+      }, "load_scene", "<SCENE>", "Instances a scene below the main node."));
+      CallDeferred("add_child", _debugConsole);
     }
   }
 }

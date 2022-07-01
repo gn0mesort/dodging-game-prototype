@@ -26,7 +26,7 @@ public class DebugConsole : Control {
   private LineEdit _input = null;
   private readonly Dictionary<string, DebugCommand> _commands = new Dictionary<string, DebugCommand>();
 
-  public DebugOutput Output { get; private set; }
+  public DebugOutput Output { get; private set; } = null;
 
   private void OnTextEntered(string newText) {
     _input.Clear();
@@ -38,7 +38,7 @@ public class DebugConsole : Control {
       if (command != null && _commands.ContainsKey(command))
       {
         var parameters = matches.GetString("parameters");
-        _commands[command].Invoke(parameters);
+        _commands[command].Invoke(Output, parameters);
         return;
       }
     }
@@ -57,16 +57,17 @@ public class DebugConsole : Control {
   public override void _Ready() {
     _input = GetNode<LineEdit>("DebugInput");
     Output = GetNode<DebugOutput>("DebugOutput");
+    Output.WriteLine("Output valid.");
 
     _input.Connect("text_entered", this, "OnTextEntered");
-    RegisterCommand(new DebugCommand(Output, (output, parameters) => {
+    RegisterCommand(new DebugCommand((output, parameters) => {
       foreach (var kvp in _commands)
       {
         output.WriteLine(kvp.Value.Name);
       }
       return 0;
     }, "list", "", "List all registered commands."));
-    RegisterCommand(new DebugCommand(Output, (output, parameters) => {
+    RegisterCommand(new DebugCommand((output, parameters) => {
       var args = parameters.Trim().Split(" ");
       if (args.Length > 0 && args[0] != "")
       {
@@ -79,7 +80,7 @@ public class DebugConsole : Control {
       }
       return 1;
     }, "help", "<COMMAND>", "Display command help messages."));
-    RegisterCommand(new DebugCommand(Output, (output, parameters) => {
+    RegisterCommand(new DebugCommand((output, parameters) => {
           if (parameters != null)
           {
             output.WriteLine(parameters.Trim());
@@ -87,7 +88,7 @@ public class DebugConsole : Control {
           }
           return 1;
     }, "echo", "<TEXT>", "Write the input text to standard output."));
-    RegisterCommand(new DebugCommand(Output, (output, parameters) => {
+    RegisterCommand(new DebugCommand((output, parameters) => {
       output.Clear();
       return 0;
     }, "clear", "", "Clear the output window."));
