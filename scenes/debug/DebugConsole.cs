@@ -57,8 +57,6 @@ public class DebugConsole : Control {
   public override void _Ready() {
     _input = GetNode<LineEdit>("DebugInput");
     Output = GetNode<DebugOutput>("DebugOutput");
-    Output.WriteLine("Output valid.");
-
     _input.Connect("text_entered", this, "OnTextEntered");
     RegisterCommand(new DebugCommand((output, parameters) => {
       foreach (var kvp in _commands)
