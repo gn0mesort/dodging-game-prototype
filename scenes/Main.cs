@@ -20,6 +20,9 @@ using System.Diagnostics;
 using Godot;
 
 public class Main : Node {
+  [Export]
+  public PackedScene InitialScene{ get; set; } = null;
+
   private readonly PackedScene _debugConsoleScene = GD.Load<PackedScene>("res://scenes/debug/DebugConsole.tscn");
   private SceneTree _tree = null;
   private DebugConsole _debugConsole = null;
@@ -31,7 +34,7 @@ public class Main : Node {
     Paused = _debugConsole.Visible;
   }
 
-  private uint LoadScene(string path) {
+  private uint LoadSceneFromPath(string path) {
     Debug.Assert(path != null);
     Debug.Assert(path != "");
     var scene = GD.Load<PackedScene>(path);
@@ -47,6 +50,21 @@ public class Main : Node {
         CallDeferred("add_child", _currentScene);
         return 0;
       }
+    }
+    return 1;
+  }
+
+  private uint LoadScene(Spatial scene) {
+    Debug.Assert(scene != null);
+    if (_currentScene != null)
+    {
+      CallDeferred("remove_child", _currentScene);
+    }
+    _currentScene = scene;
+    if (_currentScene != null)
+    {
+      CallDeferred("add_child", _currentScene);
+      return 0;
     }
     return 1;
   }
@@ -79,11 +97,15 @@ public class Main : Node {
         var path = args.Length > 0 ? args[0].Trim() : null;
         if (path != null && path != "")
         {
-          return LoadScene($"res://scenes/{path}.tscn");
+          return LoadSceneFromPath($"res://scenes/{path}.tscn");
         }
         return 1;
       }, "load_scene", "<SCENE>", "Instances a scene below the main node."));
       CallDeferred("add_child", _debugConsole);
+    }
+    if (InitialScene != null)
+    {
+      CallDeferred("LoadScene", InitialScene.InstanceOrNull<Spatial>());
     }
   }
 }
