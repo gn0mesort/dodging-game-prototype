@@ -59,4 +59,20 @@ public class EntityController : Node {
     _target.IntegrateControls(_controller);
   }
 
+  private void ClearAllControls() {
+    for (int i = 1; i < (int) Controller.Control.MAX; ++i)
+    {
+      _controller.ClearControl((Controller.Control) i);
+    }
+  }
+
+  public override void _Notification(int what) {
+    switch (what)
+    {
+    case NotificationUnpaused:
+      ClearAllControls();
+      break;
+    }
+  }
+
 }
