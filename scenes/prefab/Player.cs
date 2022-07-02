@@ -26,7 +26,8 @@ public class Player : KinematicBody {
 
   private GridMap _map = null;
 
-  private Vector3 _direction = new Vector3();
+  private int _directionX= 0;
+  private int _directionY = 0;
 
   /**
    * Read a Controller and update entity state.
@@ -34,29 +35,30 @@ public class Player : KinematicBody {
    * @param controller A Controller structure containing the current input state.
    */
   public void IntegrateControls(Controller controller) {
-    if (controller.IsSet(Controller.Control.LEFT))
+    GD.Print(controller);
+    switch (controller.FirstPressed(Controller.Control.LEFT, Controller.Control.RIGHT))
     {
-      _direction.x = -1;
+    case Controller.Control.LEFT:
+      _directionX = -1;
+      break;
+    case Controller.Control.RIGHT:
+       _directionX = 1;
+      break;
+    case Controller.Control.NONE:
+      _directionX = 0;
+      break;
     }
-    else if (controller.IsSet(Controller.Control.RIGHT))
+    switch (controller.FirstPressed(Controller.Control.UP, Controller.Control.DOWN))
     {
-      _direction.x = 1;
-    }
-    else
-    {
-      _direction.x = 0;
-    }
-    if (controller.IsSet(Controller.Control.UP))
-    {
-      _direction.y = 1;
-    }
-    else if (controller.IsSet(Controller.Control.DOWN))
-    {
-      _direction.y = -1;
-    }
-    else
-    {
-      _direction.y = 0;
+    case Controller.Control.UP:
+      _directionY = 1;
+      break;
+    case Controller.Control.DOWN:
+      _directionY = -1;
+      break;
+    case Controller.Control.NONE:
+      _directionY = 0;
+      break;
     }
   }
 
@@ -71,6 +73,6 @@ public class Player : KinematicBody {
    * Per physics frame processing.
    */
   public override void _PhysicsProcess(float delta) {
-    Translation = _map.MapToWorld((int) _direction.x, (int) _direction.y, 0);
+    Translation = _map.MapToWorld(_directionX, _directionY, 0);
   }
 }

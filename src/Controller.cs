@@ -64,7 +64,7 @@ public class Controller : Reference {
   public void SetControlIf(bool condition, Control control) {
     // Explicit two's complement to make C# happy.
     // Bit fiddling is too "error prone" apparently.
-    _controls[(int) control] = (~Convert.ToUInt64(condition) + 1) & OS.GetTicksMsec();
+    _controls[(int) control] = (~Convert.ToUInt64(condition) + 1) & OS.GetTicksUsec();
   }
 
   /**
@@ -87,20 +87,18 @@ public class Controller : Reference {
     _controls[(int) control] = (~Convert.ToUInt64(!condition) + 1) & _controls[(int) control];
   }
 
-
   /**
-   * Get the monotonic time (in milliseconds) at which the given Control was set.
+   * Get the monotonic time (in microseconds) at which the given Control was set.
    *
    * Time 0 is program start up.
    *
    * @param control The Control to retrieve the timestamp of.
    *
-   * @return The time in milliseconds when control was first set or 0 if control is clear.
+   * @return The time in microseconds when control was first set or 0 if control is clear.
    */
   public ulong GetControlTimestamp(Control control) {
     return _controls[(int) control];
   }
-
 
   /**
    * Check if a Control is set.
@@ -122,6 +120,37 @@ public class Controller : Reference {
    */
   public bool IsClear(Control control) {
     return _controls[(int) control] == 0;
+  }
+
+  /**
+   * Return which of two controls was pressed first.
+   *
+   * @param a The first control to check.
+   * @param b The second control to check.
+   *
+   * @return a if a was pressed before b. b if b was pressed before a. Otherwise Control.NONE
+   */
+  public Control FirstPressed(Control a, Control b) {
+    var timeA = GetControlTimestamp(a);
+    var timeB = GetControlTimestamp(b);
+    var cmp = (long) timeA - (long) timeB;
+    if (timeA != 0 && timeB == 0)
+    {
+      return a;
+    }
+    if (timeA == 0 && timeB != 0)
+    {
+      return b;
+    }
+    if (cmp < 0)
+    {
+      return a;
+    }
+    if (cmp > 0 && timeB != 0)
+    {
+      return b;
+    }
+    return Control.NONE;
   }
 
   /**
