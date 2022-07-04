@@ -55,7 +55,7 @@ public class Main : Node {
     {
       if (_currentScene != null)
       {
-        CallDeferred("remove_child", _currentScene);
+        _currentScene.QueueFree();
       }
       _currentScene = scene.InstanceOrNull<Spatial>();
       if (_currentScene != null)
@@ -79,7 +79,7 @@ public class Main : Node {
     Debug.Assert(scene != null);
     if (_currentScene != null)
     {
-      CallDeferred("remove_child", _currentScene);
+      _currentScene.QueueFree();
     }
     _currentScene = scene;
     if (_currentScene != null)
