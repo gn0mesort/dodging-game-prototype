@@ -56,6 +56,28 @@ public class EntityController : Node {
       _controller.SetControlIf(evKey.IsPressed(),
                                Controller.ToControlIf(evKey.IsAction("move_right"), Controller.Control.RIGHT));
     }
+    else if (ev is InputEventJoypadButton evButton)
+    {
+      _controller.SetControlIf(evButton.IsPressed(),
+                               Controller.ToControlIf(evButton.IsAction("move_up"), Controller.Control.UP));
+      _controller.SetControlIf(evButton.IsPressed(),
+                               Controller.ToControlIf(evButton.IsAction("move_left"), Controller.Control.LEFT));
+      _controller.SetControlIf(evButton.IsPressed(),
+                               Controller.ToControlIf(evButton.IsAction("move_down"), Controller.Control.DOWN));
+      _controller.SetControlIf(evButton.IsPressed(),
+                               Controller.ToControlIf(evButton.IsAction("move_right"), Controller.Control.RIGHT));
+    }
+    else if (ev is InputEventJoypadMotion evMotion)
+    {
+      // Maybe optimize this with a specific overload for _target.IntegrateControls.
+      var velocity = Input.GetVector("move_left", "move_right", "move_up", "move_down");
+      var x = Mathf.Clamp((int) Mathf.Round(velocity.x), -1, 1);
+      var y = Mathf.Clamp((int) Mathf.Round(velocity.y), -1, 1);
+      _controller.SetControlIf(x == -1, Controller.Control.LEFT);
+      _controller.SetControlIf(x == 1, Controller.Control.RIGHT);
+      _controller.SetControlIf(y == -1, Controller.Control.UP);
+      _controller.SetControlIf(y == 1, Controller.Control.DOWN);
+    }
     _target.IntegrateControls(_controller);
   }
 
