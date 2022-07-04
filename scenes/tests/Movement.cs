@@ -28,6 +28,7 @@ public class Movement : GridMap {
     _player = GetNode<KinematicBody>("Player");
     _camera = GetNode<Camera>("Camera");
     _player.Translation = MapToWorld(0, 0, 0);
-    _camera.Translation = MapToWorld(0, 0, 5);
+    _camera.Translation = MapToWorld(0, 1, 2);
+    _camera.Transform = _camera.Transform.LookingAt(_player.Translation, new Vector3(0, 1, 0));
   }
 }

@@ -52,7 +52,7 @@ public class Controller : Reference {
    * @param control The Control to be set.
    */
   public void SetControl(Control control) {
-    _controls[(int) control] = OS.GetTicksMsec();
+    _controls[(int) control] = OS.GetTicksUsec();
   }
 
   /**
@@ -61,10 +61,10 @@ public class Controller : Reference {
    * @param condition The condition upon which to set the Control.
    * @param control The Control to set.
    */
-  public void SetControlIf(bool condition, Control control) {
+  public void SetControlIf(bool condition, Control control, bool state) {
     // Explicit two's complement to make C# happy.
     // Bit fiddling is too "error prone" apparently.
-    _controls[(int) control] = (~Convert.ToUInt64(condition) + 1) & OS.GetTicksUsec();
+    _controls[(~Convert.ToInt32(condition) + 1) & ((int) control)] = (~Convert.ToUInt64(state) + 1) & OS.GetTicksUsec();
   }
 
   /**
@@ -84,7 +84,7 @@ public class Controller : Reference {
    */
   public void ClearControlIf(bool condition, Control control) {
     // Same explicit two's complement as above.
-    _controls[(int) control] = (~Convert.ToUInt64(!condition) + 1) & _controls[(int) control];
+    _controls[((~Convert.ToInt32(!condition) + 1) & (int) control)] =  0;
   }
 
   /**

@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 using Godot;
+using System.Diagnostics;
 
 public class DebugCommand : Reference {
   /**
@@ -39,6 +40,10 @@ public class DebugCommand : Reference {
    * A message describing the functionality of the DebugCommand.
    */
   public string Description { get; private set; } = "";
+
+  public DebugCommand() {
+    Debug.Assert(false);
+  }
 
   public DebugCommand(Command cmd, string name, string usage, string description) {
     _command = cmd;

@@ -35,7 +35,6 @@ public class Player : KinematicBody {
    * @param controller A Controller structure containing the current input state.
    */
   public void IntegrateControls(Controller controller) {
-    //GD.Print(controller);
     switch (controller.FirstPressed(Controller.Control.LEFT, Controller.Control.RIGHT))
     {
     case Controller.Control.LEFT:
@@ -76,11 +75,11 @@ public class Player : KinematicBody {
    * Per physics frame processing.
    */
   public override void _PhysicsProcess(float delta) {
-    if (interpT - 0.0f < Mathf.Epsilon)
+    if (interpT < Mathf.Epsilon)
     {
       next = _map.MapToWorld(_directionX, _directionY, 0);
     }
-    interpT += (float) (5.0f * delta);
+    interpT += 6f * delta;
     Translation = Translation.LinearInterpolate(next, interpT);
     if (interpT - 1.0f < Mathf.Epsilon)
     {

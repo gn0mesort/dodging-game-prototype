@@ -6,6 +6,7 @@
 
 [node name="Movement" type="GridMap"]
 pause_mode = 1
+cell_size = Vector3( 8, 4, 4 )
 data = {
 "cells": PoolIntArray(  )
 }
@@ -16,6 +17,8 @@ __meta__ = {
 
 [node name="Camera" type="Camera" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.99741 )
+current = true
+size = 0.1
 
 [node name="Player" parent="." instance=ExtResource( 1 )]
 axis_lock_motion_z = true

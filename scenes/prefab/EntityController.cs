@@ -41,42 +41,22 @@ public class EntityController : Node {
    * @param ev An input event that triggered processing.
    */
   public override void _Input(InputEvent ev) {
-    if (ev.IsEcho())
+    if (ev is InputEventKey || ev is InputEventJoypadButton)
     {
-      return;
+      _controller.SetControlIf(ev.IsAction("move_up"), Controller.Control.UP, ev.IsPressed());
+      _controller.SetControlIf(ev.IsAction("move_left"), Controller.Control.LEFT, ev.IsPressed());
+      _controller.SetControlIf(ev.IsAction("move_down"), Controller.Control.DOWN, ev.IsPressed());
+      _controller.SetControlIf(ev.IsAction("move_right"), Controller.Control.RIGHT, ev.IsPressed());
     }
-    if (ev is InputEventKey evKey)
+    else if (ev is InputEventJoypadMotion)
     {
-      _controller.SetControlIf(evKey.IsPressed(),
-                               Controller.ToControlIf(evKey.IsAction("move_up"), Controller.Control.UP));
-      _controller.SetControlIf(evKey.IsPressed(),
-                               Controller.ToControlIf(evKey.IsAction("move_left"), Controller.Control.LEFT));
-      _controller.SetControlIf(evKey.IsPressed(),
-                               Controller.ToControlIf(evKey.IsAction("move_down"), Controller.Control.DOWN));
-      _controller.SetControlIf(evKey.IsPressed(),
-                               Controller.ToControlIf(evKey.IsAction("move_right"), Controller.Control.RIGHT));
-    }
-    else if (ev is InputEventJoypadButton evButton)
-    {
-      _controller.SetControlIf(evButton.IsPressed(),
-                               Controller.ToControlIf(evButton.IsAction("move_up"), Controller.Control.UP));
-      _controller.SetControlIf(evButton.IsPressed(),
-                               Controller.ToControlIf(evButton.IsAction("move_left"), Controller.Control.LEFT));
-      _controller.SetControlIf(evButton.IsPressed(),
-                               Controller.ToControlIf(evButton.IsAction("move_down"), Controller.Control.DOWN));
-      _controller.SetControlIf(evButton.IsPressed(),
-                               Controller.ToControlIf(evButton.IsAction("move_right"), Controller.Control.RIGHT));
-    }
-    else if (ev is InputEventJoypadMotion evMotion)
-    {
-      // Maybe optimize this with a specific overload for _target.IntegrateControls.
       var velocity = Input.GetVector("move_left", "move_right", "move_up", "move_down");
       var x = Mathf.Clamp((int) Mathf.Round(velocity.x), -1, 1);
       var y = Mathf.Clamp((int) Mathf.Round(velocity.y), -1, 1);
-      _controller.SetControlIf(x == -1, Controller.Control.LEFT);
-      _controller.SetControlIf(x == 1, Controller.Control.RIGHT);
-      _controller.SetControlIf(y == -1, Controller.Control.UP);
-      _controller.SetControlIf(y == 1, Controller.Control.DOWN);
+      _controller.SetControlIf(true, Controller.Control.LEFT, x == -1);
+      _controller.SetControlIf(true, Controller.Control.RIGHT, x == 1);
+      _controller.SetControlIf(true, Controller.Control.UP, y == -1);
+      _controller.SetControlIf(true, Controller.Control.DOWN, y == 1);
     }
     _target.IntegrateControls(_controller);
   }
