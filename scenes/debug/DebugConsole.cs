@@ -114,6 +114,8 @@ public class DebugConsole : Control {
     if (ev.IsActionPressed("ui_toggle_debug_prompt") && !ev.IsEcho())
     {
       Visible = !Visible;
+      GetTree().SetInputAsHandled();
+      _input.GrabFocus();
     }
   }
 }

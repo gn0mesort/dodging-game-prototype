@@ -41,9 +41,7 @@ public class DebugCommand : Reference {
    */
   public string Description { get; private set; } = "";
 
-  public DebugCommand() {
-    Debug.Assert(false);
-  }
+  public DebugCommand() { }
 
   public DebugCommand(Command cmd, string name, string usage, string description) {
     _command = cmd;
