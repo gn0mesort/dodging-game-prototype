@@ -36,23 +36,13 @@ public class Controller : Reference {
   private readonly ulong[] _controls = new ulong[(int) Control.MAX];
 
   /**
-   * Return the given Control if condition is true.
-   *
-   * @param condition The condition upon which to return the control.
-   * @param control The Control to return.
-   * @return control if condition was true. Otherwise Control.NONE.
-   */
-  public static Control ToControlIf(bool condition, Control control) {
-    return (Control) ((~Convert.ToInt32(condition) + 1) & (int) control);
-  }
-
-  /**
-   * Set the given Control unconditionally.
+   * Set the given Control to the desired state unconditionally.
    *
    * @param control The Control to be set.
+   * @param state The state (on or off) to set the Control to.
    */
-  public void SetControl(Control control) {
-    _controls[(int) control] = OS.GetTicksUsec();
+  public void SetControl(Control control, bool state) {
+    _controls[(int) control] = (~Convert.ToUInt64(state) + 1) & OS.GetTicksUsec();
   }
 
   /**
@@ -60,6 +50,7 @@ public class Controller : Reference {
    *
    * @param condition The condition upon which to set the Control.
    * @param control The Control to set.
+   * @param state The state (on or off) to set the Control to.
    */
   public void SetControlIf(bool condition, Control control, bool state) {
     // Explicit two's complement to make C# happy.

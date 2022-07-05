@@ -68,6 +68,11 @@ public class EntityController : Node {
     }
   }
 
+  /**
+   * Notification processing.
+   *
+   * @param what The triggering notification.
+   */
   public override void _Notification(int what) {
     switch (what)
     {

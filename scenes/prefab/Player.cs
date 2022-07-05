@@ -23,11 +23,16 @@ public class Player : KinematicBody {
    */
   [Export]
   public NodePath Map { get; set; }
-
   private GridMap _map = null;
+
+  private CSGBox _mesh = null;
 
   private int _directionX= 0;
   private int _directionY = 0;
+  private float _step = 0.0f;
+  private float _albedoStep = 0.0f;
+  private bool _isHit = false;
+  private Vector3 _next = new Vector3();
 
   /**
    * Read a Controller and update entity state.
@@ -66,24 +71,57 @@ public class Player : KinematicBody {
    */
   public override void _Ready() {
     _map = GetNode<GridMap>(Map);
+    _mesh = GetNode<CSGBox>("CSGBox");
   }
 
-  private float interpT = 0.0f;
-  private Vector3 next = new Vector3();
+
+  private void Hit() {
+    _albedoStep = 0.0f;
+    _isHit = true;
+  }
+
+  /**
+   * Per frame processing.
+   */
+  public override void _Process(float delta) {
+    var material = _mesh.Material as SpatialMaterial;
+    if (_isHit && Mathf.Abs(_albedoStep - 1.0f) > Mathf.Epsilon)
+    {
+      _albedoStep += 3f * delta;
+      material.AlbedoColor = material.AlbedoColor.LinearInterpolate(new Color(1, 0, 0), _albedoStep);
+    }
+    else if (_isHit)
+    {
+      _isHit = false;
+      return;
+    }
+    if (!_isHit && Mathf.Abs(_albedoStep) > Mathf.Epsilon)
+    {
+      _albedoStep -= 3f * delta;
+      material.AlbedoColor = material.AlbedoColor.LinearInterpolate(new Color(1, 1, 1), 1.0f - _albedoStep);
+    }
+  }
 
   /**
    * Per physics frame processing.
    */
   public override void _PhysicsProcess(float delta) {
-    if (interpT < Mathf.Epsilon)
+    if (_step < Mathf.Epsilon)
     {
-      next = _map.MapToWorld(_directionX, _directionY, 0);
+      _next = _map.MapToWorld(_directionX, _directionY, 0);
     }
-    interpT += 6f * delta;
-    Translation = Translation.LinearInterpolate(next, interpT);
-    if (interpT - 1.0f < Mathf.Epsilon)
+    var collision = MoveAndCollide(Translation, true, true, true);
+    if (collision != null)
     {
-      interpT = 0.0f;
+      var obstacle = collision.Collider as Obstacle;
+      Hit();
+      obstacle.Kill();
+    }
+    _step += 4f * delta;
+    Translation = Translation.LinearInterpolate(_next, _step);
+    if (Mathf.Abs(_step - 1.0f) < Mathf.Epsilon)
+    {
+      _step = 0.0f;
     }
   }
 }

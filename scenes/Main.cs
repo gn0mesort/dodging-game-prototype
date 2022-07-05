@@ -29,7 +29,8 @@ public class Main : Node {
   private readonly PackedScene _debugConsoleScene = GD.Load<PackedScene>("res://scenes/debug/DebugConsole.tscn");
   private SceneTree _tree = null;
   private DebugConsole _debugConsole = null;
-  private Spatial _currentScene = null;
+  private PackedScene _currentScene = null;
+  private Node _currentSceneRoot = null;
 
   /**
    * Whether or not the game is paused.
@@ -40,51 +41,37 @@ public class Main : Node {
     Paused = _debugConsole.Visible;
   }
 
-  /**
-   * Load a 3D scene from resource path.
-   *
-   * @param path The resource (res://) path of the scene to load.
-   *
-   * @return 0 on success. Otherwise 1.
-   */
   private uint LoadSceneFromPath(string path) {
     Debug.Assert(path != null);
     Debug.Assert(path != "");
-    var scene = GD.Load<PackedScene>(path);
-    if (scene != null)
+    _currentScene = GD.Load<PackedScene>(path);
+    if (_currentScene != null)
     {
-      if (_currentScene != null)
+      if (_currentSceneRoot != null)
       {
-        _currentScene.QueueFree();
+        _currentSceneRoot.QueueFree();
       }
-      _currentScene = scene.InstanceOrNull<Spatial>();
-      if (_currentScene != null)
+      _currentSceneRoot = _currentScene.Instance();
+      if (_currentSceneRoot != null)
       {
-        CallDeferred("add_child", _currentScene);
+        CallDeferred("add_child", _currentSceneRoot);
         return 0;
       }
     }
     return 1;
   }
 
-
-  /**
-   * Load a 3D scene.
-   *
-   * @param scene a Spatial indicating the root of the scene to load.
-   *
-   * @return 0 on success. Otherwise 1.
-   */
-  private uint LoadScene(Spatial scene) {
+  private uint LoadScene(PackedScene scene) {
     Debug.Assert(scene != null);
-    if (_currentScene != null)
-    {
-      _currentScene.QueueFree();
-    }
     _currentScene = scene;
-    if (_currentScene != null)
+    if (_currentSceneRoot != null)
     {
-      CallDeferred("add_child", _currentScene);
+      _currentSceneRoot.QueueFree();
+    }
+    _currentSceneRoot = _currentScene.Instance();
+    if (_currentSceneRoot != null)
+    {
+      CallDeferred("add_child", _currentSceneRoot);
       return 0;
     }
     return 1;
@@ -125,11 +112,18 @@ public class Main : Node {
         }
         return 1;
       }, "load_scene", "<SCENE>", "Instances a scene below the main node."));
+      _debugConsole.RegisterCommand(new DebugCommand((output, parameters) => {
+        OS.WindowFullscreen = !OS.WindowFullscreen;
+        return 0;
+      }, "fullscreen", "", "Toggles fullscreen rendering."));
+      _debugConsole.RegisterCommand(new DebugCommand((output, parameters) => {
+        return LoadScene(_currentScene);
+      }, "reload_scene", "", "Realods the current scene."));
       CallDeferred("add_child", _debugConsole);
     }
     if (InitialScene != null)
     {
-      CallDeferred("LoadScene", InitialScene.InstanceOrNull<Spatial>());
+      LoadScene(InitialScene);
     }
   }
 }
