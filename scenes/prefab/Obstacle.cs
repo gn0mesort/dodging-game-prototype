@@ -65,20 +65,11 @@ public class Obstacle : KinematicBody {
    * Per frame processing.
    */
   public override void _Process(float delta) {
-    if (_killed && Mathf.Abs(_step - 1.0f) < Mathf.Epsilon)
-    {
-      QueueFree();
-    }
   }
 
   /**
    * Per physics frame processing.
    */
   public override void _PhysicsProcess(float delta) {
-    if (Mathf.Abs(_step - 1.0f) > Mathf.Epsilon)
-    {
-      _step += delta;
-      Translation = Translation.LinearInterpolate(_next, _step);
-    }
   }
 }

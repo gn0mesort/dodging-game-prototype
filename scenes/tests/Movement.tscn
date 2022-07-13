@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://scenes/prefab/Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/tests/Movement.cs" type="Script" id=2]
-[ext_resource path="res://scenes/prefab/EntityController.tscn" type="PackedScene" id=3]
 
 [node name="Movement" type="GridMap"]
 pause_mode = 1
@@ -24,6 +23,3 @@ size = 0.1
 axis_lock_motion_z = true
 move_lock_z = true
 Map = NodePath("..")
-
-[node name="EntityController" parent="." instance=ExtResource( 3 )]
-Target = NodePath("../Player")

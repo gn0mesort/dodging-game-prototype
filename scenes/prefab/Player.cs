@@ -15,9 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+using System;
+using System.Diagnostics;
+
 using Godot;
 
 public class Player : KinematicBody {
+  private enum Controls {
+    None = -1,
+    Left = 0,
+    Up,
+    Right,
+    Down,
+    Rotate
+  }
+
+  [Export]
+  public Vector3 BaseSpeed { get; set; } = new Vector3(12f, 12f, 12f);
+
   /**
    * NodePath indicating the GridMap on which this entity exists.
    */
@@ -25,45 +40,22 @@ public class Player : KinematicBody {
   public NodePath Map { get; set; }
   private GridMap _map = null;
 
-  private CSGBox _mesh = null;
+  private AnimationPlayer _animations = null;
 
-  private int _directionX= 0;
-  private int _directionY = 0;
-  private float _step = 0.0f;
-  private float _albedoStep = 0.0f;
-  private bool _isHit = false;
-  private Vector3 _next = new Vector3();
+  private Controller _controls = new Controller(5);
 
-  /**
-   * Read a Controller and update entity state.
-   *
-   * @param controller A Controller structure containing the current input state.
-   */
-  public void IntegrateControls(Controller controller) {
-    switch (controller.FirstPressed(Controller.Control.LEFT, Controller.Control.RIGHT))
-    {
-    case Controller.Control.LEFT:
-      _directionX = -1;
-      break;
-    case Controller.Control.RIGHT:
-       _directionX = 1;
-      break;
-    case Controller.Control.NONE:
-      _directionX = 0;
-      break;
-    }
-    switch (controller.FirstPressed(Controller.Control.UP, Controller.Control.DOWN))
-    {
-    case Controller.Control.UP:
-      _directionY = 1;
-      break;
-    case Controller.Control.DOWN:
-      _directionY = -1;
-      break;
-    case Controller.Control.NONE:
-      _directionY = 0;
-      break;
-    }
+  private void _SetControl(Controls control, bool state) {
+    var idx = (int) control;
+    _controls.SetControlIf(_controls.IsPressed(idx) != state, idx, state);
+  }
+
+  private ulong _beat = 0;
+
+  private void _UpdateControls() {
+    _SetControl(Controls.Left, Input.IsActionPressed("move_left"));
+    _SetControl(Controls.Up, Input.IsActionPressed("move_up"));
+    _SetControl(Controls.Right, Input.IsActionPressed("move_right"));
+    _SetControl(Controls.Down, Input.IsActionPressed("move_down"));
   }
 
   /**
@@ -71,57 +63,59 @@ public class Player : KinematicBody {
    */
   public override void _Ready() {
     _map = GetNode<GridMap>(Map);
-    _mesh = GetNode<CSGBox>("CSGBox");
-  }
-
-
-  private void Hit() {
-    _albedoStep = 0.0f;
-    _isHit = true;
+    _animations = GetNode<AnimationPlayer>("Animations");
   }
 
   /**
    * Per frame processing.
    */
   public override void _Process(float delta) {
-    var material = _mesh.Material as SpatialMaterial;
-    if (_isHit && Mathf.Abs(_albedoStep - 1.0f) > Mathf.Epsilon)
-    {
-      _albedoStep += 3f * delta;
-      material.AlbedoColor = material.AlbedoColor.LinearInterpolate(new Color(1, 0, 0), _albedoStep);
-    }
-    else if (_isHit)
-    {
-      _isHit = false;
-      return;
-    }
-    if (!_isHit && Mathf.Abs(_albedoStep) > Mathf.Epsilon)
-    {
-      _albedoStep -= 3f * delta;
-      material.AlbedoColor = material.AlbedoColor.LinearInterpolate(new Color(1, 1, 1), 1.0f - _albedoStep);
-    }
+  }
+
+  private static bool _IsEqualApprox(Vector3 a, Vector3 b, float tolerance) {
+    return Mathf.IsEqualApprox(a.x, b.x, tolerance) && Mathf.IsEqualApprox(a.y, b.y, tolerance) &&
+           Mathf.IsEqualApprox(a.z, b.z, tolerance);
   }
 
   /**
    * Per physics frame processing.
    */
   public override void _PhysicsProcess(float delta) {
-    if (_step < Mathf.Epsilon)
+    _UpdateControls();
+    var dirX = 0;
+    switch ((Controls) _controls.FirstPressed((int) Controls.Left, (int) Controls.Right))
     {
-      _next = _map.MapToWorld(_directionX, _directionY, 0);
+    case Controls.Left:
+      dirX = -1;
+      break;
+    case Controls.Right:
+      dirX = 1;
+      break;
     }
-    var collision = MoveAndCollide(Translation, true, true, true);
+    var dirY = 0;
+    switch ((Controls) _controls.FirstPressed((int) Controls.Down, (int) Controls.Up))
+    {
+    case Controls.Down:
+      dirY = -1;
+      break;
+    case Controls.Up:
+      dirY = 1;
+      break;
+    }
+    var current = _map.WorldToMap(Translation);
+    var next = _map.MapToWorld(dirX, dirY, ((int) current.z) - 1);
+    var velocity = (next - Translation).Normalized();
+    velocity *= BaseSpeed;
+    if (_IsEqualApprox(next, Translation, 0.2f))
+    {
+      velocity = new Vector3(0f, 0f, velocity.z);
+      Translation = next;
+    }
+    var collision = MoveAndCollide(velocity * delta);
     if (collision != null)
     {
-      var obstacle = collision.Collider as Obstacle;
-      Hit();
-      obstacle.Kill();
-    }
-    _step += 4f * delta;
-    Translation = Translation.LinearInterpolate(_next, _step);
-    if (Mathf.Abs(_step - 1.0f) < Mathf.Epsilon)
-    {
-      _step = 0.0f;
+      (collision.Collider as Node).QueueFree();
+      _animations.Play("CollideAndTakeDamage");
     }
   }
 }

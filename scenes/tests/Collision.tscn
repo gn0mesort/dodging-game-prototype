@@ -1,6 +1,5 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://scenes/prefab/EntityController.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/prefab/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/prefab/Obstacle.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/tests/Collision.cs" type="Script" id=4]
@@ -25,9 +24,6 @@ size = 0.1
 axis_lock_motion_z = true
 move_lock_z = true
 Map = NodePath("..")
-
-[node name="EntityController" parent="." instance=ExtResource( 1 )]
-Target = NodePath("../Player")
 
 [node name="Obstacle0" parent="." instance=ExtResource( 3 )]
 

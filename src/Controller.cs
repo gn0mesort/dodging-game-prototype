@@ -15,25 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-using Godot;
 using System;
+using System.Diagnostics;
 
-public class Controller : Reference {
-  /**
-   * Controls understood by the Controller.
-   */
-  public enum Control : int {
-    // Not an actual control.
-    NONE = 0,
-    UP,
-    LEFT,
-    DOWN,
-    RIGHT,
-    // Not an actual control.
-    MAX
+using Godot;
+
+public class Controller {
+  public const int NONE = -1;
+
+  private readonly ulong[] _controls;
+
+  public Controller(int controlCount) {
+    Debug.Assert(controlCount > 0);
+    // Additonal space is allocated for the null/none/empty control.
+    _controls = new ulong[controlCount + 1];
   }
-
-  private readonly ulong[] _controls = new ulong[(int) Control.MAX];
 
   /**
    * Set the given Control to the desired state unconditionally.
@@ -41,8 +37,11 @@ public class Controller : Reference {
    * @param control The Control to be set.
    * @param state The state (on or off) to set the Control to.
    */
-  public void SetControl(Control control, bool state) {
-    _controls[(int) control] = (~Convert.ToUInt64(state) + 1) & OS.GetTicksUsec();
+  public void SetControl(int control, bool state) {
+    Debug.Assert(control > NONE);
+    // Explicit two's complement to make C# happy.
+    // Bit fiddling is too "error prone" apparently.
+    _controls[control + 1] = (~Convert.ToUInt64(state) + 1) & OS.GetTicksUsec();
   }
 
   /**
@@ -52,10 +51,9 @@ public class Controller : Reference {
    * @param control The Control to set.
    * @param state The state (on or off) to set the Control to.
    */
-  public void SetControlIf(bool condition, Control control, bool state) {
-    // Explicit two's complement to make C# happy.
-    // Bit fiddling is too "error prone" apparently.
-    _controls[(~Convert.ToInt32(condition) + 1) & ((int) control)] = (~Convert.ToUInt64(state) + 1) & OS.GetTicksUsec();
+  public void SetControlIf(bool condition, int control, bool state) {
+    Debug.Assert(control > NONE);
+    _controls[(~Convert.ToInt32(condition) + 1) & (control + 1)] = (~Convert.ToUInt64(state) + 1) & OS.GetTicksUsec();
   }
 
   /**
@@ -63,8 +61,9 @@ public class Controller : Reference {
    *
    * @param control The Control to clear.
    */
-  public void ClearControl(Control control) {
-    _controls[(int) control] = 0;
+  public void ClearControl(int control) {
+    Debug.Assert(control > NONE);
+    _controls[control] = 0;
   }
 
   /**
@@ -73,9 +72,9 @@ public class Controller : Reference {
    * @param condition The condition upon which to clear the Control.
    * @param control The Control to clear.
    */
-  public void ClearControlIf(bool condition, Control control) {
-    // Same explicit two's complement as above.
-    _controls[((~Convert.ToInt32(!condition) + 1) & (int) control)] =  0;
+  public void ClearControlIf(bool condition, int control) {
+    Debug.Assert(control > NONE);
+    _controls[((~Convert.ToInt32(!condition) + 1) & (control + 1))] =  0;
   }
 
   /**
@@ -87,8 +86,9 @@ public class Controller : Reference {
    *
    * @return The time in microseconds when control was first set or 0 if control is clear.
    */
-  public ulong GetControlTimestamp(Control control) {
-    return _controls[(int) control];
+  public ulong GetControlTimestamp(int control) {
+    Debug.Assert(control > NONE);
+    return _controls[control + 1];
   }
 
   /**
@@ -98,8 +98,9 @@ public class Controller : Reference {
    *
    * @return true if the Control is set. Otherwise false.
    */
-  public bool IsSet(Control control) {
-    return _controls[(int) control] != 0;
+  public bool IsPressed(int  control) {
+    Debug.Assert(control > NONE);
+    return _controls[control + 1] != 0;
   }
 
   /**
@@ -109,8 +110,9 @@ public class Controller : Reference {
    *
    * @return true if the Control is clear. Otherwise false.
    */
-  public bool IsClear(Control control) {
-    return _controls[(int) control] == 0;
+  public bool IsReleased(int control) {
+    Debug.Assert(control > NONE);
+    return _controls[control + 1] == 0;
   }
 
   /**
@@ -121,7 +123,8 @@ public class Controller : Reference {
    *
    * @return a if a was pressed before b. b if b was pressed before a. Otherwise Control.NONE
    */
-  public Control FirstPressed(Control a, Control b) {
+  public int FirstPressed(int a, int b) {
+    Debug.Assert(a > NONE && b > NONE);
     var timeA = GetControlTimestamp(a);
     var timeB = GetControlTimestamp(b);
     var cmp = (long) timeA - (long) timeB;
@@ -141,7 +144,7 @@ public class Controller : Reference {
     {
       return b;
     }
-    return Control.NONE;
+    return NONE;
   }
 
   /**
@@ -151,7 +154,7 @@ public class Controller : Reference {
    */
   public override string ToString() {
     var res = "[ ";
-    for (int i = (int) Control.NONE + 1; i < _controls.Length; ++i)
+    for (int i = 1; i < _controls.Length; ++i)
     {
       res += $"{_controls[i]}, ";
     }

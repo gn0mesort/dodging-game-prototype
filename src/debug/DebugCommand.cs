@@ -18,7 +18,7 @@
 using Godot;
 using System.Diagnostics;
 
-public class DebugCommand : Reference {
+public class DebugCommand {
   /**
    * Command procedure to be executed during calls to Invoke.
    */
