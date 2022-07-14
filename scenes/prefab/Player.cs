@@ -27,7 +27,6 @@ public class Player : KinematicBody {
     Up,
     Right,
     Down,
-    Rotate,
     Max
   }
 
@@ -42,6 +41,8 @@ public class Player : KinematicBody {
   private GridMap _map = null;
 
   private AnimationPlayer _animations = null;
+  private Tween _tweens = null;
+  private CSGBox _mesh = null;
 
   private Controller _controls = new Controller((int) Controls.Max);
 
@@ -50,11 +51,24 @@ public class Player : KinematicBody {
     _controls.SetControlIf(_controls.IsPressed(idx) != state, idx, state);
   }
 
+  private static readonly Vector3 _VerticalOrientation = new Vector3(45f, 0f, 0f);
+  private static readonly Vector3 _HorizontalOrientation = new Vector3(0, 0, 0);
+  private Vector3 _orientation = _HorizontalOrientation;
+  private bool _rotating = false;
+
   private void _UpdateControls() {
     _SetControl(Controls.Left, Input.IsActionPressed("move_left"));
     _SetControl(Controls.Up, Input.IsActionPressed("move_up"));
     _SetControl(Controls.Right, Input.IsActionPressed("move_right"));
     _SetControl(Controls.Down, Input.IsActionPressed("move_down"));
+  }
+
+  private void _OnTweenCompleted(object obj, NodePath key) {
+    if (key == ":rotation_degrees")
+    {
+      RotationDegrees = _orientation;
+      _rotating = false;
+    }
   }
 
   /**
@@ -63,6 +77,10 @@ public class Player : KinematicBody {
   public override void _Ready() {
     _map = GetNode<GridMap>(Map);
     _animations = GetNode<AnimationPlayer>("Animations");
+    _tweens = GetNode<Tween>("Tweens");
+    _mesh = GetNode<CSGBox>("CSGBox");
+
+    _tweens.Connect("tween_completed", this, "_OnTweenCompleted");
   }
 
   /**
@@ -81,6 +99,13 @@ public class Player : KinematicBody {
    */
   public override void _PhysicsProcess(float delta) {
     _UpdateControls();
+    if (!_rotating && Input.IsActionJustPressed("move_rotate"))
+    {
+      _orientation = _IsEqualApprox(RotationDegrees, _HorizontalOrientation, 0.2f) ? _VerticalOrientation : _HorizontalOrientation;
+      _tweens.InterpolateProperty(this, "rotation_degrees", RotationDegrees, _orientation, 0.25f, Tween.TransitionType.Linear, Tween.EaseType.InOut);
+      _tweens.Start();
+      _rotating = true;
+    }
     var dirX = 0;
     switch ((Controls) _controls.FirstPressed((int) Controls.Left, (int) Controls.Right))
     {
