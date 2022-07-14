@@ -27,7 +27,8 @@ public class Player : KinematicBody {
     Up,
     Right,
     Down,
-    Rotate
+    Rotate,
+    Max
   }
 
   [Export]
@@ -42,14 +43,12 @@ public class Player : KinematicBody {
 
   private AnimationPlayer _animations = null;
 
-  private Controller _controls = new Controller(5);
+  private Controller _controls = new Controller((int) Controls.Max);
 
   private void _SetControl(Controls control, bool state) {
     var idx = (int) control;
     _controls.SetControlIf(_controls.IsPressed(idx) != state, idx, state);
   }
-
-  private ulong _beat = 0;
 
   private void _UpdateControls() {
     _SetControl(Controls.Left, Input.IsActionPressed("move_left"));
@@ -115,6 +114,10 @@ public class Player : KinematicBody {
     if (collision != null)
     {
       (collision.Collider as Node).QueueFree();
+      if (_animations.IsPlaying())
+      {
+        _animations.Stop();
+      }
       _animations.Play("CollideAndTakeDamage");
     }
   }
