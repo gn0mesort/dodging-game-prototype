@@ -19,22 +19,30 @@ using Godot;
 
 public class Obstacle : StaticBody {
 
+  [Export]
+  public NodePath Target { get; set; } = "";
+  private Player _target = null;
+
   private AnimationPlayer _animations = null;
 
   public override void _Ready() {
+    if (Target == "")
+    {
+      return;
+    }
+    _target = GetNode<Player>(Target);
     _animations = GetNode<AnimationPlayer>("Animations");
     _animations.Play("Idle");
-  }
-
-  /**
-   * Per frame processing.
-   */
-  public override void _Process(float delta) {
   }
 
   /**
    * Per physics frame processing.
    */
   public override void _PhysicsProcess(float delta) {
+    var distance = (Translation - _target.Translation).z;
+    if (distance > Mathf.Abs(5 * _target.BaseSpeed.z))
+    {
+      QueueFree();
+    }
   }
 }

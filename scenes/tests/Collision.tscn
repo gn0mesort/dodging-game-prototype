@@ -12,18 +12,16 @@ script = ExtResource( 4 )
 axis_lock_motion_z = true
 move_lock_z = true
 
-[node name="Camera" type="Camera" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12 )
-visible = false
-size = 0.1
-
 [node name="Obstacle0" parent="." instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12, -6, 0 )
+Target = NodePath("../Player")
 
 [node name="Obstacle1" parent="." instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, 0 )
+Target = NodePath("../Player")
 
 [node name="Obstacle2" parent="." instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 6, 0 )
+Target = NodePath("../Player")
 
 [editable path="Player"]

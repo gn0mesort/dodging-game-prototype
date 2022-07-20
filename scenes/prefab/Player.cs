@@ -31,11 +31,10 @@ public class Player : KinematicBody {
   }
 
   [Export]
-  public Vector3 BaseSpeed { get; set; } = new Vector3(36f, 36f, 0f);
-  private readonly float _VELOCITY_Z = -36f;
+  public Vector3 BaseSpeed { get; set; } = new Vector3(36f, 36f, -36f);
 
   [Export]
-  public Vector3 MovementExtent { get; set; } = new Vector3(12f, 6f, 0f);
+  public Vector3 MovementExtents { get; set; } = new Vector3(12f, 6f, 0f);
   private Vector3 _LEFT = new Vector3(-1f, 0f, 0f);
   private Vector3 _UP = new Vector3(0f, 1f, 0f);
   private Vector3 _RIGHT = new Vector3(1f, 0f, 0f);
@@ -99,10 +98,10 @@ public class Player : KinematicBody {
    * Post-_EnterTree initialization.
    */
   public override void _Ready() {
-     _LEFT *= MovementExtent;
-       _UP *= MovementExtent;
-    _RIGHT *= MovementExtent;
-     _DOWN *= MovementExtent;
+     _LEFT *= MovementExtents;
+       _UP *= MovementExtents;
+    _RIGHT *= MovementExtents;
+     _DOWN *= MovementExtents;
     _animations = GetNode<AnimationPlayer>("Animations");
     _tweens = GetNode<Tween>("Tweens");
     _mesh = GetNode<CSGBox>("CSGBox");
@@ -136,8 +135,9 @@ public class Player : KinematicBody {
     }
     var transNoZ = Translation * new Vector3(1f, 1f, 0f);
     var velocity = (next - transNoZ).Normalized();
+    velocity.z = 1f;
     velocity *= BaseSpeed;
-    velocity.z = _VELOCITY_Z;
+//    velocity.z = _VELOCITY_Z;
     if (_IsEqualApprox(next, transNoZ, 0.3f))
     {
       velocity = new Vector3(0f, 0f, velocity.z);
