@@ -17,27 +17,16 @@
  */
 using Godot;
 
-public class Collision : GridMap {
-  private KinematicBody _player = null;
-  private Camera _camera = null;
-  private Obstacle[] _obstacles = new Obstacle[3];
+public class Collision : Spatial {
+  private Spatial _player = null;
+  private Spatial _camera = null;
 
   /**
    * Post-_EnterTree initialization.
    */
   public override void _Ready() {
-    _player = GetNode<KinematicBody>("Player");
-    _camera = GetNode<Camera>("Camera");
-    for (int i = 0; i < 3; ++i)
-    {
-      _obstacles[i] = GetNode<Obstacle>($"Obstacle{i}");
-      _obstacles[i].SetMap(this);
-    }
-    _player.Translation = MapToWorld(0, 0, 0);
-    _obstacles[0].Translation = MapToWorld(0, 1, 0);
-    _obstacles[1].Translation = MapToWorld(0, -1, 0);
-    _obstacles[2].Translation = MapToWorld(-1, -1, 0);
-    _camera.Translation = MapToWorld(0, 1, 2);
+    _player = GetNode<Spatial>("Player");
+    _camera = GetNode<Spatial>("Camera");
     _camera.Transform = _camera.Transform.LookingAt(_player.Translation, new Vector3(0, 1, 0));
   }
 }

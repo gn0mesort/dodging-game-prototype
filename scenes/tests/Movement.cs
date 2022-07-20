@@ -17,18 +17,16 @@
  */
 using Godot;
 
-public class Movement : GridMap {
-  private KinematicBody _player = null;
-  private Camera _camera = null;
+public class Movement : Spatial {
+  private Spatial _player = null;
+  private Spatial _camera = null;
 
   /**
    * Post-_EnterTree initialization.
    */
   public override void _Ready() {
-    _player = GetNode<KinematicBody>("Player");
-    _camera = GetNode<Camera>("Camera");
-    _player.Translation = MapToWorld(0, 0, 0);
-    _camera.Translation = MapToWorld(0, 1, 2);
+    _player = GetNode<Spatial>("Player");
+    _camera = GetNode<Spatial>("Camera");
     _camera.Transform = _camera.Transform.LookingAt(_player.Translation, new Vector3(0, 1, 0));
   }
 }

@@ -17,48 +17,13 @@
  */
 using Godot;
 
-public class Obstacle : KinematicBody {
-  [Export]
-  public float AccelerationFactor { get; set; } = 500.0f;
+public class Obstacle : StaticBody {
 
-  /**
-   * NodePath indicating the GridMap on which this entity exists.
-   */
-  [Export]
-  public NodePath Map { get; set; } = "";
-  private GridMap _map = null;
+  private AnimationPlayer _animations = null;
 
-  private float _step = 1.0f;
-  private Vector3 _next = new Vector3();
-  private bool _killed = false;
-
-  /**
-   * Set the exported GridMap value.
-   *
-   * This is useful when updating Obstacles programmatically.
-   */
-  public void SetMap(GridMap map) {
-    _map = map;
-  }
-
-  /**
-   * Start "kill" processing for the Obstacle.
-   */
-  public void Kill() {
-    var pos = _map.WorldToMap(Translation) * 5;
-    _next = _map.MapToWorld((int) pos.x, (int) pos.y, (int) pos.z);
-    _step = 0.0f;
-    _killed = true;
-  }
-
-  /**
-   * Post-_EnterTree initialization.
-   */
   public override void _Ready() {
-    if (Map != "")
-    {
-      SetMap(GetNode<GridMap>(Map));
-    }
+    _animations = GetNode<AnimationPlayer>("Animations");
+    _animations.Play("Idle");
   }
 
   /**

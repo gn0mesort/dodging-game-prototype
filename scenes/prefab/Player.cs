@@ -31,14 +31,15 @@ public class Player : KinematicBody {
   }
 
   [Export]
-  public Vector3 BaseSpeed { get; set; } = new Vector3(12f, 12f, 12f);
+  public Vector3 BaseSpeed { get; set; } = new Vector3(36f, 36f, 0f);
+  private readonly float _VELOCITY_Z = -36f;
 
-  /**
-   * NodePath indicating the GridMap on which this entity exists.
-   */
   [Export]
-  public NodePath Map { get; set; }
-  private GridMap _map = null;
+  public Vector3 MovementExtent { get; set; } = new Vector3(12f, 6f, 0f);
+  private Vector3 _LEFT = new Vector3(-1f, 0f, 0f);
+  private Vector3 _UP = new Vector3(0f, 1f, 0f);
+  private Vector3 _RIGHT = new Vector3(1f, 0f, 0f);
+  private Vector3 _DOWN = new Vector3(0f, -1f, 0f);
 
   private AnimationPlayer _animations = null;
   private Tween _tweens = null;
@@ -63,6 +64,29 @@ public class Player : KinematicBody {
     _SetControl(Controls.Down, Input.IsActionPressed("move_down"));
   }
 
+  private Vector3 _ChooseDirection() {
+    var res = new Vector3(0f, 0f, 0f);
+    switch ((Controls) _controls.FirstPressed((int) Controls.Left, (int) Controls.Right))
+    {
+    case Controls.Left:
+      res += _LEFT;
+      break;
+    case Controls.Right:
+      res += _RIGHT;
+      break;
+    }
+    switch ((Controls) _controls.FirstPressed((int) Controls.Down, (int) Controls.Up))
+    {
+    case Controls.Down:
+      res += _DOWN;
+      break;
+    case Controls.Up:
+      res += _UP;
+      break;
+    }
+    return res;
+  }
+
   private void _OnTweenCompleted(object obj, NodePath key) {
     if (key == ":rotation_degrees")
     {
@@ -75,7 +99,10 @@ public class Player : KinematicBody {
    * Post-_EnterTree initialization.
    */
   public override void _Ready() {
-    _map = GetNode<GridMap>(Map);
+     _LEFT *= MovementExtent;
+       _UP *= MovementExtent;
+    _RIGHT *= MovementExtent;
+     _DOWN *= MovementExtent;
     _animations = GetNode<AnimationPlayer>("Animations");
     _tweens = GetNode<Tween>("Tweens");
     _mesh = GetNode<CSGBox>("CSGBox");
@@ -99,6 +126,7 @@ public class Player : KinematicBody {
    */
   public override void _PhysicsProcess(float delta) {
     _UpdateControls();
+    var next = _ChooseDirection();
     if (!_rotating && Input.IsActionJustPressed("move_rotate"))
     {
       _orientation = _IsEqualApprox(RotationDegrees, _HorizontalOrientation, 0.2f) ? _VerticalOrientation : _HorizontalOrientation;
@@ -106,34 +134,14 @@ public class Player : KinematicBody {
       _tweens.Start();
       _rotating = true;
     }
-    var dirX = 0;
-    switch ((Controls) _controls.FirstPressed((int) Controls.Left, (int) Controls.Right))
-    {
-    case Controls.Left:
-      dirX = -1;
-      break;
-    case Controls.Right:
-      dirX = 1;
-      break;
-    }
-    var dirY = 0;
-    switch ((Controls) _controls.FirstPressed((int) Controls.Down, (int) Controls.Up))
-    {
-    case Controls.Down:
-      dirY = -1;
-      break;
-    case Controls.Up:
-      dirY = 1;
-      break;
-    }
-    var current = _map.WorldToMap(Translation);
-    var next = _map.MapToWorld(dirX, dirY, ((int) current.z) - 1);
-    var velocity = (next - Translation).Normalized();
+    var transNoZ = Translation * new Vector3(1f, 1f, 0f);
+    var velocity = (next - transNoZ).Normalized();
     velocity *= BaseSpeed;
-    if (_IsEqualApprox(next, Translation, 0.2f))
+    velocity.z = _VELOCITY_Z;
+    if (_IsEqualApprox(next, transNoZ, 0.3f))
     {
       velocity = new Vector3(0f, 0f, velocity.z);
-      Translation = next;
+      Translation = next + (Translation * new Vector3(0f, 0f, 1f));
     }
     var collision = MoveAndCollide(velocity * delta);
     if (collision != null)
