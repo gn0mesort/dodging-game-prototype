@@ -116,69 +116,69 @@ public class Main : Node {
         OS.WindowFullscreen = !OS.WindowFullscreen;
         return 0;
       }, "fullscreen", "", "Toggles fullscreen rendering."));
-      _debugConsole.RegisterCommand(new DebugCommand((output, parameters) => {
-        return LoadScene(_currentScene);
-      }, "reload_scene", "", "Realods the current scene."));
-      _debugConsole.RegisterCommand(new DebugCommand((output, parameters) => {
-        var CoordsPattern = new RegEx();
-        CoordsPattern.Compile(@"^\((?<x>\d*\.?\d+f?),\s*(?<y>\d*\.?\d+f?),\s*(?<z>\d*\.?\d+f?)\)$");
-        var mainNode = GetNode<Node>("/root/Main");
-        GridMap map = null;
-        for (int i = 0; i < mainNode.GetChildCount() && map == null; ++i)
-        {
-          map = mainNode.GetChild(i) as GridMap;
-        }
-        if (map == null)
-        {
-          return 1;
-        }
-        var matches = CoordsPattern.Search(parameters.Trim());
-        if (matches != null)
-        {
-          var coords = new Vector3();
-          var success = Single.TryParse(matches.GetString("x"), out coords.x);
-          success = success && Single.TryParse(matches.GetString("y"), out coords.y);
-          success = success && Single.TryParse(matches.GetString("z"), out coords.z);
-          if (success)
-          {
-            output.WriteLine($"On GridMap \"{map.Name}\": World = {coords}, Grid = {map.WorldToMap(coords)}");
-            return 0;
-          }
-          return 2;
-        }
-        return 3;
-      }, "wtg", "<WORLD_COORDS>", "Print GridMap position equivalent to the input global coordinates."));
-      _debugConsole.RegisterCommand(new DebugCommand((output, parameters) => {
-        var CoordsPattern = new RegEx();
-        CoordsPattern.Compile(@"^\((?<x>\d+),\s*(?<y>\d+),\s*(?<z>\d+)\)$");
-        var mainNode = GetNode<Node>("/root/Main");
-        GridMap map = null;
-        for (int i = 0; i < mainNode.GetChildCount() && map == null; ++i)
-        {
-          map = mainNode.GetChild(i) as GridMap;
-        }
-        if (map == null)
-        {
-          return 1;
-        }
-        var matches = CoordsPattern.Search(parameters.Trim());
-        if (matches != null)
-        {
-          var coords = new int[3];
-          var success = Int32.TryParse(matches.GetString("x"), out coords[0]);
-          success = success && Int32.TryParse(matches.GetString("y"), out coords[1]);
-          success = success && Int32.TryParse(matches.GetString("z"), out coords[2]);
-          if (success)
-          {
-            output.WriteLine($"On GridMap \"{map.Name}\": Grid = ({coords[0]}, {coords[1]}, {coords[2]}), World = {map.MapToWorld(coords[0], coords[1], coords[2])}");
-            return 0;
-          }
-          return 2;
-        }
-        return 3;
-      }, "gtw", "<GRID_COORDS>", "Print global position equivalent to the input GridMap coordinates."));
-      CallDeferred("add_child", _debugConsole);
-    }
+//      _debugConsole.RegisterCommand(new DebugCommand((output, parameters) => {
+//        return LoadScene(_currentScene);
+//      }, "reload_scene", "", "Realods the current scene."));
+//      _debugConsole.RegisterCommand(new DebugCommand((output, parameters) => {
+//        var CoordsPattern = new RegEx();
+//        CoordsPattern.Compile(@"^\((?<x>\d*\.?\d+f?),\s*(?<y>\d*\.?\d+f?),\s*(?<z>\d*\.?\d+f?)\)$");
+//        var mainNode = GetNode<Node>("/root/Main");
+//        GridMap map = null;
+//        for (int i = 0; i < mainNode.GetChildCount() && map == null; ++i)
+//        {
+//          map = mainNode.GetChild(i) as GridMap;
+//        }
+//        if (map == null)
+//        {
+//          return 1;
+//        }
+//        var matches = CoordsPattern.Search(parameters.Trim());
+//        if (matches != null)
+//        {
+//          var coords = new Vector3();
+//          var success = Single.TryParse(matches.GetString("x"), out coords.x);
+//          success = success && Single.TryParse(matches.GetString("y"), out coords.y);
+//          success = success && Single.TryParse(matches.GetString("z"), out coords.z);
+//          if (success)
+//          {
+//            output.WriteLine($"On GridMap \"{map.Name}\": World = {coords}, Grid = {map.WorldToMap(coords)}");
+//            return 0;
+//          }
+//          return 2;
+//        }
+//        return 3;
+//      }, "wtg", "<WORLD_COORDS>", "Print GridMap position equivalent to the input global coordinates."));
+//      _debugConsole.RegisterCommand(new DebugCommand((output, parameters) => {
+//        var CoordsPattern = new RegEx();
+//        CoordsPattern.Compile(@"^\((?<x>\d+),\s*(?<y>\d+),\s*(?<z>\d+)\)$");
+//        var mainNode = GetNode<Node>("/root/Main");
+//        GridMap map = null;
+//        for (int i = 0; i < mainNode.GetChildCount() && map == null; ++i)
+//        {
+//          map = mainNode.GetChild(i) as GridMap;
+//        }
+//        if (map == null)
+//        {
+//          return 1;
+//        }
+//        var matches = CoordsPattern.Search(parameters.Trim());
+//        if (matches != null)
+//        {
+//          var coords = new int[3];
+//          var success = Int32.TryParse(matches.GetString("x"), out coords[0]);
+//          success = success && Int32.TryParse(matches.GetString("y"), out coords[1]);
+//          success = success && Int32.TryParse(matches.GetString("z"), out coords[2]);
+//          if (success)
+//          {
+//            output.WriteLine($"On GridMap \"{map.Name}\": Grid = ({coords[0]}, {coords[1]}, {coords[2]}), World = {map.MapToWorld(coords[0], coords[1], coords[2])}");
+//            return 0;
+//          }
+//          return 2;
+//        }
+//        return 3;
+//      }, "gtw", "<GRID_COORDS>", "Print global position equivalent to the input GridMap coordinates."));
+//      CallDeferred("add_child", _debugConsole);
+//    }
     if (InitialScene != null)
     {
       LoadScene(InitialScene);

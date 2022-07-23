@@ -40,6 +40,12 @@ public class Player : KinematicBody {
   private Vector3 _RIGHT = new Vector3(1f, 0f, 0f);
   private Vector3 _DOWN = new Vector3(0f, -1f, 0f);
 
+  [Export]
+  public uint Score { get; set; } = 0;
+
+  [Export]
+  public uint HitPoints { get; set; } = 3;
+
   private AnimationPlayer _animations = null;
   private Tween _tweens = null;
   private CSGBox _mesh = null;
@@ -146,6 +152,7 @@ public class Player : KinematicBody {
     var collision = MoveAndCollide(velocity * delta);
     if (collision != null)
     {
+      HitPoints = (uint) Mathf.Clamp((int) HitPoints - 1, 0, 3);
       (collision.Collider as Node).QueueFree();
       if (_animations.IsPlaying())
       {
