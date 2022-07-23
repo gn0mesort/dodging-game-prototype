@@ -172,7 +172,10 @@ public class Player : KinematicBody {
     var collision = MoveAndCollide(velocity * delta);
     if (collision != null)
     {
-      --Health;
+      if (--Health == 0)
+      {
+        // TODO game over
+      }
       (collision.Collider as Node).QueueFree();
       if (_animations.IsPlaying())
       {

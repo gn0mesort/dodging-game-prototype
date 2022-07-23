@@ -7,3 +7,7 @@
 pause_mode = 2
 script = ExtResource( 1 )
 InitialScene = ExtResource( 2 )
+
+[node name="Debug" type="CanvasLayer" parent="."]
+
+[node name="View" type="CanvasLayer" parent="."]

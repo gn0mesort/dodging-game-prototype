@@ -31,6 +31,9 @@ public class Main : Node {
   private DebugConsole _debugConsole = null;
   private PackedScene _currentScene = null;
   private Node _currentSceneRoot = null;
+  private CanvasLayer _debugLayer = null;
+  private CanvasLayer _viewLayer = null;
+
 
   /**
    * Whether or not the game is paused.
@@ -54,7 +57,7 @@ public class Main : Node {
       _currentSceneRoot = _currentScene.Instance();
       if (_currentSceneRoot != null)
       {
-        CallDeferred("add_child", _currentSceneRoot);
+        _viewLayer.CallDeferred("add_child", _currentSceneRoot);
         return 0;
       }
     }
@@ -71,7 +74,7 @@ public class Main : Node {
     _currentSceneRoot = _currentScene.Instance();
     if (_currentSceneRoot != null)
     {
-      CallDeferred("add_child", _currentSceneRoot);
+      _viewLayer.CallDeferred("add_child", _currentSceneRoot);
       return 0;
     }
     return 1;
@@ -82,6 +85,8 @@ public class Main : Node {
    */
   public override void _Ready() {
     _tree = GetTree();
+    _debugLayer = GetNode<CanvasLayer>("Debug");
+    _viewLayer = GetNode<CanvasLayer>("View");
     if (OS.IsDebugBuild())
     {
       _debugConsole = _debugConsoleScene.Instance<DebugConsole>();
@@ -119,7 +124,7 @@ public class Main : Node {
       _debugConsole.RegisterCommand(new DebugCommand((output, parameters) => {
         return LoadScene(_currentScene);
       }, "reload_scene", "", "Realods the current scene."));
-      CallDeferred("add_child", _debugConsole);
+      _debugLayer.CallDeferred("add_child", _debugConsole);
     }
     if (InitialScene != null)
     {
