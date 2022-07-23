@@ -3,15 +3,18 @@
 [ext_resource path="res://scenes/prefab/Obstacle.cs" type="Script" id=1]
 
 [sub_resource type="SpatialMaterial" id=3]
+flags_transparent = true
+albedo_color = Color( 0, 0.277055, 0.722945, 1 )
 
 [sub_resource type="SpatialMaterial" id=4]
+albedo_color = Color( 1, 0.921569, 0, 1 )
 
 [sub_resource type="SphereShape" id=1]
 radius = 1.5
 
 [sub_resource type="Animation" id=2]
 resource_name = "Idle"
-length = 5.0
+length = 2.0
 loop = true
 tracks/0/type = "value"
 tracks/0/path = NodePath("CSGSphere:rotation_degrees")
@@ -20,7 +23,7 @@ tracks/0/loop_wrap = false
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 2.5, 5 ),
+"times": PoolRealArray( 0, 1, 2 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
 "values": [ Vector3( 0, 0, 0 ), Vector3( 180, 0, 0 ), Vector3( 360, 0, 0 ) ]
@@ -32,71 +35,48 @@ tracks/1/loop_wrap = false
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 2.5, 5 ),
+"times": PoolRealArray( 0, 1, 2 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
 "values": [ Vector3( 1, 1, 1 ), Vector3( 0.8, 0.8, 0.8 ), Vector3( 1, 1, 1 ) ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("CSGSphere:material:albedo_color")
+tracks/2/path = NodePath("CSGTorus:rotation_degrees")
 tracks/2/interp = 2
 tracks/2/loop_wrap = false
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 1, 2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
-"values": [ Color( 1, 1, 1, 1 ), Color( 1, 0, 0, 1 ), Color( 1, 0.647059, 0, 1 ), Color( 1, 1, 0, 1 ), Color( 0, 1, 0, 1 ), Color( 0, 0, 1, 1 ), Color( 0.294118, 0, 0.509804, 1 ), Color( 0.933333, 0.509804, 0.933333, 1 ), Color( 1, 1, 1, 1 ) ]
+"values": [ Vector3( 0, 0, 0 ), Vector3( -180, 0, 0 ), Vector3( -360, 0, 0 ) ]
 }
 tracks/3/type = "value"
-tracks/3/path = NodePath("CSGTorus:rotation_degrees")
+tracks/3/path = NodePath("CSGTorus:scale")
 tracks/3/interp = 2
 tracks/3/loop_wrap = false
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 2.5, 5 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
-"update": 0,
-"values": [ Vector3( 0, 0, 0 ), Vector3( -180, 0, 0 ), Vector3( -360, 0, 0 ) ]
-}
-tracks/4/type = "value"
-tracks/4/path = NodePath("CSGTorus:scale")
-tracks/4/interp = 2
-tracks/4/loop_wrap = false
-tracks/4/imported = false
-tracks/4/enabled = false
-tracks/4/keys = {
-"times": PoolRealArray( 0, 2.5, 5 ),
+"times": PoolRealArray( 0, 1, 2 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
 "values": [ Vector3( 0.5, 0.5, 0.5 ), Vector3( 0.75, 0.75, 0.75 ), Vector3( 0.5, 0.5, 0.5 ) ]
-}
-tracks/5/type = "value"
-tracks/5/path = NodePath("CSGTorus:material:albedo_color")
-tracks/5/interp = 2
-tracks/5/loop_wrap = false
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/keys = {
-"times": PoolRealArray( 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
-"update": 0,
-"values": [ Color( 1, 1, 1, 1 ), Color( 0.933333, 0.509804, 0.933333, 1 ), Color( 0.294118, 0, 0.509804, 1 ), Color( 0, 0, 1, 1 ), Color( 0, 1, 0, 1 ), Color( 1, 1, 0, 1 ), Color( 1, 0.647059, 0, 1 ), Color( 1, 0, 0, 1 ), Color( 1, 1, 1, 1 ) ]
 }
 
 [node name="Obstacle" type="StaticBody"]
 script = ExtResource( 1 )
 
 [node name="CSGSphere" type="CSGSphere" parent="."]
+transform = Transform( 0.954867, 0, 0, 0, 0.676752, 0.67363, 0, -0.67363, 0.676752, 0, 0, 0 )
 radial_segments = 4
 rings = 2
 smooth_faces = false
 material = SubResource( 3 )
 
 [node name="CSGTorus" type="CSGTorus" parent="."]
-transform = Transform( 0.57022, 0, 0, 0, 0.57022, 0, 0, 0, 0.57022, 0, 0, 0 )
+transform = Transform( 0.556417, 0, 0, 0, 0.470713, -0.296697, 0, 0.296697, 0.470713, 0, 0, 0 )
 sides = 4
 ring_sides = 5
 smooth_faces = false

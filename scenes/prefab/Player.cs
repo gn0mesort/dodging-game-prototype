@@ -51,7 +51,7 @@ public class Player : KinematicBody {
     _controls.SetControlIf(_controls.IsPressed(idx) != state, idx, state);
   }
 
-  private static readonly Vector3 _VerticalOrientation = new Vector3(45f, 0f, 0f);
+  private static readonly Vector3 _VerticalOrientation = new Vector3(0f, 0f, 90f);
   private static readonly Vector3 _HorizontalOrientation = new Vector3(0, 0, 0);
   private Vector3 _orientation = _HorizontalOrientation;
   private bool _rotating = false;

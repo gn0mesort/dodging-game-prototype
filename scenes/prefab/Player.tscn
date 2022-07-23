@@ -4,6 +4,7 @@
 [ext_resource path="res://scenes/prefab/FollowCamera.cs" type="Script" id=2]
 
 [sub_resource type="BoxShape" id=1]
+extents = Vector3( 1, 0.25, 1 )
 
 [sub_resource type="Animation" id=4]
 resource_name = "CollideAndPickup"
@@ -98,6 +99,7 @@ anims/RotateVertical = SubResource( 6 )
 [node name="Tweens" type="Tween" parent="."]
 
 [node name="CSGBox" type="CSGBox" parent="."]
+height = 0.25
 material = SubResource( 2 )
 
 [node name="FollowCamera" type="Camera" parent="."]
