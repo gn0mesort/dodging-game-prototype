@@ -40,7 +40,7 @@ public class Obstacle : StaticBody {
    */
   public override void _PhysicsProcess(float delta) {
     var distance = (Translation - _target.Translation).z;
-    if (distance > Mathf.Abs(5 * _target.BaseSpeed.z))
+    if (distance > Mathf.Abs(2 * _target.BaseSpeed.z))
     {
       _target.Score += 10;
       QueueFree();

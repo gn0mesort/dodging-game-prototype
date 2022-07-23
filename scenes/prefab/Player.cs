@@ -30,6 +30,9 @@ public class Player : KinematicBody {
     Max
   }
 
+  [Signal]
+  public delegate void StatusChanged();
+
   [Export]
   public Vector3 BaseSpeed { get; set; } = new Vector3(36f, 36f, -36f);
 
@@ -41,10 +44,28 @@ public class Player : KinematicBody {
   private Vector3 _DOWN = new Vector3(0f, -1f, 0f);
 
   [Export]
-  public uint Score { get; set; } = 0;
+  public uint Score {
+    get {
+      return _score;
+    }
+    set {
+      EmitSignal("StatusChanged");
+      _score = (uint) Mathf.Clamp((long) value, 0, UInt32.MaxValue);
+    }
+  }
+  private uint _score = 0;
 
   [Export]
-  public uint HitPoints { get; set; } = 3;
+  public uint Health {
+    get {
+      return _health;
+    }
+    set {
+      EmitSignal("StatusChanged");
+      _health = (uint) Mathf.Clamp((long) value, 0, UInt32.MaxValue);
+    }
+  }
+  private uint _health = 3;
 
   private AnimationPlayer _animations = null;
   private Tween _tweens = null;
@@ -143,7 +164,6 @@ public class Player : KinematicBody {
     var velocity = (next - transNoZ).Normalized();
     velocity.z = 1f;
     velocity *= BaseSpeed;
-//    velocity.z = _VELOCITY_Z;
     if (_IsEqualApprox(next, transNoZ, 0.3f))
     {
       velocity = new Vector3(0f, 0f, velocity.z);
@@ -152,7 +172,7 @@ public class Player : KinematicBody {
     var collision = MoveAndCollide(velocity * delta);
     if (collision != null)
     {
-      HitPoints = (uint) Mathf.Clamp((int) HitPoints - 1, 0, 3);
+      --Health;
       (collision.Collider as Node).QueueFree();
       if (_animations.IsPlaying())
       {
