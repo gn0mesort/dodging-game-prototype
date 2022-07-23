@@ -21,7 +21,6 @@ using System.Diagnostics;
 
 public class DebugConsole : Control {
   private static readonly RegEx _command_pattern = new RegEx();
-
   private LineEdit _input = null;
   private readonly Dictionary<string, DebugCommand> _commands = new Dictionary<string, DebugCommand>();
 

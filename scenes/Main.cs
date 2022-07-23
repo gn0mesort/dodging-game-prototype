@@ -20,12 +20,6 @@ using System.Diagnostics;
 using Godot;
 
 public class Main : Node {
-  /**
-   * A Scene to load immediately at program start.
-   */
-  [Export]
-  public PackedScene InitialScene{ get; set; } = null;
-
   private readonly PackedScene _debugConsoleScene = GD.Load<PackedScene>("res://scenes/debug/DebugConsole.tscn");
   private SceneTree _tree = null;
   private DebugConsole _debugConsole = null;
@@ -34,6 +28,11 @@ public class Main : Node {
   private CanvasLayer _debugLayer = null;
   private CanvasLayer _viewLayer = null;
 
+  /**
+   * A Scene to load immediately at program start.
+   */
+  [Export]
+  public PackedScene InitialScene{ get; set; } = null;
 
   /**
    * Whether or not the game is paused.

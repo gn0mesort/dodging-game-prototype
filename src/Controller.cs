@@ -17,14 +17,21 @@
  */
 using System;
 using System.Diagnostics;
-
 using Godot;
 
 public class Controller {
+  /**
+   * Constant indicating no control is pressed.
+   */
   public const int NONE = -1;
 
   private readonly ulong[] _controls;
 
+  /**
+   * Constructs a new controller with controlCount controls.
+   *
+   * @param controlCount The number of controls to allocate.
+   */
   public Controller(int controlCount) {
     Debug.Assert(controlCount > 0);
     // Additonal space is allocated for the null/none/empty control.
@@ -32,10 +39,10 @@ public class Controller {
   }
 
   /**
-   * Set the given Control to the desired state unconditionally.
+   * Set the given control to the desired state unconditionally.
    *
-   * @param control The Control to be set.
-   * @param state The state (on or off) to set the Control to.
+   * @param control The control to be set.
+   * @param state The state (on or off) to set the control to.
    */
   public void SetControl(int control, bool state) {
     Debug.Assert(control > NONE);
@@ -45,11 +52,11 @@ public class Controller {
   }
 
   /**
-   * Set the given Control conditionally.
+   * Set the given control conditionally.
    *
-   * @param condition The condition upon which to set the Control.
-   * @param control The Control to set.
-   * @param state The state (on or off) to set the Control to.
+   * @param condition The condition upon which to set the control.
+   * @param control The control to set.
+   * @param state The state (on or off) to set the control to.
    */
   public void SetControlIf(bool condition, int control, bool state) {
     Debug.Assert(control > NONE);
@@ -57,34 +64,34 @@ public class Controller {
   }
 
   /**
-   * Clear the given Control unconditionally.
+   * Release the given control unconditionally.
    *
-   * @param control The Control to clear.
+   * @param control The control to release.
    */
-  public void ClearControl(int control) {
+  public void ReleaseControl(int control) {
     Debug.Assert(control > NONE);
     _controls[control] = 0;
   }
 
   /**
-   * Clear the given Control conditionally.
+   * Release the given control conditionally.
    *
-   * @param condition The condition upon which to clear the Control.
-   * @param control The Control to clear.
+   * @param condition The condition upon which to release the control.
+   * @param control The control to release.
    */
-  public void ClearControlIf(bool condition, int control) {
+  public void ReleaseControlIf(bool condition, int control) {
     Debug.Assert(control > NONE);
     _controls[((~Convert.ToInt32(!condition) + 1) & (control + 1))] =  0;
   }
 
   /**
-   * Get the monotonic time (in microseconds) at which the given Control was set.
+   * Get the monotonic time (in microseconds) at which the given control was pressed.
    *
    * Time 0 is program start up.
    *
-   * @param control The Control to retrieve the timestamp of.
+   * @param control The control to retrieve the timestamp of.
    *
-   * @return The time in microseconds when control was first set or 0 if control is clear.
+   * @return The time in microseconds when control was first pressed or 0 if control is released.
    */
   public ulong GetControlTimestamp(int control) {
     Debug.Assert(control > NONE);
@@ -92,23 +99,23 @@ public class Controller {
   }
 
   /**
-   * Check if a Control is set.
+   * Check if a control is pressed.
    *
-   * @param control The Control to check.
+   * @param control The control to check.
    *
-   * @return true if the Control is set. Otherwise false.
+   * @return true if the control is pressed. Otherwise false.
    */
-  public bool IsPressed(int  control) {
+  public bool IsPressed(int control) {
     Debug.Assert(control > NONE);
     return _controls[control + 1] != 0;
   }
 
   /**
-   * Check if a Control is clear.
+   * Check if a control is released.
    *
-   * @param control The Control to check.
+   * @param control The control to check.
    *
-   * @return true if the Control is clear. Otherwise false.
+   * @return true if the control is released. Otherwise false.
    */
   public bool IsReleased(int control) {
     Debug.Assert(control > NONE);
@@ -118,10 +125,12 @@ public class Controller {
   /**
    * Return which of two controls was pressed first.
    *
+   * If one control is pressed and the other is released, the pressed control will be returned.
+   *
    * @param a The first control to check.
    * @param b The second control to check.
    *
-   * @return a if a was pressed before b. b if b was pressed before a. Otherwise Control.NONE
+   * @return a if a was pressed before b. b if b was pressed before a. Otherwise Controller.NONE.
    */
   public int FirstPressed(int a, int b) {
     Debug.Assert(a > NONE && b > NONE);

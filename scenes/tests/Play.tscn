@@ -11,7 +11,7 @@ pause_mode = 1
 [node name="Player" parent="." instance=ExtResource( 1 )]
 
 [node name="Spawner" parent="." instance=ExtResource( 2 )]
-SpawnedObject = ExtResource( 3 )
+SpawnedEntity = ExtResource( 3 )
 Target = NodePath("../Player")
 
 [node name="PlayGUI" parent="." instance=ExtResource( 4 )]

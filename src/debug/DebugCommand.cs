@@ -41,8 +41,6 @@ public class DebugCommand {
    */
   public string Description { get; private set; } = "";
 
-  public DebugCommand() { }
-
   public DebugCommand(Command cmd, string name, string usage, string description) {
     _command = cmd;
     Name = name;

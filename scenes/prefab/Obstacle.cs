@@ -18,13 +18,19 @@
 using Godot;
 
 public class Obstacle : StaticBody {
-
-  [Export]
-  public NodePath Target { get; set; } = "";
   private Player _target = null;
-
   private AnimationPlayer _animations = null;
 
+  /**
+   * A NodePath pointing to the entity that this Obstacle should target for scoring and despawning.
+   * Must be a Player.
+   */
+  [Export]
+  public NodePath Target { get; set; } = "";
+
+  /**
+   * Post-_EnterTree initialization.
+   */
   public override void _Ready() {
     if (Target == "")
     {
