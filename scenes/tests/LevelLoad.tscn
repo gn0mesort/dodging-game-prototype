@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scenes/prefab/Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/tests/LevelLoad.cs" type="Script" id=2]
+
+[node name="LevelLoad" type="Spatial"]
+script = ExtResource( 2 )
+TargetLevel = "res://levels/test_level.json"
+
+[node name="Player" parent="." instance=ExtResource( 1 )]
+BaseSpeed = Vector3( 36, 36, -1 )
