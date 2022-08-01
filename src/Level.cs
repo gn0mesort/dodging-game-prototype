@@ -27,6 +27,11 @@ public class Level {
     [JsonPropertyName("version")]
     public string Version { get; set; }
 
+    /**
+     * Convert LevelMetadata to a string.
+     *
+     * @returns A string representing the LevelMetadata.
+     */
     public override string ToString() {
       return $"{{ AuthorName = {AuthorName}, AuthorContact = {AuthorContact}, Version = {Version} }}";
     }
@@ -42,6 +47,11 @@ public class Level {
     [JsonPropertyName("bottom")]
     public int[] BottomLayer { get; set; }
 
+    /**
+     * Convert LevelData to a string.
+     *
+     * @returns A string representing the LevelData.
+     */
     public override string ToString() {
       return $"{{ Name = {Name}, TopLayer = {TopLayer}, MiddleLayer = {MiddleLayer}, BottomLayer = {BottomLayer} }}";
     }
@@ -58,6 +68,14 @@ public class Level {
   [JsonPropertyName("level")]
   public LevelData Data { get; set; }
 
+  /**
+   * Convert a JSON string into a Level.
+   *
+   * JSON property names are case insensitive.
+   *
+   * @param json A string containing a valid JSON Level representation.
+   * @retuns A corresponding Level object.
+   */
   public static Level fromJson(string json) {
     var serializerOptions = new JsonSerializerOptions();
     serializerOptions.PropertyNameCaseInsensitive = true;
@@ -65,6 +83,11 @@ public class Level {
     return JsonSerializer.Deserialize<Level>(json, serializerOptions);
   }
 
+  /**
+   * Converts a Level to a string.
+   *
+   * @returns A string representing the Level.
+   */
   public override string ToString() {
     return $"{{ Type = {Type}, Metadata = {Metadata}, Data = {Data} }}";
   }
