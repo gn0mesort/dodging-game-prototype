@@ -40,7 +40,7 @@ public class Player : KinematicBody {
   private Vector3 _RIGHT = new Vector3(1f, 0f, 0f);
   private Vector3 _DOWN = new Vector3(0f, -1f, 0f);
   private uint _score = 0;
-  private uint _health = 3;
+  private uint _health = 2;
   private AnimationPlayer _animations = null;
   private Tween _tweens = null;
   private CSGBox _mesh = null;
