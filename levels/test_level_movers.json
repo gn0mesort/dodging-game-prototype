@@ -1,0 +1,20 @@
+ {
+  "type": "curated",
+  "metadata": {
+    "author": "Alexander Rothman",
+    "contact": "gnomesort@megate.ch",
+    "version": "1.0.0"
+  },
+  "level": {
+    "name": "Test Level",
+    "top": [
+      0, 0, 0,
+      0, 3, 0
+    ],
+    "middle": [
+    ],
+    "bottom": [
+      0, 2, 0
+    ]
+  }
+}
