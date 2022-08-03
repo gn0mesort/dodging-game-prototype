@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class CubeObstacleHorizontalMover : KinematicBody {
+public class HorizontalMoverObstacle : KinematicBody {
   [Export]
   public Vector3 MovementExtents { get; set; } = new Vector3(12f, 0f, 0f);
   [Export]
@@ -19,13 +19,11 @@ public class CubeObstacleHorizontalMover : KinematicBody {
   public override void _PhysicsProcess(float delta) {
     if (Mathf.IsEqualApprox(Mathf.Abs(Translation.x), MovementExtents.x, 0.2f))
     {
-      var start = RotationDegrees.z;
-      var end = RotationDegrees.z + 180;
       _velocity *= -1f;
-      _tween.InterpolateProperty(this, "rotation_degrees:z", start, end, 1f, Tween.TransitionType.Linear, Tween.EaseType.InOut);
+      var end = Mathf.IsEqualApprox(RotationDegrees.z, 180f) ? 0f : -180f;
+      _tween.InterpolateProperty(this, "rotation_degrees:z", RotationDegrees.z, end, 1f,
+                                 Tween.TransitionType.Linear, Tween.EaseType.InOut);
       _tween.Start();
-
-
     }
     MoveAndCollide(_velocity * delta);
   }
