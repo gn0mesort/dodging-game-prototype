@@ -100,7 +100,6 @@ anims/RotateVertical = SubResource( 6 )
 [node name="Tweens" type="Tween" parent="."]
 
 [node name="CSGBox" type="CSGBox" parent="."]
-transform = Transform( 1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 0, 0, 0 )
 height = 0.25
 material = SubResource( 2 )
 

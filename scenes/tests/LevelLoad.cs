@@ -23,7 +23,7 @@ public class LevelLoad : Spatial {
       return;
     }
     // TODO: make an Entity class for these.
-    var entity = _level.Entities[id - 1].Scene.Instance() as Spatial;
+    var entity = _level.Scenes[_level.Entities[id - 1].ScenePath].Instance() as Spatial;
     entity.Translation = position;
     GD.Print(entity.Translation);
     CallDeferred("add_child", entity);

@@ -64,8 +64,6 @@ public class Level {
     }
     [JsonPropertyName("path")]
     public string ScenePath { get; private set; }
-    [JsonIgnore]
-    public PackedScene Scene { get; private set; }
     [JsonPropertyName("mode")]
     public EntityMode Mode { get; private set; }
     [JsonPropertyName("direction_x")]
@@ -76,7 +74,6 @@ public class Level {
     [JsonConstructor]
     public LevelEntity(string scenePath, EntityMode mode, Direction directionX, Direction directionY) {
       ScenePath = scenePath;
-      Scene = GD.Load<PackedScene>(ScenePath);
       Mode = mode;
       DirectionX = directionX;
       DirectionY = directionY;
@@ -87,7 +84,7 @@ public class Level {
      * @returns A string representing the LevelData.
      */
     public override string ToString() {
-      return $"{{ ScenePath = {ScenePath}, Scene = {Scene}, Mode = {Mode}, DirectionX = {DirectionX}, DirectionY = {DirectionY} }}";
+      return $"{{ ScenePath = {ScenePath}, Mode = {Mode}, DirectionX = {DirectionX}, DirectionY = {DirectionY} }}";
     }
   }
 
@@ -99,6 +96,8 @@ public class Level {
   public LevelType Type { get; private set; }
   [JsonPropertyName("metadata")]
   public LevelMetadata Metadata { get; private set; }
+  [JsonIgnore]
+  public Dictionary<string, PackedScene> Scenes { get; private set; } = new Dictionary<string, PackedScene>();
   [JsonPropertyName("entities")]
   public LevelEntity[] Entities { get; private set; }
   [JsonPropertyName("level")]
@@ -109,6 +108,13 @@ public class Level {
     Type = type;
     Metadata = metadata;
     Entities = entities;
+    foreach (var entity in Entities)
+    {
+      if (!Scenes.ContainsKey(entity.ScenePath))
+      {
+        Scenes[entity.ScenePath] = GD.Load<PackedScene>(entity.ScenePath);
+      }
+    }
     Data = data;
   }
 
