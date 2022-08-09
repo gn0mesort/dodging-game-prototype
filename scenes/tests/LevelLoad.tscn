@@ -6,9 +6,7 @@
 [node name="LevelLoad" type="Spatial"]
 pause_mode = 1
 script = ExtResource( 2 )
-TargetLevel = "res://levels/test_level_movers.json"
+TargetLevel = "res://levels/test_level_v2.json"
 
 [node name="Player" parent="." instance=ExtResource( 1 )]
-axis_lock_motion_z = true
-move_lock_z = true
 BaseSpeed = Vector3( 36, 36, -5 )

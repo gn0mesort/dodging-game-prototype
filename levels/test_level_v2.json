@@ -1,0 +1,38 @@
+{
+  "type": "curated",
+  "metadata": {
+    "name": "Test Level",
+    "author": "Test Test",
+    "contact": "test@test.no-such-tld",
+    "version": "1.0.0"
+  },
+  "entities": [
+    { "path": "res://scenes/prefab/entities/cube.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/cuboid.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/sphere.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/field.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/letterbox.tscn", "mode": "stationary" }
+  ],
+  "level": [
+    [
+      0, 0, 0,
+      0, 1, 0,
+      0, 0, 0
+    ],
+    [
+      1, 0, 1,
+      0, 1, 0,
+      1, 0, 1
+    ],
+    [
+      0, 0, 0,
+      0, 0, 0,
+      0, 0, 0
+    ],
+    [
+      0, 3, 0,
+      3, 0, 3,
+      0, 3, 0
+    ]
+  ]
+}

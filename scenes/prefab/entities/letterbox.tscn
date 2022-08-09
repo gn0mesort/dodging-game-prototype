@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="BoxShape" id=1]
+
+[node name="cube" type="KinematicBody"]
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+shape = SubResource( 1 )
+
+[node name="CSGCombiner" type="CSGCombiner" parent="."]
+
+[node name="CSGBox" type="CSGBox" parent="CSGCombiner"]
+
+[node name="CSGBox2" type="CSGBox" parent="CSGCombiner"]
+operation = 2
+width = 0.5

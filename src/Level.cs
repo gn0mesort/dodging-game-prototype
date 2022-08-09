@@ -15,17 +15,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Godot;
 
 public class Level {
   public class LevelMetadata {
+    [JsonPropertyName("name")]
+    public string LevelName { get; private set; }
     [JsonPropertyName("author")]
-    public string AuthorName { get; set; }
+    public string AuthorName { get; private set; }
     [JsonPropertyName("contact")]
-    public string AuthorContact { get; set; }
+    public string AuthorContact { get; private set; }
     [JsonPropertyName("version")]
-    public string Version { get; set; }
+    public string Version { get; private set; }
+
+    [JsonConstructor]
+    public LevelMetadata(string levelName, string authorName, string authorContact, string version) {
+      LevelName = levelName;
+      AuthorName = authorName;
+      AuthorContact = authorContact;
+      Version = version;
+    }
 
     /**
      * Convert LevelMetadata to a string.
@@ -33,27 +45,49 @@ public class Level {
      * @returns A string representing the LevelMetadata.
      */
     public override string ToString() {
-      return $"{{ AuthorName = {AuthorName}, AuthorContact = {AuthorContact}, Version = {Version} }}";
+      return $"{{ LevelName = {LevelName}, AuthorName = {AuthorName}, AuthorContact = {AuthorContact}, Version = {Version} }}";
     }
   }
 
-  public class LevelData {
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
-    [JsonPropertyName("top")]
-    public int[] TopLayer { get; set; }
-    [JsonPropertyName("middle")]
-    public int[] MiddleLayer { get; set; }
-    [JsonPropertyName("bottom")]
-    public int[] BottomLayer { get; set; }
+  public class LevelEntity {
+    public enum EntityMode {
+      Stationary,
+      Translating,
+      Scaling
+    }
+    public enum Direction {
+      None,
+      Up,
+      Left,
+      Down,
+      Right
+    }
+    [JsonPropertyName("path")]
+    public string ScenePath { get; private set; }
+    [JsonIgnore]
+    public PackedScene Scene { get; private set; }
+    [JsonPropertyName("mode")]
+    public EntityMode Mode { get; private set; }
+    [JsonPropertyName("direction_x")]
+    public Direction DirectionX { get; private set; }
+    [JsonPropertyName("direction_y")]
+    public Direction DirectionY { get; private set; }
 
+    [JsonConstructor]
+    public LevelEntity(string scenePath, EntityMode mode, Direction directionX, Direction directionY) {
+      ScenePath = scenePath;
+      Scene = GD.Load<PackedScene>(ScenePath);
+      Mode = mode;
+      DirectionX = directionX;
+      DirectionY = directionY;
+    }
     /**
      * Convert LevelData to a string.
      *
      * @returns A string representing the LevelData.
      */
     public override string ToString() {
-      return $"{{ Name = {Name}, TopLayer = {TopLayer}, MiddleLayer = {MiddleLayer}, BottomLayer = {BottomLayer} }}";
+      return $"{{ ScenePath = {ScenePath}, Scene = {Scene}, Mode = {Mode}, DirectionX = {DirectionX}, DirectionY = {DirectionY} }}";
     }
   }
 
@@ -62,11 +96,21 @@ public class Level {
   }
 
   [JsonPropertyName("type")]
-  public LevelType Type { get; set; }
+  public LevelType Type { get; private set; }
   [JsonPropertyName("metadata")]
-  public LevelMetadata Metadata { get; set; }
+  public LevelMetadata Metadata { get; private set; }
+  [JsonPropertyName("entities")]
+  public LevelEntity[] Entities { get; private set; }
   [JsonPropertyName("level")]
-  public LevelData Data { get; set; }
+  public IList<IList<int>> Data { get; private set; }
+
+  [JsonConstructor]
+  public Level(LevelType type, LevelMetadata metadata, LevelEntity[] entities, IList<IList<int>> data) {
+    Type = type;
+    Metadata = metadata;
+    Entities = entities;
+    Data = data;
+  }
 
   /**
    * Convert a JSON string into a Level.
@@ -89,6 +133,21 @@ public class Level {
    * @returns A string representing the Level.
    */
   public override string ToString() {
-    return $"{{ Type = {Type}, Metadata = {Metadata}, Data = {Data} }}";
+    var entities = "";
+    foreach (var entity in Entities)
+    {
+      entities += $"{entity}, ";
+    }
+    var data = "";
+    foreach (var val in Data)
+    {
+      data += "[";
+      foreach (var innerVal in val)
+      {
+        data += $"{innerVal}, ";
+      }
+      data += "], ";
+    }
+    return $"{{ Type = {Type}, Metadata = {Metadata}, Entities = [{entities}], Data = [{data}] }}";
   }
 }

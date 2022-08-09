@@ -14,14 +14,14 @@ resource_name = "CollideAndTakeDamage"
 tracks/0/type = "value"
 tracks/0/path = NodePath("CSGBox:material:albedo_color")
 tracks/0/interp = 2
-tracks/0/loop_wrap = true
+tracks/0/loop_wrap = false
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
 "times": PoolRealArray( 0, 0.5, 1 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
-"values": [ Color( 1, 1, 1, 1 ), Color( 1, 0, 0, 1 ), Color( 1, 1, 1, 1 ) ]
+"values": [ Color( 0, 1, 0, 1 ), Color( 1, 0, 0, 1 ), Color( 0, 1, 0, 1 ) ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("CSGBox:rotation_degrees")
@@ -83,6 +83,7 @@ tracks/0/keys = {
 [sub_resource type="SpatialMaterial" id=2]
 vertex_color_use_as_albedo = true
 vertex_color_is_srgb = true
+albedo_color = Color( 0, 1, 0, 1 )
 
 [node name="Player" type="KinematicBody"]
 script = ExtResource( 1 )
@@ -99,6 +100,7 @@ anims/RotateVertical = SubResource( 6 )
 [node name="Tweens" type="Tween" parent="."]
 
 [node name="CSGBox" type="CSGBox" parent="."]
+transform = Transform( 1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 0, 0, 0 )
 height = 0.25
 material = SubResource( 2 )
 

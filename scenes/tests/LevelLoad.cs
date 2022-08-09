@@ -22,47 +22,42 @@ public class LevelLoad : Spatial {
     {
       return;
     }
-    var entity = _obstacles[id - 1].Instance() as Spatial;
+    // TODO: make an Entity class for these.
+    var entity = _level.Entities[id - 1].Scene.Instance() as Spatial;
     entity.Translation = position;
+    GD.Print(entity.Translation);
     CallDeferred("add_child", entity);
   }
 
   public void InitializeLevel() {
     _player.Translation = new Vector3();
-    var step = new Vector3(0f, 0f, _player.BaseSpeed.z);
-    var position = 3f * step;
+    var step = _player.BaseSpeed.z;
+    GD.Print(step);
+    var grid = _player.MovementExtents + new Vector3(0f, 0f, 1f);
+    GD.Print(grid);
+    var depth = 3f * step;
+
     // There is probably a much more efficient way to do this!
-    for (var i = 0; i < _level.Data.TopLayer.Length; i += 3)
+    foreach (var list in _level.Data)
     {
-      AddObstacle(_level.Data.TopLayer[i + 0], position + (new Vector3(-1f, 1f, 0f) * _player.MovementExtents));
-      AddObstacle(_level.Data.TopLayer[i + 1], position + (new Vector3(0f, 1f, 0f) * _player.MovementExtents));
-      AddObstacle(_level.Data.TopLayer[i + 2], position + (new Vector3(1f, 1f, 0f) * _player.MovementExtents));
-      position += step;
-    }
-    position = 3f * step;
-    for (var i = 0; i < _level.Data.MiddleLayer.Length; i += 3)
-    {
-      AddObstacle(_level.Data.MiddleLayer[i + 0], position + (new Vector3(-1f, 0f, 0f) * _player.MovementExtents));
-      AddObstacle(_level.Data.MiddleLayer[i + 1], position + (new Vector3(0f, 0f, 0f) * _player.MovementExtents));
-      AddObstacle(_level.Data.MiddleLayer[i + 2], position + (new Vector3(1f, 0f, 0f) * _player.MovementExtents));
-      position += step;
-    }
-    position = 3f * step;
-    for (var i = 0; i < _level.Data.BottomLayer.Length; i += 3)
-    {
-      AddObstacle(_level.Data.BottomLayer[i + 0], position + (new Vector3(-1f, -1f, 0f) * _player.MovementExtents));
-      AddObstacle(_level.Data.BottomLayer[i + 1], position + (new Vector3(0f, -1f, 0f) * _player.MovementExtents));
-      AddObstacle(_level.Data.BottomLayer[i + 2], position + (new Vector3(1f, -1f, 0f) * _player.MovementExtents));
-      position += step;
+      GD.Print(depth);
+      AddObstacle(list[0], new Vector3(-1f, 1f, depth) * grid);
+      AddObstacle(list[1], new Vector3(0f, 1f, depth) * grid);
+      AddObstacle(list[2], new Vector3(1f, 1f, depth) * grid);
+      AddObstacle(list[3], new Vector3(-1f, 0f, depth) * grid);
+      AddObstacle(list[4], new Vector3(0f, 0f, depth) * grid);
+      AddObstacle(list[5], new Vector3(1f, 0f, depth) * grid);
+      AddObstacle(list[6], new Vector3(-1f, -1f, depth) * grid);
+      AddObstacle(list[7], new Vector3(0f, -1f, depth) * grid);
+      AddObstacle(list[8], new Vector3(1f, -1f, depth) * grid);
+      depth += step;
     }
   }
 
   public override void _Ready() {
-    _obstacles[0] = GD.Load<PackedScene>("res://scenes/prefab/obstacles/CubeObstacle.tscn");
-    _obstacles[1] = GD.Load<PackedScene>("res://scenes/prefab/obstacles/HorizontalMoverObstacle.tscn");
-    _obstacles[2] = GD.Load<PackedScene>("res://scenes/prefab/obstacles/VerticalMoverObstacle.tscn");
     _player = GetNode<Player>("Player");
     _level = LoadLevel(TargetLevel);
+    GD.Print(_level);
     InitializeLevel();
   }
 }
