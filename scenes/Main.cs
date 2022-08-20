@@ -42,6 +42,11 @@ public class Main : Node {
     Paused = Debug.Visible;
   }
 
+  public void ExitGame(int code) {
+    OS.ExitCode = code;
+    _tree.Notification(MainLoop.NotificationWmQuitRequest);
+  }
+
   /**
    * Post-_EnterTree initialization.
    */
@@ -62,14 +67,12 @@ public class Main : Node {
           var code = 0;
           if (Int32.TryParse(args[0].Trim(), out code))
           {
-            OS.ExitCode = code;
-            _tree.Notification(MainLoop.NotificationWmQuitRequest);
+            ExitGame(code);
             return 0;
           }
           return 1;
         }
-        OS.ExitCode = 0;
-        _tree.Notification(MainLoop.NotificationWmQuitRequest);
+        ExitGame(0);
         return 0;
       }, "exit", "[CODE]", "Exit with the given return code."));
       Debug.RegisterCommand(new DebugCommand((output, parameters) => {

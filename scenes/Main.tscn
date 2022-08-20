@@ -61,7 +61,7 @@ tracks/1/keys = {
 [node name="Main" type="Node"]
 pause_mode = 2
 script = ExtResource( 1 )
-InitialScene = "res://scenes/tests/Play.tscn"
+InitialScene = "res://scenes/TitleMenu.tscn"
 
 [node name="Debug" type="CanvasLayer" parent="."]
 pause_mode = 2
