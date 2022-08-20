@@ -20,19 +20,18 @@ using System.Diagnostics;
 using Godot;
 
 public class Main : Node {
-  private readonly PackedScene _debugConsoleScene = GD.Load<PackedScene>("res://scenes/debug/DebugConsole.tscn");
   private SceneTree _tree = null;
-  private DebugConsole _debugConsole = null;
-  private PackedScene _currentScene = null;
-  private Node _currentSceneRoot = null;
   private CanvasLayer _debugLayer = null;
   private CanvasLayer _viewLayer = null;
+
+  public DebugConsole Debug { get; private set; } = null;
+  public SceneManager Scenes { get; private set; } = null;
 
   /**
    * A Scene to load immediately at program start.
    */
   [Export]
-  public PackedScene InitialScene{ get; set; } = null;
+  public String InitialScene { get; set; } = null;
 
   /**
    * Whether or not the game is paused.
@@ -40,44 +39,44 @@ public class Main : Node {
   public bool Paused { get { return _tree.Paused; } set { _tree.Paused = value; } }
 
   private void OnDebugConsoleVisibilityChanged() {
-    Paused = _debugConsole.Visible;
+    Paused = Debug.Visible;
   }
 
-  private uint LoadSceneFromPath(string path) {
-    Debug.Assert(path != null);
-    Debug.Assert(path != "");
-    _currentScene = GD.Load<PackedScene>(path);
-    if (_currentScene != null)
-    {
-      if (_currentSceneRoot != null)
-      {
-        _currentSceneRoot.QueueFree();
-      }
-      _currentSceneRoot = _currentScene.Instance();
-      if (_currentSceneRoot != null)
-      {
-        _viewLayer.CallDeferred("add_child", _currentSceneRoot);
-        return 0;
-      }
-    }
-    return 1;
-  }
-
-  private uint LoadScene(PackedScene scene) {
-    Debug.Assert(scene != null);
-    _currentScene = scene;
-    if (_currentSceneRoot != null)
-    {
-      _currentSceneRoot.QueueFree();
-    }
-    _currentSceneRoot = _currentScene.Instance();
-    if (_currentSceneRoot != null)
-    {
-      _viewLayer.CallDeferred("add_child", _currentSceneRoot);
-      return 0;
-    }
-    return 1;
-  }
+//  private uint LoadSceneFromPath(string path) {
+//    Debug.Assert(path != null);
+//    Debug.Assert(path != "");
+//    _currentScene = GD.Load<PackedScene>(path);
+//    if (_currentScene != null)
+//    {
+//      if (_currentSceneRoot != null)
+//      {
+//        _currentSceneRoot.QueueFree();
+//      }
+//      _currentSceneRoot = _currentScene.Instance();
+//      if (_currentSceneRoot != null)
+//      {
+//        _viewLayer.CallDeferred("add_child", _currentSceneRoot);
+//        return 0;
+//      }
+//    }
+//    return 1;
+//  }
+//
+//  private uint LoadScene(PackedScene scene) {
+//    Debug.Assert(scene != null);
+//    _currentScene = scene;
+//    if (_currentSceneRoot != null)
+//    {
+//      _currentSceneRoot.QueueFree();
+//    }
+//    _currentSceneRoot = _currentScene.Instance();
+//    if (_currentSceneRoot != null)
+//    {
+//      _viewLayer.CallDeferred("add_child", _currentSceneRoot);
+//      return 0;
+//    }
+//    return 1;
+//  }
 
   /**
    * Post-_EnterTree initialization.
@@ -86,11 +85,13 @@ public class Main : Node {
     _tree = GetTree();
     _debugLayer = GetNode<CanvasLayer>("Debug");
     _viewLayer = GetNode<CanvasLayer>("View");
+    Scenes = new SceneManager(_viewLayer, GetNode<AnimationPlayer>("Overlay/Black/AnimationPlayer"));
     if (OS.IsDebugBuild())
     {
-      _debugConsole = _debugConsoleScene.Instance<DebugConsole>();
-      _debugConsole.Connect("visibility_changed", this, "OnDebugConsoleVisibilityChanged");
-      _debugConsole.RegisterCommand(new DebugCommand((output, parameters) => {
+      var scene = GD.Load<PackedScene>("res://scenes/debug/DebugConsole.tscn");
+      Debug = scene.Instance() as DebugConsole;
+      Debug.Connect("visibility_changed", this, "OnDebugConsoleVisibilityChanged");
+      Debug.RegisterCommand(new DebugCommand((output, parameters) => {
         var args = parameters.Trim().Split(" ");
         if (args.Length > 0 && args[0] != "")
         {
@@ -107,27 +108,29 @@ public class Main : Node {
         _tree.Notification(MainLoop.NotificationWmQuitRequest);
         return 0;
       }, "exit", "[CODE]", "Exit with the given return code."));
-      _debugConsole.RegisterCommand(new DebugCommand((output, parameters) => {
+      Debug.RegisterCommand(new DebugCommand((output, parameters) => {
         var args = parameters.Trim().Split(" ");
         var path = args.Length > 0 ? args[0].Trim() : null;
         if (path != null && path != "")
         {
-          return LoadSceneFromPath($"res://scenes/{path}.tscn");
+          Scenes.LoadScene($"res://scenes/{path}.tscn");
+          return 0;
         }
         return 1;
       }, "load_scene", "<SCENE>", "Instances a scene below the main node."));
-      _debugConsole.RegisterCommand(new DebugCommand((output, parameters) => {
+      Debug.RegisterCommand(new DebugCommand((output, parameters) => {
         OS.WindowFullscreen = !OS.WindowFullscreen;
         return 0;
       }, "fullscreen", "", "Toggles fullscreen rendering."));
-      _debugConsole.RegisterCommand(new DebugCommand((output, parameters) => {
-        return LoadScene(_currentScene);
+      Debug.RegisterCommand(new DebugCommand((output, parameters) => {
+        Scenes.ReloadScene();
+        return 0;
       }, "reload_scene", "", "Realods the current scene."));
-      _debugLayer.CallDeferred("add_child", _debugConsole);
+      _debugLayer.CallDeferred("add_child", Debug);
     }
     if (InitialScene != null)
     {
-      LoadScene(InitialScene);
+      Scenes.LoadScene(InitialScene);
     }
   }
 }
