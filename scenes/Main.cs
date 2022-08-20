@@ -42,42 +42,6 @@ public class Main : Node {
     Paused = Debug.Visible;
   }
 
-//  private uint LoadSceneFromPath(string path) {
-//    Debug.Assert(path != null);
-//    Debug.Assert(path != "");
-//    _currentScene = GD.Load<PackedScene>(path);
-//    if (_currentScene != null)
-//    {
-//      if (_currentSceneRoot != null)
-//      {
-//        _currentSceneRoot.QueueFree();
-//      }
-//      _currentSceneRoot = _currentScene.Instance();
-//      if (_currentSceneRoot != null)
-//      {
-//        _viewLayer.CallDeferred("add_child", _currentSceneRoot);
-//        return 0;
-//      }
-//    }
-//    return 1;
-//  }
-//
-//  private uint LoadScene(PackedScene scene) {
-//    Debug.Assert(scene != null);
-//    _currentScene = scene;
-//    if (_currentSceneRoot != null)
-//    {
-//      _currentSceneRoot.QueueFree();
-//    }
-//    _currentSceneRoot = _currentScene.Instance();
-//    if (_currentSceneRoot != null)
-//    {
-//      _viewLayer.CallDeferred("add_child", _currentSceneRoot);
-//      return 0;
-//    }
-//    return 1;
-//  }
-
   /**
    * Post-_EnterTree initialization.
    */
@@ -85,7 +49,7 @@ public class Main : Node {
     _tree = GetTree();
     _debugLayer = GetNode<CanvasLayer>("Debug");
     _viewLayer = GetNode<CanvasLayer>("View");
-    Scenes = new SceneManager(_viewLayer, GetNode<AnimationPlayer>("Overlay/Black/AnimationPlayer"));
+    Scenes = new SceneManager(this, _viewLayer, GetNode<AnimationPlayer>("Overlay/Black/AnimationPlayer"));
     if (OS.IsDebugBuild())
     {
       var scene = GD.Load<PackedScene>("res://scenes/debug/DebugConsole.tscn");
