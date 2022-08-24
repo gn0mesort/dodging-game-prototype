@@ -1,0 +1,73 @@
+ {
+  "type": "curated",
+  "metadata": {
+    "name": "Tunnel",
+    "author": "Alexander Rothman",
+    "contact": "gnomesort@megate.ch",
+    "version": "1.0.0"
+  },
+  "entities": [
+    { "path": "res://scenes/prefab/entities/cube.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/cuboid.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/sphere.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/field.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/letterbox.tscn", "mode": "stationary" }
+  ],
+  "level": [
+    [
+      1, 1, 1,
+      1, 0, 1,
+      1, 1, 1
+    ],
+    [
+      1, 1, 1,
+      1, 0, 1,
+      1, 1, 1
+    ],
+    [
+      1, 1, 1,
+      1, 0, 1,
+      1, 1, 1
+    ],
+    [
+      1, 1, 1,
+      1, 0, 1,
+      1, 1, 1
+    ],
+    [
+      1, 1, 1,
+      1, 0, 1,
+      1, 1, 1
+    ],
+    [
+      1, 1, 1,
+      1, 0, 1,
+      1, 1, 1
+    ],
+    [
+      1, 1, 1,
+      1, 0, 1,
+      1, 1, 1
+    ],
+    [
+      1, 1, 1,
+      1, 0, 1,
+      1, 1, 1
+    ],
+    [
+      1, 1, 1,
+      1, 0, 1,
+      1, 1, 1
+    ],
+    [
+      1, 1, 1,
+      1, 0, 1,
+      1, 1, 1
+    ],
+    [
+      0, 0, 0,
+      0, 5, 0,
+      0, 0, 0
+    ]
+  ]
+}

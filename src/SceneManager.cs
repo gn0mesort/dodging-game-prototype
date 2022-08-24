@@ -8,6 +8,7 @@ public class SceneManager : IDependsOnMain {
   private AnimationPlayer _fader = null;
 
   public string Current { get; private set; } = null;
+  public SceneConfigurationMethod CurrentConfigMethod { get; private set; } = null;
 
   public SceneManager(Main main, Node viewRoot, AnimationPlayer fader) {
     SetMainNode(main);
@@ -44,6 +45,7 @@ public class SceneManager : IDependsOnMain {
     _viewRoot.CallDeferred("add_child", inst);
     _fader.Play("FadeIn");
     Current = scene;
+    CurrentConfigMethod = config;
   }
 
   public void LoadScene(string scene) {
@@ -51,7 +53,7 @@ public class SceneManager : IDependsOnMain {
   }
 
   public void ReloadScene() {
-    LoadScene(Current);
+    LoadScene(Current, CurrentConfigMethod);
   }
 
 }
