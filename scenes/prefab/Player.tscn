@@ -87,6 +87,7 @@ albedo_color = Color( 0, 1, 0, 1 )
 
 [node name="Player" type="KinematicBody"]
 script = ExtResource( 1 )
+MovementExtents = Vector3( 6, 6, 0 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 1 )
