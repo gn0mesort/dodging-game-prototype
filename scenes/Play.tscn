@@ -9,3 +9,5 @@ script = ExtResource( 1 )
 [node name="Player" parent="." instance=ExtResource( 2 )]
 axis_lock_motion_z = true
 move_lock_z = true
+
+[node name="Timer" type="Timer" parent="."]

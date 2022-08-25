@@ -6,6 +6,7 @@ public class LevelManager {
   private Player _player = null;
 
   public Level Current { get; private set; } = null;
+  public Vector3 ExitDepth { get; private set; } = new Vector3();
 
   public LevelManager(Node levelRoot, Player player) {
     _levelRoot = levelRoot;
@@ -29,6 +30,7 @@ public class LevelManager {
     }
     // TODO: make an Entity class for these.
     var entity = Current.Scenes[Current.Entities[id - 1].ScenePath].Instance() as Spatial;
+    entity.AddToGroup("Obstacles");
     entity.Translation = position;
     _levelRoot.CallDeferred("add_child", entity);
   }
@@ -53,6 +55,7 @@ public class LevelManager {
       _AddObstacle(list[8], new Vector3(1f, -1f, depth) * grid);
       depth += step;
     }
+    ExitDepth = new Vector3(0f, 0f, depth) * grid;
   }
 
   public void LoadLevel(string level) {
