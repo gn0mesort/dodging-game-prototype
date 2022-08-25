@@ -3,7 +3,7 @@
 [sub_resource type="BoxShape" id=1]
 extents = Vector3( 3, 3, 3 )
 
-[node name="cube" type="Area"]
+[node name="Field" type="Area"]
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 1 )
