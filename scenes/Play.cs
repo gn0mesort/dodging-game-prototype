@@ -70,11 +70,16 @@ public class Play : Spatial, IDependsOnMain, IRequiresConfiguration {
     }
   }
 
+  private void _OnPlayerDied() {
+    _main.Scenes.LoadScene("res://scenes/GameOver.tscn");
+  }
+
   public override void _Ready() {
     _player = GetNode<Player>("Player");
     _timer = GetNode<Timer>("Timer");
     Levels = new LevelManager(this, _player);
     _deferredConfig(this);
+    _player.Connect("Died", this, "_OnPlayerDied");
     _timer.Connect("timeout", this, "_OnTimerTimeout");
     _timer.CallDeferred("start");
   }

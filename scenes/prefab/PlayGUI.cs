@@ -29,13 +29,13 @@ public class PlayGUI : Control {
   [Export]
   public NodePath Target { get; set; } = "";
 
-  private void _OnTargetStatusChanged() {
-    _UpdateLabels();
+  private void _OnTargetStatusChanged(uint health, uint score) {
+    _UpdateLabels(health, score);
   }
 
-  private void _UpdateLabels() {
-    _score.Text = $"Score: {_target.Score,9:D09}";
-    _health.Text = $"Health: {_target.Health,3:D03}";
+  private void _UpdateLabels(uint health, uint score) {
+    _score.Text = $"Score: {score,9:D09}";
+    _health.Text = $"Health: {health,3:D03}";
    }
 
   /**
@@ -50,6 +50,6 @@ public class PlayGUI : Control {
     _health = GetNode<Label>("Health");
     _target = GetNode<Player>(Target);
     _target.Connect("StatusChanged", this, "_OnTargetStatusChanged");
-    _UpdateLabels();
+    _UpdateLabels(_target.Health, _target.Score);
   }
 }

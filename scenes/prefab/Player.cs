@@ -33,7 +33,10 @@ public class Player : KinematicBody {
    * A signal indicating a change in Player status (i.e., health or score).
    */
   [Signal]
-  public delegate void StatusChanged();
+  public delegate void StatusChanged(uint health, uint score);
+
+  [Signal]
+  public delegate void Died();
 
   private Vector3 _LEFT = new Vector3(-1f, 0f, 0f);
   private Vector3 _UP = new Vector3(0f, 1f, 0f);
@@ -73,7 +76,7 @@ public class Player : KinematicBody {
       return _score;
     }
     set {
-      EmitSignal("StatusChanged");
+      EmitSignal("StatusChanged", _health, _score);
       _score = (uint) Mathf.Clamp((long) value, 0, UInt32.MaxValue);
     }
   }
@@ -88,7 +91,7 @@ public class Player : KinematicBody {
       return _health;
     }
     set {
-      EmitSignal("StatusChanged");
+      EmitSignal("StatusChanged", _health, _score);
       _health = (uint) Mathf.Clamp((long) value, 0, UInt32.MaxValue);
     }
   }
@@ -136,6 +139,14 @@ public class Player : KinematicBody {
     }
   }
 
+  private void _OnAnimationFinished(string animation) {
+    if (animation == "CollideAndDie")
+    {
+      EmitSignal("Died");
+    }
+    GD.Print(animation);
+  }
+
   /**
    * Post-_EnterTree initialization.
    */
@@ -148,6 +159,8 @@ public class Player : KinematicBody {
     _tweens = GetNode<Tween>("Tweens");
     _mesh = GetNode<CSGBox>("CSGBox");
     _tweens.Connect("tween_completed", this, "_OnTweenCompleted");
+    _animations.Connect("animation_finished", this, "_OnAnimationFinished");
+    _animations.Play("Reset");
   }
 
   private static bool _IsEqualApprox(Vector3 a, Vector3 b, float tolerance) {
@@ -188,16 +201,22 @@ public class Player : KinematicBody {
     var collision = MoveAndCollide(velocity * delta);
     if (collision != null)
     {
-      if (--Health == 0)
+      var animation = "CollideAndTakeDamage";
+      if (--Health <= 0)
       {
-        // TODO game over
+        EmitSignal("StatusChanged", _health, _score);
+        AxisLockMotionX = true;
+        AxisLockMotionY = true;
+        AxisLockMotionZ = true;
+        animation = "CollideAndDie";
       }
       (collision.Collider as Node).QueueFree();
       if (_animations.IsPlaying())
       {
         _animations.Stop();
       }
-      _animations.Play("CollideAndTakeDamage");
+      _animations.Play(animation);
+      GD.Print(Health);
     }
   }
 }
