@@ -19,7 +19,7 @@ using System;
 using System.Diagnostics;
 using Godot;
 
-public class Player : KinematicBody {
+public class Player : KinematicBody, ICollidable {
   private enum Controls {
     None = -1,
     Left = 0,
@@ -199,8 +199,10 @@ public class Player : KinematicBody {
       Translation = next + (Translation * new Vector3(0f, 0f, 1f));
     }
     var collision = MoveAndCollide(velocity * delta);
-    if (collision != null)
-    {
+    HandleCollision(collision);
+  }
+
+  public void TakeDamage() {
       var animation = "CollideAndTakeDamage";
       if (--Health == 0)
       {
@@ -209,12 +211,18 @@ public class Player : KinematicBody {
         CallDeferred("set_physics_process", false);
         GD.Print($"Player Translation @ Death: {Translation}");
       }
-      (collision.Collider as Node).QueueFree();
       if (_animations.IsPlaying())
       {
         _animations.Stop();
       }
       _animations.Play(animation);
+  }
+
+  public void HandleCollision(KinematicCollision collision) {
+    if (collision != null)
+    {
+      (collision.Collider as Node).QueueFree();
+      TakeDamage();
     }
   }
 }

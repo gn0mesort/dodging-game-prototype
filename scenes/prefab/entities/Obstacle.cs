@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Obstacle : KinematicBody {
+public class Obstacle : KinematicBody, ICollidable {
   [Export]
   public Level.LevelEntity.EntityMode Mode { get; set; } = Level.LevelEntity.EntityMode.Stationary;
 
@@ -14,6 +14,8 @@ public class Obstacle : KinematicBody {
   private Vector3 _DOWN = new Vector3(0f, -1f, 0f);
 
   private Vector3 _direction = new Vector3();
+  private Level.LevelEntity.Direction _directionX = Level.LevelEntity.Direction.None;
+  private Level.LevelEntity.Direction _directionY = Level.LevelEntity.Direction.None;
 
   private Vector3 _DirectionToVector(Level.LevelEntity.Direction direction) {
     switch (direction)
@@ -32,11 +34,15 @@ public class Obstacle : KinematicBody {
   }
 
   public void SetDirection(Level.LevelEntity.Direction x, Level.LevelEntity.Direction y) {
-    _direction += _DirectionToVector(x);
-    _direction += _DirectionToVector(y);
-    if (Mode == Level.LevelEntity.EntityMode.Translating)
+    _directionX = x;
+    _directionY = y;
+    if (x != Level.LevelEntity.Direction.None)
     {
-      GD.Print($"{Name}: Initial Direction is {_direction}");
+      _direction += _DirectionToVector(x);
+    }
+    if (y != Level.LevelEntity.Direction.None)
+    {
+      _direction += _DirectionToVector(y);
     }
   }
 
@@ -46,10 +52,6 @@ public class Obstacle : KinematicBody {
     _UP = transNoZ + (new Vector3(0f, 1f, 0f) * extents);
     _RIGHT = transNoZ + (new Vector3(1f, 0f, 0f) * extents);
     _DOWN = transNoZ + (new Vector3(0f, -1f, 0f) * extents);
-    if (Mode == Level.LevelEntity.EntityMode.Translating)
-    {
-      GD.Print($"{Name}: {Translation}, {_LEFT}, {_RIGHT}, {_UP}, {_DOWN}");
-    }
   }
 
   private static bool _IsEqualApprox(Vector3 a, Vector3 b, float tolerance) {
@@ -64,8 +66,11 @@ public class Obstacle : KinematicBody {
         (_direction.x == 0f && Mathf.IsEqualApprox(_direction.y, transNoZ.y, 0.5f)) ||
         _IsEqualApprox(_direction, transNoZ, 0.5f))
     {
-      _direction *= -1f;
-//    GD.Print($"{Name} = {_direction}, {Translation}");
+      const Level.LevelEntity.Direction noDir = Level.LevelEntity.Direction.None;
+      var x = _directionX == noDir ? 1f : -1f;
+      var y = _directionY == noDir ? 1f : -1f;
+      var flip = new Vector3(x, y, 0f);
+      _direction *= flip;
     }
     var velocity = (_direction - transNoZ).Normalized();
     velocity *= BaseSpeed;
@@ -82,6 +87,18 @@ public class Obstacle : KinematicBody {
       break;
     default:
       break;
+    }
+  }
+
+  public void HandleCollision(KinematicCollision collision) {
+    if (collision != null)
+    {
+      if (collision.Collider is Player)
+      {
+        var player = (collision.Collider as Player);
+        player.TakeDamage();
+        QueueFree();
+      }
     }
   }
 }
