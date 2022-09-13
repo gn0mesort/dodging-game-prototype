@@ -25,10 +25,11 @@ public class SceneManager : IDependsOnMain {
   }
 
   public void LoadScene(string scene, SceneConfigurationMethod config) {
+    GD.Print($"Loading scene: \"{scene}\"");
     _fader.Play("FadeOut");
-    if (_viewRoot.GetChildCount() > 0)
+    for(int i = 0; i < _viewRoot.GetChildCount(); ++i)
     {
-      _viewRoot.GetChild(0).QueueFree();
+      _viewRoot.GetChild(i).QueueFree();
     }
     var packed = GD.Load<PackedScene>(scene);
     var inst = packed.Instance();
@@ -53,6 +54,7 @@ public class SceneManager : IDependsOnMain {
   }
 
   public void ReloadScene() {
+    GD.Print("Reload Scene");
     LoadScene(Current, CurrentConfigMethod);
   }
 

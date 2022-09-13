@@ -32,6 +32,13 @@ public class LevelManager {
     var entity = Current.Scenes[Current.Entities[id - 1].ScenePath].Instance() as Spatial;
     entity.AddToGroup("Obstacles");
     entity.Translation = position;
+    if (entity is Obstacle)
+    {
+      var obstacle = entity as Obstacle;
+      obstacle.Mode = Current.Entities[id - 1].Mode;
+      obstacle.UpdateMovementExtents(_player.MovementExtents);
+      obstacle.SetDirection(Current.Entities[id - 1].DirectionX, Current.Entities[id - 1].DirectionY);
+    }
     _levelRoot.CallDeferred("add_child", entity);
   }
 
@@ -56,6 +63,7 @@ public class LevelManager {
       depth += step;
     }
     ExitDepth = new Vector3(0f, 0f, depth) * grid;
+    GD.Print($"Exit Depth: {ExitDepth}");
   }
 
   public void LoadLevel(string level) {

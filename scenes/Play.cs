@@ -85,8 +85,9 @@ public class Play : Spatial, IDependsOnMain, IRequiresConfiguration {
   }
 
   public override void _PhysicsProcess(float delta) {
-    if (!_timerLeadIn && _player.Translation >= Levels.ExitDepth)
+    if (!_timerLeadIn && (_player.Translation.z < Levels.ExitDepth.z) && _timer.IsStopped())
     {
+      GD.Print($"Player Translation @ Exit: {_player.Translation}");
       _timer.CallDeferred("start");
     }
   }

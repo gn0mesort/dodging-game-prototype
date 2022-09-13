@@ -11,7 +11,11 @@
     { "path": "res://scenes/prefab/entities/Cuboid.tscn", "mode": "stationary" },
     { "path": "res://scenes/prefab/entities/Sphere.tscn", "mode": "stationary" },
     { "path": "res://scenes/prefab/entities/Field.tscn", "mode": "stationary" },
-    { "path": "res://scenes/prefab/entities/Letterbox.tscn", "mode": "stationary" }
+    { "path": "res://scenes/prefab/entities/Letterbox.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/Cube.tscn", "mode": "translating", "direction_x": "right", "direction_y": "down" },
+    { "path": "res://scenes/prefab/entities/Cube.tscn", "mode": "translating", "direction_x": "left", "direction_y": "up" },
+    { "path": "res://scenes/prefab/entities/Sphere.tscn", "mode": "translating", "direction_x": "right" },
+    { "path": "res://scenes/prefab/entities/Sphere.tscn", "mode": "translating", "direction_x": "left" }
   ],
   "level": [
     [
@@ -67,6 +71,36 @@
     [
       0, 0, 0,
       0, 5, 0,
+      0, 0, 0
+    ],
+    [
+      0, 0, 0,
+      0, 0, 0,
+      0, 0, 0
+    ],
+    [
+      0, 0, 0,
+      0, 0, 0,
+      0, 0, 0
+    ],
+    [
+      0, 0, 0,
+      0, 0, 0,
+      0, 0, 0
+    ],
+    [
+      0, 0, 0,
+      0, 0, 0,
+      0, 0, 0
+    ],
+    [
+      6, 0, 8,
+      0, 0, 0,
+      9, 0, 7
+    ],
+    [
+      0, 0, 0,
+      0, 0, 0,
       0, 0, 0
     ]
   ]

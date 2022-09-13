@@ -202,13 +202,12 @@ public class Player : KinematicBody {
     if (collision != null)
     {
       var animation = "CollideAndTakeDamage";
-      if (--Health <= 0)
+      if (--Health == 0)
       {
         EmitSignal("StatusChanged", _health, _score);
-        AxisLockMotionX = true;
-        AxisLockMotionY = true;
-        AxisLockMotionZ = true;
         animation = "CollideAndDie";
+        CallDeferred("set_physics_process", false);
+        GD.Print($"Player Translation @ Death: {Translation}");
       }
       (collision.Collider as Node).QueueFree();
       if (_animations.IsPlaying())
@@ -216,7 +215,6 @@ public class Player : KinematicBody {
         _animations.Stop();
       }
       _animations.Play(animation);
-      GD.Print(Health);
     }
   }
 }
