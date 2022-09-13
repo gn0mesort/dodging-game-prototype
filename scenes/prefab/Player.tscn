@@ -166,6 +166,7 @@ vertex_color_is_srgb = true
 albedo_color = Color( 0, 1, 0, 1 )
 
 [node name="Player" type="KinematicBody"]
+collision_mask = 3
 script = ExtResource( 1 )
 MovementExtents = Vector3( 6, 6, 0 )
 

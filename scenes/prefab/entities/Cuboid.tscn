@@ -4,6 +4,7 @@
 extents = Vector3( 6, 3, 3 )
 
 [node name="Cuboid" type="KinematicBody"]
+collision_layer = 2
 
 [node name="CSGBox" type="CSGBox" parent="."]
 width = 12.0

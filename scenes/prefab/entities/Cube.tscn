@@ -4,6 +4,7 @@
 extents = Vector3( 3, 3, 3 )
 
 [node name="Cube" type="KinematicBody"]
+collision_layer = 2
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 1 )

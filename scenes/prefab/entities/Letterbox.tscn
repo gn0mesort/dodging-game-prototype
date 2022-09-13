@@ -4,6 +4,7 @@
 extents = Vector3( 4, 9, 3 )
 
 [node name="Letterbox" type="KinematicBody"]
+collision_layer = 2
 
 [node name="CSGCombiner" type="CSGCombiner" parent="."]
 
