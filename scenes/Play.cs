@@ -26,6 +26,7 @@ public class Play : Spatial, IDependsOnMain, IRequiresConfiguration {
   private Timer _timer = null;
   private uint _timerTicks = 0;
   private bool _timerLeadIn = true;
+  private PackedScene _pauseMenuScene = GD.Load<PackedScene>("res://scenes/prefab/Pause.tscn");
 
   public LevelManager Levels { get; private set; } = null;
 
@@ -75,6 +76,7 @@ public class Play : Spatial, IDependsOnMain, IRequiresConfiguration {
   }
 
   public override void _Ready() {
+
     _player = GetNode<Player>("Player");
     _timer = GetNode<Timer>("Timer");
     Levels = new LevelManager(this, _player);
@@ -89,6 +91,16 @@ public class Play : Spatial, IDependsOnMain, IRequiresConfiguration {
     {
       GD.Print($"Player Translation @ Exit: {_player.Translation}");
       _timer.CallDeferred("start");
+    }
+  }
+
+  public override void _Input(InputEvent ev) {
+    if (ev.IsActionPressed("pause"))
+    {
+      _main.Paused = true;
+      var pauseMenu = _pauseMenuScene.Instance() as Pause;
+      pauseMenu.SetMainNode(_main);
+      CallDeferred("add_child", pauseMenu);
     }
   }
 }
