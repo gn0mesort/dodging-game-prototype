@@ -41,4 +41,11 @@ public class Pause : ColorRect, IDependsOnMain {
     _quitToDesktop.Connect("pressed", this, "_OnQuitToDesktopPressed");
   }
 
+  public override void _UnhandledInput(InputEvent ev) {
+    if (ev.IsActionPressed("pause"))
+    {
+      _OnResumePressed();
+    }
+  }
+
 }
