@@ -122,6 +122,10 @@ public class Obstacle : KinematicBody, ICollidable {
 
   public override void _Ready() {
     _tween = GetNode<Tween>("Tween");
+    if (GetName() == "Sphere" && Mode == Level.LevelEntity.EntityMode.Scaling)
+    {
+      Mode = Level.LevelEntity.EntityMode.Stationary;
+    }
   }
 
   public void HandleCollision(KinematicCollision collision) {
