@@ -1,0 +1,38 @@
+{
+  "type": "curated",
+  "metadata": {
+    "name": "Field",
+    "author": "Alexander Rothman",
+    "contact": "gnomesort@megate.ch",
+    "version": "1.0.0"
+  },
+  "entities": [
+    { "path": "res://scenes/prefab/entities/Cube.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/Cuboid.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/Sphere.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/Field.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/Letterbox.tscn", "mode": "stationary" }
+  ],
+  "level": [
+    [
+      0, 0, 0,
+      0, 4, 0,
+      0, 0, 0
+    ],
+    [
+      0, 0, 0,
+      0, 4, 0,
+      0, 0, 0
+    ],
+    [
+      0, 0, 0,
+      0, 4, 0,
+      0, 0, 0
+    ],
+    [
+      0, 0, 0,
+      0, 4, 0,
+      0, 0, 0
+    ]
+  ]
+}

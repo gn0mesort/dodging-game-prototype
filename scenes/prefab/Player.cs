@@ -59,6 +59,8 @@ public class Player : KinematicBody, ICollidable {
   [Export]
   public Vector3 BaseSpeed { get; set; } = new Vector3(36f, 36f, -36f);
 
+  public float SpeedMultiplier { get; set; } = 1f;
+
   /**
    * The extents within which the Player can move.
    * Values are absolute.
@@ -192,7 +194,7 @@ public class Player : KinematicBody, ICollidable {
     var transNoZ = Translation * new Vector3(1f, 1f, 0f);
     var velocity = (next - transNoZ).Normalized();
     velocity.z = 1f;
-    velocity *= BaseSpeed;
+    velocity *= SpeedMultiplier * BaseSpeed;
     if (_IsEqualApprox(next, transNoZ, 0.3f))
     {
       velocity = new Vector3(0f, 0f, velocity.z);
