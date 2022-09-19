@@ -16,3 +16,5 @@ shape = SubResource( 1 )
 width = 6.0
 height = 6.0
 depth = 6.0
+
+[node name="Tween" type="Tween" parent="."]

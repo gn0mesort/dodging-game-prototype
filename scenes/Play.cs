@@ -76,7 +76,6 @@ public class Play : Spatial, IDependsOnMain, IRequiresConfiguration {
   }
 
   public override void _Ready() {
-
     _player = GetNode<Player>("Player");
     _timer = GetNode<Timer>("Timer");
     Levels = new LevelManager(this, _player);

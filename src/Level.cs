@@ -70,13 +70,20 @@ public class Level {
     public Direction DirectionX { get; private set; }
     [JsonPropertyName("direction_y")]
     public Direction DirectionY { get; private set; }
+    [JsonPropertyName("scale_x")]
+    public bool ScaleX { get; private set; }
+    [JsonPropertyName("scale_y")]
+    public bool ScaleY { get; private set; }
 
     [JsonConstructor]
-    public LevelEntity(string scenePath, EntityMode mode, Direction directionX, Direction directionY) {
+    public LevelEntity(string scenePath, EntityMode mode, Direction directionX, Direction directionY, bool scaleX,
+                       bool scaleY) {
       ScenePath = scenePath;
       Mode = mode;
       DirectionX = directionX;
       DirectionY = directionY;
+      ScaleX = scaleX;
+      ScaleY = scaleY;
     }
     /**
      * Convert LevelData to a string.
@@ -84,7 +91,8 @@ public class Level {
      * @returns A string representing the LevelData.
      */
     public override string ToString() {
-      return $"{{ ScenePath = {ScenePath}, Mode = {Mode}, DirectionX = {DirectionX}, DirectionY = {DirectionY} }}";
+      return $"{{ ScenePath = {ScenePath}, Mode = {Mode}, DirectionX = {DirectionX}, DirectionY = {DirectionY}, " +
+             $"ScaleX = {ScaleX}, ScaleY = {ScaleY} }}";
     }
   }
 

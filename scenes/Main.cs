@@ -86,6 +86,17 @@ public class Main : Node {
         return 1;
       }, "load_scene", "<SCENE>", "Instances a scene below the main node."));
       Debug.RegisterCommand(new DebugCommand((output, parameters) => {
+       var args = parameters.Trim().Split(" ");
+        var path = args.Length > 0 ? args[0].Trim() : null;
+        if (path != null && path != "")
+        {
+          var config = new Play.Configuration($"res://levels/{path}.json");
+          Scenes.LoadScene("res://scenes/Play.tscn", config.Apply);
+          return 0;
+        }
+        return 1;
+      }, "load_level", "<LEVEL>", "Load the given level."));
+      Debug.RegisterCommand(new DebugCommand((output, parameters) => {
         OS.WindowFullscreen = !OS.WindowFullscreen;
         return 0;
       }, "fullscreen", "", "Toggles fullscreen rendering."));

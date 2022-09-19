@@ -16,3 +16,5 @@ depth = 6.0
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 1 )
+
+[node name="Tween" type="Tween" parent="."]

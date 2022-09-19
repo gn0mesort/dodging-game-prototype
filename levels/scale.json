@@ -1,0 +1,40 @@
+{
+  "type": "curated",
+  "metadata": {
+    "name": "Scale",
+    "author": "Alexander Rothman",
+    "contact": "gnomesort@megate.ch",
+    "version": "1.0.0"
+  },
+  "entities": [
+    { "path": "res://scenes/prefab/entities/Cube.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/Cuboid.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/Sphere.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/Field.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/Letterbox.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/Cube.tscn", "mode": "scaling", "scale_x": true, "scale_y": true },
+    { "path": "res://scenes/prefab/entities/Sphere.tscn", "mode": "scaling", "scale_x": true, "scale_y": true }
+  ],
+  "level": [
+    [
+      0, 0, 0,
+      0, 0, 0,
+      0, 0, 0
+    ],
+    [
+      0, 0, 0,
+      0, 0, 0,
+      0, 0, 0
+    ],
+    [
+      0, 0, 0,
+      0, 0, 0,
+      0, 0, 0
+    ],
+    [
+      6, 0, 0,
+      0, 0, 0,
+      0, 0, 7
+    ]
+  ]
+}

@@ -37,6 +37,7 @@ public class LevelManager {
       var obstacle = entity as Obstacle;
       obstacle.Mode = Current.Entities[id - 1].Mode;
       obstacle.UpdateMovementExtents(_player.MovementExtents);
+      obstacle.SetScaling(Current.Entities[id - 1].ScaleX, Current.Entities[id - 1].ScaleY);
       obstacle.SetDirection(Current.Entities[id - 1].DirectionX, Current.Entities[id - 1].DirectionY);
     }
     _levelRoot.CallDeferred("add_child", entity);
