@@ -1,10 +1,41 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scenes/prefab/entities/Letterbox.cs" type="Script" id=1]
 
 [sub_resource type="BoxShape" id=1]
 extents = Vector3( 4, 9, 3 )
 
+[sub_resource type="Animation" id=2]
+resource_name = "Close"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("CSGCombiner/CSGBox2:width")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 2.0, 0.001 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("CollisionShape:shape:extents")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector3( 4, 9, 3 ), Vector3( 5, 9, 3 ) ]
+}
+
 [node name="VerticalLetterbox" type="KinematicBody"]
 collision_layer = 2
+script = ExtResource( 1 )
 
 [node name="CSGCombiner" type="CSGCombiner" parent="."]
 
@@ -25,3 +56,6 @@ shape = SubResource( 1 )
 [node name="CollisionShape2" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.98651, 0, 0 )
 shape = SubResource( 1 )
+
+[node name="Animations" type="AnimationPlayer" parent="."]
+anims/Close = SubResource( 2 )

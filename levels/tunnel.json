@@ -11,7 +11,7 @@
     { "path": "res://scenes/prefab/entities/Cuboid.tscn", "mode": "stationary" },
     { "path": "res://scenes/prefab/entities/Sphere.tscn", "mode": "stationary" },
     { "path": "res://scenes/prefab/entities/Field.tscn", "mode": "stationary" },
-    { "path": "res://scenes/prefab/entities/Letterbox.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/VerticalLetterbox.tscn", "mode": "scaling" },
     { "path": "res://scenes/prefab/entities/Cube.tscn", "mode": "translating", "direction_x": "right", "direction_y": "down" },
     { "path": "res://scenes/prefab/entities/Cube.tscn", "mode": "translating", "direction_x": "left", "direction_y": "up" },
     { "path": "res://scenes/prefab/entities/Sphere.tscn", "mode": "translating", "direction_x": "right" },
