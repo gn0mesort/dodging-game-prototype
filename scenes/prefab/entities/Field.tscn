@@ -20,3 +20,5 @@ width = 6.0
 height = 6.0
 depth = 6.0
 material = SubResource( 2 )
+
+[node name="Tween" type="Tween" parent="."]

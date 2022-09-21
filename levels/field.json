@@ -10,7 +10,7 @@
     { "path": "res://scenes/prefab/entities/Cube.tscn", "mode": "stationary" },
     { "path": "res://scenes/prefab/entities/Cuboid.tscn", "mode": "stationary" },
     { "path": "res://scenes/prefab/entities/Sphere.tscn", "mode": "stationary" },
-    { "path": "res://scenes/prefab/entities/Field.tscn", "mode": "stationary" },
+    { "path": "res://scenes/prefab/entities/Field.tscn", "mode": "scaling", "scale_x": true, "scale_y": true },
     { "path": "res://scenes/prefab/entities/Letterbox.tscn", "mode": "stationary" }
   ],
   "level": [

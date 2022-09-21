@@ -28,19 +28,17 @@ public class LevelManager {
     {
       return;
     }
-    // TODO: make an Entity class for these.
-    var entity = Current.Scenes[Current.Entities[id - 1].ScenePath].Instance() as Spatial;
-    entity.AddToGroup("Obstacles");
-    entity.Translation = position;
-    if (entity is Obstacle)
+    var spatial = Current.Scenes[Current.Entities[id - 1].ScenePath].Instance() as Spatial;
+    spatial.Translation = position;
+    if (spatial is IEntity)
     {
-      var obstacle = entity as Obstacle;
-      obstacle.Mode = Current.Entities[id - 1].Mode;
-      obstacle.UpdateMovementExtents(_player.MovementExtents);
-      obstacle.SetScaling(Current.Entities[id - 1].ScaleX, Current.Entities[id - 1].ScaleY);
-      obstacle.SetDirection(Current.Entities[id - 1].DirectionX, Current.Entities[id - 1].DirectionY);
+      var entity = spatial as IEntity;
+      entity.SetMode(Current.Entities[id - 1].Mode);
+      entity.UpdateMovementExtents(_player.MovementExtents);
+      entity.SetScaling(Current.Entities[id - 1].ScaleX, Current.Entities[id - 1].ScaleY);
+      entity.SetDirection(Current.Entities[id - 1].DirectionX, Current.Entities[id - 1].DirectionY);
     }
-    _levelRoot.CallDeferred("add_child", entity);
+    _levelRoot.CallDeferred("add_child", spatial);
   }
 
   private void _InitializeLevel() {
