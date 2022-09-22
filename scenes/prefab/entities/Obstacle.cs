@@ -1,13 +1,23 @@
 using Godot;
-using System;
 
 public class Obstacle : KinematicBody, IEntity, ICollidable {
+  /**
+   * Base translation speed.
+   */
   [Export]
   public Vector3 BaseSpeed { get; set; } = new Vector3(6f, 6f, 6f);
 
+  /**
+   * Game entity movement mode.
+   */
   [Export]
   public Level.LevelEntity.EntityMode Mode { get; set; } = Level.LevelEntity.EntityMode.Stationary;
 
+  /**
+   * Game entity maximum scale.
+   *
+   * The minimum scale is (1f, 1f, 1f).
+   */
   [Export]
   public Vector3 MaxScale { get; set; } = new Vector3(2f, 2f, 1f);
 
@@ -38,10 +48,21 @@ public class Obstacle : KinematicBody, IEntity, ICollidable {
     }
   }
 
+  /**
+   * Set the entity mode.
+   *
+   * @param mode The mode to set. Valid modes depend on the implementing entity.
+   */
   public void SetMode(Level.LevelEntity.EntityMode mode) {
     Mode = mode;
   }
 
+  /**
+   * Set the translation direction of the entity.
+   *
+   * @param x The x-axis direction of translation.
+   * @param y The y-axis direction of translation.
+   */
   public void SetDirection(Level.LevelEntity.Direction x, Level.LevelEntity.Direction y) {
     _directionX = x;
     _directionY = y;
@@ -55,11 +76,25 @@ public class Obstacle : KinematicBody, IEntity, ICollidable {
     }
   }
 
+
+  /**
+   * Set the scaling axes of the entity.
+   *
+   * @param x Whether or not to scale along the x-axis.
+   * @param y Whether or not to scale along the y-axis.
+   */
   public void SetScaling(bool x, bool y) {
     _scaleX = x;
     _scaleY = y;
   }
 
+  /**
+   * Update the movement extents of the entity.
+   *
+   * Translating entities are bound to the plane from (-extents.x, -extents.y) to (extents.x, extents.y).
+   *
+   * @param extents The extent of movement allowed for the entity. extents.z is discarded.
+   */
   public void UpdateMovementExtents(Vector3 extents) {
     var transNoZ = Translation * new Vector3(1f, 1f, 0f);
     _LEFT = transNoZ + (new Vector3(-1f, 0f, 0f) * extents);
@@ -109,6 +144,9 @@ public class Obstacle : KinematicBody, IEntity, ICollidable {
     _tween.Start();
   }
 
+  /**
+   * Per-frame physics processing.
+   */
   public override void _PhysicsProcess(float delta) {
     switch (Mode)
     {
@@ -123,6 +161,9 @@ public class Obstacle : KinematicBody, IEntity, ICollidable {
     }
   }
 
+  /**
+   * Post-_EnterTree initialization.
+   */
   public override void _Ready() {
     _tween = GetNode<Tween>("Tween");
     if (Name == "Sphere" && Mode == Level.LevelEntity.EntityMode.Scaling)
@@ -131,6 +172,11 @@ public class Obstacle : KinematicBody, IEntity, ICollidable {
     }
   }
 
+  /**
+   * Handle a KinematicCollision.
+   *
+   * @param collision The KinematicCollision to be handled.
+   */
   public void HandleCollision(KinematicCollision collision) {
     if (collision != null)
     {

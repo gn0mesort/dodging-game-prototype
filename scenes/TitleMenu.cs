@@ -23,11 +23,21 @@ public class TitleMenu : Control, IDependsOnMain {
   private Button _playButton = null;
   private Button _quitButton = null;
 
+  /**
+   * Set the main node.
+   *
+   * @param main The top level node of the scene.
+   */
   public void SetMainNode(Main main) {
     _main = main;
     Debug.Assert(_main != null);
   }
 
+  /**
+   * Get the main node.
+   *
+   * @return The main node.
+   */
   public Main GetMainNode() {
     return _main;
   }

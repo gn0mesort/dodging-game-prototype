@@ -27,8 +27,8 @@ public class GameOver : Control, IDependsOnMain {
    * @param main The top level node of the scene.
    */
   public void SetMainNode(Main main) {
-    Debug.Assert(_main != null);
     _main = main;
+    Debug.Assert(_main != null);
   }
 
   /**

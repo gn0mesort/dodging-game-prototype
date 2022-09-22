@@ -29,7 +29,7 @@ public class DebugConsole : Control {
    */
   public DebugOutput Output { get; private set; } = null;
 
-  private void OnTextEntered(string newText) {
+  private void _OnTextEntered(string newText) {
     _input.Clear();
     Output.WriteLine($"> {newText}");
     var matches = _command_pattern.Search(newText);
@@ -60,6 +60,7 @@ public class DebugConsole : Control {
    * @param command The DebugCommand to register.
    */
   public void RegisterCommand(DebugCommand command) {
+    Debug.Assert(command != null);
     _commands.Add(command.Name, command);
   }
 
@@ -69,7 +70,7 @@ public class DebugConsole : Control {
   public override void _Ready() {
     _input = GetNode<LineEdit>("DebugInput");
     Output = GetNode<DebugOutput>("DebugOutput");
-    _input.Connect("text_entered", this, "OnTextEntered");
+    _input.Connect("text_entered", this, "_OnTextEntered");
     RegisterCommand(new DebugCommand((output, parameters) => {
       foreach (var kvp in _commands)
       {

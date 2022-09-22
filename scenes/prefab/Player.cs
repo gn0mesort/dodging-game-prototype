@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 using System;
-using System.Diagnostics;
 using Godot;
 
 public class Player : KinematicBody, ICollidable {
@@ -35,6 +34,9 @@ public class Player : KinematicBody, ICollidable {
   [Signal]
   public delegate void StatusChanged(uint health, uint score);
 
+  /**
+   * A signal indicating that the Player has died.
+   */
   [Signal]
   public delegate void Died();
 
@@ -59,6 +61,9 @@ public class Player : KinematicBody, ICollidable {
   [Export]
   public Vector3 BaseSpeed { get; set; } = new Vector3(36f, 36f, -36f);
 
+  /**
+   * A multiplier applied to the Player's base speed.
+   */
   public float SpeedMultiplier { get; set; } = 1f;
 
   /**
@@ -78,8 +83,8 @@ public class Player : KinematicBody, ICollidable {
       return _score;
     }
     set {
-      EmitSignal("StatusChanged", _health, _score);
       _score = (uint) Mathf.Clamp((long) value, 0, UInt32.MaxValue);
+      EmitSignal("StatusChanged", _health, _score);
     }
   }
 
@@ -93,8 +98,8 @@ public class Player : KinematicBody, ICollidable {
       return _health;
     }
     set {
-      EmitSignal("StatusChanged", _health, _score);
       _health = (uint) Mathf.Clamp((long) value, 0, UInt32.MaxValue);
+      EmitSignal("StatusChanged", _health, _score);
     }
   }
 
@@ -204,6 +209,11 @@ public class Player : KinematicBody, ICollidable {
     HandleCollision(collision);
   }
 
+  /**
+   * Process Player damage.
+   *
+   * This always substracts one point of health.
+   */
   public void TakeDamage() {
       var animation = "CollideAndTakeDamage";
       if (--Health == 0)
@@ -220,6 +230,11 @@ public class Player : KinematicBody, ICollidable {
       _animations.Play(animation);
   }
 
+  /**
+   * Handle a KinematicCollision.
+   *
+   * @param collision The KinematicCollision to be handled.
+   */
   public void HandleCollision(KinematicCollision collision) {
     if (collision != null)
     {
