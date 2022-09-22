@@ -43,9 +43,16 @@ public class DebugCommand {
 
   public DebugCommand(Command cmd, string name, string usage, string description) {
     _command = cmd;
+    Debug.Assert(_command != null);
     Name = name;
+    Debug.Assert(Name != null);
+    Debug.Assert(!Name.Empty());
     Usage = usage;
+    Debug.Assert(Usage != null);
+    Debug.Assert(!Usage.Empty());
     Description = description;
+    Debug.Assert(Description != null);
+    Debug.Assert(!Description.Empty());
   }
 
   /**
@@ -64,6 +71,8 @@ public class DebugCommand {
    * @param parameters a string containing any parameters the command expects during processing.
    */
   public void Invoke(DebugOutput output, string parameters) {
+    Debug.Assert(output != null);
+    Debug.Assert(parameters != null);
     var res = _command(output, parameters);
     if (res != 0)
     {

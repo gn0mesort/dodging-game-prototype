@@ -1,18 +1,48 @@
+/** Object for managing and loading levels.
+ *
+ * Copyright (C) 2022 Alexander Rothman <gnomesort@megate.ch>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 using Godot;
-using System;
+using System.Diagnostics;
 
 public class LevelManager {
   private Node _levelRoot = null;
   private Player _player = null;
 
+  /**
+   * The description of the current level.
+   */
   public Level Current { get; private set; } = null;
+
+  /**
+   * The depth of the level exit as a 3D point.
+   */
   public Vector3 ExitDepth { get; private set; } = new Vector3();
 
+  /**
+   * Constructs a new level manager.
+   *
+   * @param levelRoot The node to append level entities under.
+   * @param player The player object. Used in calculating the geometry of the level grid during a load.
+   */
   public LevelManager(Node levelRoot, Player player) {
     _levelRoot = levelRoot;
-    // _levelRoot must not be null
+    Debug.Assert(_levelRoot != null);
     _player = player;
-    // _player must not be null
+    Debug.Assert(_player != null);
   }
 
   private Level _ReadLevel(string path) {
@@ -65,7 +95,14 @@ public class LevelManager {
     GD.Print($"Exit Depth: {ExitDepth}");
   }
 
+  /**
+   * Load a level.
+   *
+   * @param level The path to the level to load (e.g., res://levels/level.json).
+   */
   public void LoadLevel(string level) {
+    Debug.Assert(level != null);
+    Debug.Assert(!level.Empty());
     Current = _ReadLevel(level);
     _InitializeLevel();
   }
