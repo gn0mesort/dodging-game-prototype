@@ -1,15 +1,47 @@
+/** Gameplay node.
+ *
+ * Copyright (C) 2022 Alexander Rothman <gnomesort@megate.ch>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 using Godot;
-using System;
+using System.Diagnostics;
 
 public class Play : Spatial, IDependsOnMain, IRequiresConfiguration {
   public class Configuration {
+    /**
+     * The path to the level to load.
+     */
     public string LevelPath { get; private set; } = "";
 
+    /**
+     * Construct a new Configuration.
+     *
+     * @param levelPath The path to the level that this configuration should load.
+     */
     public Configuration(string levelPath) {
+      Debug.Assert(levelPath != null);
+      Debug.Assert(!levelPath.Empty());
       // TODO: verify that the input path is a level path.
       LevelPath = levelPath;
     }
 
+    /**
+     * Apply this configuration to the given node.
+     *
+     * @param target The node to configure.
+     */
     public void Apply(Node target) {
       var actualTarget = target as Play;
       if (actualTarget == null)
@@ -28,16 +60,35 @@ public class Play : Spatial, IDependsOnMain, IRequiresConfiguration {
   private bool _timerLeadIn = true;
   private PackedScene _pauseMenuScene = GD.Load<PackedScene>("res://scenes/prefab/Pause.tscn");
 
+  /**
+   * The gameplay level manager.
+   */
   public LevelManager Levels { get; private set; } = null;
 
+  /**
+   * Set the main node.
+   *
+   * @param main The top level node of the scene.
+   */
   public void SetMainNode(Main main) {
     _main = main;
+    Debug.Assert(_main != null);
   }
 
+  /**
+   * Get the main node.
+   *
+   * @return The main node.
+   */
   public Main GetMainNode() {
     return _main;
   }
 
+  /**
+   * Configure the implementing object.
+   *
+   * @param config A delegate defining the configuration process and any required data.
+   */
   public void Configure(SceneManager.SceneConfigurationMethod config) {
     _deferredConfig = config;
   }
@@ -75,6 +126,9 @@ public class Play : Spatial, IDependsOnMain, IRequiresConfiguration {
     _main.Scenes.LoadScene("res://scenes/GameOver.tscn");
   }
 
+  /**
+   * Post-_EnterTree initialization.
+   */
   public override void _Ready() {
     _player = GetNode<Player>("Player");
     _timer = GetNode<Timer>("Timer");
@@ -85,6 +139,12 @@ public class Play : Spatial, IDependsOnMain, IRequiresConfiguration {
     _timer.CallDeferred("start");
   }
 
+
+  /**
+   * Per physics frame processing.
+   *
+   * @param delta The delta time between the last physics frame and current physics frame.
+   */
   public override void _PhysicsProcess(float delta) {
     if (!_timerLeadIn && (_player.Translation.z < Levels.ExitDepth.z) && _timer.IsStopped())
     {
@@ -93,6 +153,11 @@ public class Play : Spatial, IDependsOnMain, IRequiresConfiguration {
     }
   }
 
+  /**
+   * Node-specific input handling.
+   *
+   * @param ev The input event to handle.
+   */
   public override void _Input(InputEvent ev) {
     if (ev.IsActionPressed("pause"))
     {

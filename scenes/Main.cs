@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 using System;
-using System.Diagnostics;
 using Godot;
 
 public class Main : Node {
@@ -24,7 +23,14 @@ public class Main : Node {
   private CanvasLayer _debugLayer = null;
   private CanvasLayer _viewLayer = null;
 
+  /**
+   * The game debug console.
+   */
   public DebugConsole Debug { get; private set; } = null;
+
+  /**
+   * The game SceneManager.
+   */
   public SceneManager Scenes { get; private set; } = null;
 
   /**
@@ -38,10 +44,15 @@ public class Main : Node {
    */
   public bool Paused { get { return _tree.Paused; } set { _tree.Paused = value; } }
 
-  private void OnDebugConsoleVisibilityChanged() {
+  private void _OnDebugConsoleVisibilityChanged() {
     Paused = Debug.Visible;
   }
 
+  /**
+   * Exit the game with the given exit code.
+   *
+   * @param code The game exit code.
+   */
   public void ExitGame(int code) {
     OS.ExitCode = code;
     _tree.Notification(MainLoop.NotificationWmQuitRequest);
@@ -59,7 +70,7 @@ public class Main : Node {
     {
       var scene = GD.Load<PackedScene>("res://scenes/debug/DebugConsole.tscn");
       Debug = scene.Instance() as DebugConsole;
-      Debug.Connect("visibility_changed", this, "OnDebugConsoleVisibilityChanged");
+      Debug.Connect("visibility_changed", this, "_OnDebugConsoleVisibilityChanged");
       Debug.RegisterCommand(new DebugCommand((output, parameters) => {
         var args = parameters.Trim().Split(" ");
         if (args.Length > 0 && args[0] != "")
