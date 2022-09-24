@@ -49,10 +49,8 @@ public class DebugCommand {
     Debug.Assert(!Name.Empty());
     Usage = usage;
     Debug.Assert(Usage != null);
-    Debug.Assert(!Usage.Empty());
     Description = description;
     Debug.Assert(Description != null);
-    Debug.Assert(!Description.Empty());
   }
 
   /**
