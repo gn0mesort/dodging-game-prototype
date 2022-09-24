@@ -28,6 +28,12 @@ public class FollowCamera : Camera {
   public NodePath Target { get; set; } = "";
 
   /**
+   * Whether or not the camera should pan when the target moves.
+   */
+  [Export]
+  public bool ShouldPan { get; set; } = true;
+
+  /**
    * Post-_EnterTree initialization.
    */
   public override void _Ready() {
@@ -39,7 +45,8 @@ public class FollowCamera : Camera {
    * Per physics frame processing.
    */
   public override void _PhysicsProcess(float delta) {
-    var target = _target.Translation * new Vector3(0f, 0f, 1f);
-    LookAtFromPosition(target - new Vector3(0f, 0f, -12f), target, new Vector3(0f, 1f, 0f));
+    var targetDepth = _target.Translation * new Vector3(0f, 0f, 1f);
+    var targetPosition = ShouldPan ? _target.Translation : targetDepth;
+    LookAtFromPosition(targetDepth - new Vector3(0f, 0f, -12f), targetPosition, new Vector3(0f, 1f, 0f));
   }
 }
