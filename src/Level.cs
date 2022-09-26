@@ -150,7 +150,9 @@ public class Level {
       Debug.Assert(!ScenePath.Empty());
       Mode = mode;
       DirectionX = directionX;
+      Debug.Assert(DirectionX == Direction.None || DirectionX == Direction.Left || DirectionX == Direction.Right);
       DirectionY = directionY;
+      Debug.Assert(DirectionY == Direction.None || DirectionY == Direction.Up || DirectionY == Direction.Down);
       ScaleX = scaleX;
       ScaleY = scaleY;
     }
