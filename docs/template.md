@@ -16,4 +16,4 @@ aaaa
 ### Content
 - [Game mechanics](link.to.the.file)
 
-### Change example
+### Change example (updated)
