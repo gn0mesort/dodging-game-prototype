@@ -19,9 +19,9 @@ The first two bytes (`8b8a`) are equivalent to the 16-bit unsigned integer `3546
 incorrect the file may have been written by a big-endian system or written using a 7-bit (i.e., ASCII only) scheme.
 Both of these cases are rare.
 
-The follow 10 bytes are the exact ASCII string `"SAVEME\r\n\x1a\n"`. Here the text `"SAVEME"` is just an indicator that
-this is a game save file (as opposed to a PNG, Java source code file, or anything else). The following text `\r\n` is
-a MS-DOS/Microsoft Windows style line-ending. If the file is read inproperly (e.g., using a file API that converts
+The following 10 bytes are the exact ASCII string `"SAVEME\r\n\x1a\n"`. Here the text `"SAVEME"` is just an indicator
+that this is a game save file (as opposed to a PNG, Java source code file, or anything else). The following text `\r\n`
+is a MS-DOS/Microsoft Windows style line-ending. If the file is read inproperly (e.g., using a file API that converts
 line-endings) on a POSIX system this will likely be coverted to `"\n"` and considered invalid. Next, the text `"\x1a"`
 is the hexadecimal escape for the ASCII "substitute" character. Many older systems treat this character as indicating
 the end of a file. This is another rare case. Finally, the trailing `"\n"` is a POSIX style line-ending and serves
