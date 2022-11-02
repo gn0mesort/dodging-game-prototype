@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=2]
-
-[ext_resource path="res://scenes/states/MenuRoot.cs" type="Script" id=2]
-
-[node name="MenuRoot" type="Node"]
-script = ExtResource( 2 )
