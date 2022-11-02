@@ -1,0 +1,6 @@
+[gd_scene format=2]
+
+[node name="GameTitle" type="Label"]
+text = "Game Title"
+align = 1
+valign = 1
