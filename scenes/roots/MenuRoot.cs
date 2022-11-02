@@ -35,11 +35,14 @@ public class MenuRoot : Node {
     AddChild(_child);
   }
 
-  public override void _Ready() {
+  public override void _EnterTree() {
     _utils = GetNode<Utility>("/root/Util");
     // Load potential substates
     _primary = GD.Load<PackedScene>("res://scenes/menu/PrimaryTitle.tscn");
     _secondary = GD.Load<PackedScene>("res://scenes/menu/SecondaryTitle.tscn");
+  }
+
+  public override void _Ready() {
     // Transition to initial title screen
     _OnTransition(MenuScenes.Primary);
   }
