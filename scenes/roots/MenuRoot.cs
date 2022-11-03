@@ -8,7 +8,7 @@ public class MenuRoot : Node {
     Rebirth
   }
 
-  private Utility _utils = null;
+  private GameMain _main = null;
   private Node _child = null;
   private PackedScene _primary = null;
   private PackedScene _secondary = null;
@@ -16,7 +16,7 @@ public class MenuRoot : Node {
   private PackedScene _rebirth = null;
 
   private void _OnTransitionRoot(RootScenes to) {
-    _utils.TransitionRoot(to);
+    _main.TransitionRoot(to);
   }
 
   private void _OnTransition(MenuScenes to) {
@@ -36,7 +36,7 @@ public class MenuRoot : Node {
   }
 
   public override void _EnterTree() {
-    _utils = GetNode<Utility>("/root/Util");
+    _main = GetNode<GameMain>("/root/Main");
     // Load potential substates
     _primary = GD.Load<PackedScene>("res://scenes/menu/PrimaryTitle.tscn");
     _secondary = GD.Load<PackedScene>("res://scenes/menu/SecondaryTitle.tscn");
