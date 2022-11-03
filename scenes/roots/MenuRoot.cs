@@ -12,12 +12,8 @@ public class MenuRoot : Node {
   private Node _child = null;
   private PackedScene _primary = null;
   private PackedScene _secondary = null;
-  private PackedScene _settings = null;
-  private PackedScene _rebirth = null;
-
-  private void _OnTransitionRoot(RootScenes to) {
-    _main.TransitionRoot(to);
-  }
+//  private PackedScene _settings = null;
+//  private PackedScene _rebirth = null;
 
   private void _OnTransition(MenuScenes to) {
     _child?.QueueFree();
@@ -31,7 +27,7 @@ public class MenuRoot : Node {
       break;
     }
     _child.Connect("Transition", this, "_OnTransition");
-    _child.Connect("TransitionRoot", this, "_OnTransitionRoot");
+    _child.Connect("TransitionRoot", _main, "TransitionRoot");
     AddChild(_child);
   }
 
@@ -43,7 +39,14 @@ public class MenuRoot : Node {
   }
 
   public override void _Ready() {
-    // Transition to initial title screen
-    _OnTransition(MenuScenes.Primary);
+    // If we're coming from a cold start then display Title A. Otherwise, display Title B.
+    if (_main.PreviousScene() == RootScenes.Exit)
+    {
+      _OnTransition(MenuScenes.Primary);
+    }
+    else
+    {
+      _OnTransition(MenuScenes.Secondary);
+    }
   }
 }

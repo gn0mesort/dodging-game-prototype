@@ -14,7 +14,12 @@ public class SecondaryTitle : VBoxContainer {
     EmitSignal("TransitionRoot", RootScenes.Exit);
   }
 
+  private void _OnStartGamePressed() {
+    EmitSignal("TransitionRoot", RootScenes.Play);
+  }
+
   public override void _Ready() {
+    GetNode("StartGame").Connect("pressed", this, "_OnStartGamePressed");
     GetNode("Exit").Connect("pressed", this, "_OnExitPressed");
   }
 
