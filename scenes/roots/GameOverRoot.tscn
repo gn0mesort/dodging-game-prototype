@@ -39,4 +39,3 @@ Blinking = false
 [node name="GameEndHandler" parent="." instance=ExtResource( 2 )]
 Target = NodePath("../VBoxContainer/PressAnyKey")
 Trigger = "Pressed"
-NextScene = 3
