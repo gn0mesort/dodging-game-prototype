@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="SphereShape" id=1]
+
+[node name="Sphere" type="StaticBody"]
+collision_layer = 2
+
+[node name="CSGSphere" type="CSGSphere" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+shape = SubResource( 1 )
