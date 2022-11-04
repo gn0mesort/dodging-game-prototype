@@ -12,10 +12,6 @@ public class PlayRoot : Spatial {
   }
 
   public override void _Ready() {
-    // This is just a stub for testing.
-    var rand = new RandomNumberGenerator();
-    rand.Randomize();
-    EmitSignal("TransitionRoot", rand.RandiRange(0, 1) == 0 ? RootScenes.GameComplete : RootScenes.GameOver);
   }
 
 
