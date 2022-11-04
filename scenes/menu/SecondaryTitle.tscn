@@ -11,35 +11,29 @@ anchor_bottom = 0.5
 script = ExtResource( 1 )
 
 [node name="GameTitle" parent="." instance=ExtResource( 2 )]
-margin_right = 83.0
+margin_right = 82.0
 margin_bottom = 14.0
 
-[node name="Continue" type="Button" parent="."]
+[node name="Play" type="Button" parent="."]
 margin_top = 18.0
-margin_right = 83.0
+margin_right = 82.0
 margin_bottom = 38.0
-text = "Continue"
+text = "New Game"
 
 [node name="Rebirth" type="Button" parent="."]
 margin_top = 42.0
-margin_right = 83.0
+margin_right = 82.0
 margin_bottom = 62.0
 text = "Rebirth"
 
-[node name="StartGame" type="Button" parent="."]
-margin_top = 66.0
-margin_right = 83.0
-margin_bottom = 86.0
-text = "Start Game"
-
 [node name="Settings" type="Button" parent="."]
-margin_top = 90.0
-margin_right = 83.0
-margin_bottom = 110.0
+margin_top = 66.0
+margin_right = 82.0
+margin_bottom = 86.0
 text = "Settings"
 
 [node name="Exit" type="Button" parent="."]
-margin_top = 114.0
-margin_right = 83.0
-margin_bottom = 134.0
+margin_top = 90.0
+margin_right = 82.0
+margin_bottom = 110.0
 text = "Exit"
