@@ -3,7 +3,8 @@ using Godot;
 public class GameMain : Node {
   private RootScenes _previous = RootScenes.Exit;
   private RootScenes _current = RootScenes.Menu;
-  private PlayerData _playerData = null;
+
+  public PlayerData Player { get; private set; } = null;
 
   public void ExitGame(int code) {
     OS.ExitCode = code;
@@ -39,12 +40,12 @@ public class GameMain : Node {
       // Should never be more than 32 bytes.
       var buffer = saveData.GetBuffer((int) saveData.GetLen());
       saveData.Close();
-      _playerData = PlayerData.FromBytes(buffer);
-      GD.Print($"Read \"{_playerData}\" from file.");
+      Player = PlayerData.FromBytes(buffer);
+      GD.Print($"Read \"{Player}\" from file.");
     }
     else
     {
-      _playerData = new PlayerData();
+      Player = new PlayerData();
       GD.Print("Initialized player data.");
     }
   }
@@ -52,8 +53,8 @@ public class GameMain : Node {
   public void StorePlayerData() {
     var saveData = new File();
     saveData.Open("user://save.bin", File.ModeFlags.Write);
-    saveData.StoreBuffer(_playerData.GetBytes());
-    GD.Print($"Wrote \"{_playerData}\" to file.");
+    saveData.StoreBuffer(Player.GetBytes());
+    GD.Print($"Wrote \"{Player}\" to file.");
   }
 
   public RootScenes PreviousScene() {
