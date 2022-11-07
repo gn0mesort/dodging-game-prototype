@@ -8,6 +8,8 @@ extents = Vector3( 0.5, 0.5, 0.5 )
 [node name="Cube" type="KinematicBody"]
 collision_layer = 2
 script = ExtResource( 1 )
+Speed = Vector3( 1, 1, 0 )
+MovementBounds = Vector2( 3, 3 )
 
 [node name="CSGBox" type="CSGBox" parent="."]
 width = 1.0
