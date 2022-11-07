@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scenes/entity/Player.cs" type="Script" id=1]
+
+[sub_resource type="SpatialMaterial" id=1]
+albedo_color = Color( 0, 1, 0, 1 )
+
+[sub_resource type="BoxShape" id=2]
+extents = Vector3( 0.5, 0.063, 0.5 )
+
+[node name="KinematicBody" type="KinematicBody"]
+script = ExtResource( 1 )
+
+[node name="CSGBox" type="CSGBox" parent="."]
+width = 1.0
+height = 0.125
+depth = 1.0
+material = SubResource( 1 )
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+shape = SubResource( 2 )
+
+[node name="Tween" type="Tween" parent="."]
+playback_process_mode = 0
+
+[node name="RotateTimeout" type="Timer" parent="."]
+process_mode = 0
+wait_time = 0.5
+one_shot = true
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8.366 )
