@@ -1,6 +1,6 @@
 using Godot;
 
-public class Player : KinematicBody, IVelocityModifiable {
+public class Player : BoundedKinematicBody, IVelocityModifiable {
   public enum Controls {
     None = -1,
     Left = 0,
@@ -9,20 +9,14 @@ public class Player : KinematicBody, IVelocityModifiable {
     Down,
     RotateCW,
     RotateCCW,
-    Pause,
     Max
   }
 
+  private Vector3 _origin = new Vector3();
   private Controller _controls = new Controller((int) Controls.Max);
   private Tween _tween = null;
   private Timer _rotateTimeout = null;
   private bool _canRotate = true;
-
-  [Export]
-  public Vector3 Speed { get; set; } = new Vector3(1f, 1f, 1f);
-
-  [Export]
-  public Vector3 MovementBounds { get; set; } = new Vector3(3f, 3f, 0f);
 
   public void ModifyVelocity(float x, float y, float z, float rotation) {
   }
@@ -44,7 +38,17 @@ public class Player : KinematicBody, IVelocityModifiable {
     _canRotate = true;
   }
 
+
+  protected override void _SetOrigin(Vector3 origin) {
+    _origin = origin;
+  }
+
+  protected override Vector3 _GetOrigin() {
+    return _origin;
+  }
+
   public override void _Ready() {
+    _UpdateMovementBounds(_GetOrigin(), MovementBounds);
     _tween = GetNode<Tween>("Tween");
     _rotateTimeout = GetNode<Timer>("RotateTimeout");
 
@@ -69,7 +73,6 @@ public class Player : KinematicBody, IVelocityModifiable {
     _SetControl(Controls.Down, Input.IsActionPressed("play_move_down"));
     _SetControl(Controls.RotateCW, Input.IsActionPressed("play_rotate_clockwise"));
     _SetControl(Controls.RotateCCW, Input.IsActionPressed("play_rotate_counter_clockwise"));
-    _SetControl(Controls.Pause, Input.IsActionPressed("play_pause"));
   }
 
   private void _HandleRotation() {
@@ -89,14 +92,54 @@ public class Player : KinematicBody, IVelocityModifiable {
     default:
       return;
     }
-    _tween.InterpolateProperty(this, "rotation_degrees", RotationDegrees, angle, 0.25f, Tween.TransitionType.Linear, Tween.EaseType.InOut);
+    _tween.InterpolateProperty(this, "rotation_degrees", RotationDegrees, angle, 0.25f, Tween.TransitionType.Linear,
+                               Tween.EaseType.InOut);
     _tween.Start();
     _canRotate = false;
+  }
+
+  private bool _IsEqualApprox(Vector3 a, Vector3 b, float tolerance) {
+    return Mathf.IsEqualApprox(a.x, b.x, tolerance) && Mathf.IsEqualApprox(a.y, b.y, tolerance) &&
+           Mathf.IsEqualApprox(a.z, b.z, tolerance);
+  }
+
+  private KinematicCollision _HandleMovement(float delta) {
+    // Always travel forward.
+    var direction = new Vector3(0f, 0f, -1f);
+    switch (_FirstPressed(Controls.Left, Controls.Right))
+    {
+    case Controls.Left:
+      direction.x = -1f;
+      break;
+    case Controls.Right:
+      direction.x = 1f;
+      break;
+    }
+    switch (_FirstPressed(Controls.Up, Controls.Down))
+    {
+    case Controls.Up:
+      direction.y = 1f;
+      break;
+    case Controls.Down:
+      direction.y = -1f;
+      break;
+    }
+    var transNoZ = Translation * new Vector3(1f, 1f, 0f);
+    var bounds3d = new Vector3(MovementBounds.x, MovementBounds.y, 1f);
+    var velocity = ((direction * bounds3d) - (transNoZ)).Normalized();
+    // In place of _BoundTranslation to ensure good behavior.
+    if (_IsEqualApprox(transNoZ, direction, 0.3f))
+    {
+      velocity *= new Vector3(0f, 0f, 1f);
+      Translation = direction + (Translation * new Vector3(0f, 0f, 1f));
+    }
+    return MoveAndCollide(Speed * velocity * delta);
   }
 
   public override void _PhysicsProcess(float delta) {
     _ReadControls();
     _HandleRotation();
+    var collision = _HandleMovement(delta);
   }
 
 }

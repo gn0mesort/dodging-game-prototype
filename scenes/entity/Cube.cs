@@ -1,6 +1,6 @@
 using Godot;
 
-public class Cube : KinematicBody {
+public class Cube : BoundedKinematicBody {
   public enum Axis {
     None = 0,
     X,
@@ -10,31 +10,20 @@ public class Cube : KinematicBody {
   [Export]
   public Axis MovementAxis { get; set; } = Axis.None;
 
-  [Export]
-  public Vector3 Speed { get; set; } = new Vector3(1f, 1f, 0f);
-
-
-  private Vector3 _movementBounds = new Vector3(3f, 3f, 0f);
-  [Export]
-  public Vector3 MovementBounds {
-    get { return _movementBounds; }
-    set { _UpdateMovementBounds(value); }
-  }
-
-  private void _UpdateMovementBounds(Vector3 bounds) {
-    _maxPosition = _origin + bounds;
-    _minPosition = _origin - bounds;
-    _movementBounds = bounds;
-  }
-
   private Vector3 _origin = new Vector3();
-  private Vector3 _maxPosition = new Vector3();
-  private Vector3 _minPosition = new Vector3();
   private float _direction = 1f;
 
+  protected override void _SetOrigin(Vector3 origin) {
+    _origin = origin;
+  }
+
+  protected override Vector3 _GetOrigin() {
+    return _origin;
+  }
+
   public override void _Ready() {
-    _origin = Translation;
-    _UpdateMovementBounds(_movementBounds);
+    _SetOrigin(Translation);
+    _UpdateMovementBounds(_GetOrigin(), MovementBounds);
   }
 
 
@@ -59,9 +48,6 @@ public class Cube : KinematicBody {
     }
     var collision = MoveAndCollide(velocity * delta);
     // TODO: logic to handle colliding into the player.
-    var clamped  = Translation;
-    clamped.x = Mathf.Clamp(clamped.x, _minPosition.x, _maxPosition.x);
-    clamped.y = Mathf.Clamp(clamped.y, _minPosition.y, _maxPosition.y);
-    Translation = clamped;
+    Translation = _BoundTranslation(Translation);
   }
 }
