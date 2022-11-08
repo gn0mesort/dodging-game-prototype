@@ -124,6 +124,8 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
       direction.y = -1f;
       break;
     }
+    // Directions are relative to Player rotation.
+    direction = direction.Rotated(new Vector3(0f, 0f, 1f), Mathf.Deg2Rad(RotationDegrees.z));
     var transNoZ = Translation * new Vector3(1f, 1f, 0f);
     var bounds3d = new Vector3(MovementBounds.x, MovementBounds.y, 1f);
     var velocity = ((direction * bounds3d) - (transNoZ)).Normalized();
