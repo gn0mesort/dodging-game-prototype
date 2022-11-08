@@ -1,6 +1,22 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://scenes/roots/PlayRoot.cs" type="Script" id=1]
+[ext_resource path="res://scenes/entity/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/entity/FollowCamera.tscn" type="PackedScene" id=5]
 
 [node name="PlayRoot" type="Spatial"]
 script = ExtResource( 1 )
+LevelOverride = "res://scenes/level/Test.tscn"
+Levels = PoolStringArray(  )
+
+[node name="Player" parent="." instance=ExtResource( 2 )]
+visible = false
+axis_lock_motion_z = true
+move_lock_z = true
+Speed = Vector3( 6, 6, 6 )
+MovementBounds = Vector2( 3, 3 )
+
+[node name="FollowCamera" parent="." instance=ExtResource( 5 )]
+visible = false
+Target = NodePath("../Player")
+DepthOffset = -4.0
