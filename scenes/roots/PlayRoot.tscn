@@ -14,7 +14,6 @@ visible = false
 axis_lock_motion_z = true
 move_lock_z = true
 Speed = Vector3( 6, 6, 6 )
-MovementBounds = Vector2( 3, 3 )
 
 [node name="FollowCamera" parent="." instance=ExtResource( 5 )]
 visible = false

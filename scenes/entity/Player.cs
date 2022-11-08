@@ -138,10 +138,22 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
     return MoveAndCollide(Speed * velocity * delta);
   }
 
+  private void _HandleCollision(KinematicCollision collision) {
+    if (collision == null)
+    {
+      return;
+    }
+    var other = collision.Collider as Node;
+    // TODO: Inspect colliding body more thoroughly. Is it a power up?
+    other.QueueFree();
+    // TODO: Player is affected by the collision and potentially signals to listeners.
+  }
+
   public override void _PhysicsProcess(float delta) {
     _ReadControls();
     _HandleRotation();
     var collision = _HandleMovement(delta);
+    _HandleCollision(collision);
   }
 
 }
