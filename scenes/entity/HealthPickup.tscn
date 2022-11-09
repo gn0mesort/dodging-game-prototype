@@ -1,4 +1,6 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://scenes/entity/HealthPickup.cs" type="Script" id=1]
 
 [sub_resource type="SpatialMaterial" id=1]
 albedo_color = Color( 0, 1, 0, 1 )
@@ -27,19 +29,21 @@ tracks/0/keys = {
 }
 
 [node name="HealthPickup" type="StaticBody"]
+script = ExtResource( 1 )
+Bonus = 1
 
 [node name="CSGCombiner" type="CSGCombiner" parent="."]
 
 [node name="Cutout1" type="CSGBox" parent="CSGCombiner"]
 width = 0.125
-height = 0.25
-depth = 0.25
+height = 0.5
+depth = 0.5
 material = SubResource( 1 )
 
 [node name="Cutout2" type="CSGBox" parent="CSGCombiner"]
-width = 0.25
+width = 0.5
 height = 0.125
-depth = 0.25
+depth = 0.5
 material = SubResource( 2 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]

@@ -60,7 +60,7 @@ public class PlayRoot : Spatial {
     _StartLevel();
   }
 
-  private void _OnPlayerDamaged() {
+  private void _OnPlayerDamaged(uint remaining) {
     ++_main.Player.Collisions;
     GD.Print("Player damaged");
   }
@@ -68,7 +68,8 @@ public class PlayRoot : Spatial {
   public override void _Ready() {
     _player = GetNode<Player>("Player");
     _player.Connect("Died", this, "_OnPlayerDied");
-    _player.Connect("Damaged", this, "_OnPlayerDamaged");
+    _player.Connect("HealthDamaged", this, "_OnPlayerDamaged");
+    _player.Connect("ShieldDamaged", this, "_OnPlayerDamaged");
     _camera = GetNode<FollowCamera>("FollowCamera");
     _StartLevel();
   }
