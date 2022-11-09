@@ -12,7 +12,7 @@ public class MenuRoot : Node {
   private Node _child = null;
   private PackedScene _primary = null;
   private PackedScene _secondary = null;
-//  private PackedScene _settings = null;
+  private PackedScene _settings = null;
   private PackedScene _rebirth = null;
 
   private void _OnTransition(MenuScenes to) {
@@ -24,6 +24,9 @@ public class MenuRoot : Node {
       break;
     case MenuScenes.Secondary:
       _child = _secondary.Instance();
+      break;
+    case MenuScenes.Settings:
+      _child = _settings.Instance();
       break;
     case MenuScenes.Rebirth:
       _child = _rebirth.Instance();
@@ -39,6 +42,7 @@ public class MenuRoot : Node {
     // Load potential substates
     _primary = GD.Load<PackedScene>("res://scenes/menu/PrimaryTitle.tscn");
     _secondary = GD.Load<PackedScene>("res://scenes/menu/SecondaryTitle.tscn");
+    _settings = GD.Load<PackedScene>("res://scenes/menu/Settings.tscn");
     _rebirth = GD.Load<PackedScene>("res://scenes/menu/Rebirth.tscn");
   }
 

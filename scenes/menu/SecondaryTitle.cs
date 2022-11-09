@@ -19,6 +19,10 @@ public class SecondaryTitle : VBoxContainer {
     EmitSignal("TransitionRoot", RootScenes.Play);
   }
 
+  private void _OnSettingsPressed() {
+    EmitSignal("Transition", MenuScenes.Settings);
+  }
+
   private void _OnRebirthPressed() {
     EmitSignal("Transition", MenuScenes.Rebirth);
   }
@@ -47,6 +51,7 @@ public class SecondaryTitle : VBoxContainer {
       rebirthButton.Connect("pressed", this, "_OnRebirthPressed");
     }
     playButton.Connect("pressed", this, "_OnPlayPressed");
+    GetNode<Button>("Settings").Connect("pressed", this, "_OnSettingsPressed");
     GetNode<Button>("Exit").Connect("pressed", this, "_OnExitPressed");
   }
 
