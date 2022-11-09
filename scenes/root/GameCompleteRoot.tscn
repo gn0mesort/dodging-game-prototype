@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://scenes/prefab/PressAnyKey.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/menu/PressAnyKey.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/ending/GameEndHandler.tscn" type="PackedScene" id=2]
 
 [node name="GameCompleteRoot" type="Node"]
