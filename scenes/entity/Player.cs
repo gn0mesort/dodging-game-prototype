@@ -17,6 +17,20 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
   private Tween _tween = null;
   private Timer _rotateTimeout = null;
   private bool _canRotate = true;
+  private uint _health = 0;
+  private uint _shield = 0;
+
+  [Signal]
+  public delegate void Died();
+
+  [Signal]
+  public delegate void Damaged();
+
+  [Export]
+  public uint MaxHealth { get; set; } = 2;
+
+  [Export]
+  public uint MaxShield { get; set; } = 1;
 
   public void ModifyVelocity(float x, float y, float z, float rotation) {
   }
@@ -54,6 +68,7 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
 
     _tween.Connect("tween_completed", this, "_OnTweenCompleted");
     _rotateTimeout.Connect("timeout", this, "_OnRotateTimeout");
+    Initialize();
   }
 
 
@@ -146,6 +161,12 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
     var other = collision.Collider as Node;
     // TODO: Inspect colliding body more thoroughly. Is it a power up?
     other.QueueFree();
+    --_health;
+    EmitSignal("Damaged");
+    if (_health == 0)
+    {
+      EmitSignal("Died");
+    }
     // TODO: Player is affected by the collision and potentially signals to listeners.
   }
 
@@ -154,6 +175,11 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
     _HandleRotation();
     var collision = _HandleMovement(delta);
     _HandleCollision(collision);
+  }
+
+  public void Initialize() {
+    _health = MaxHealth;
+    _shield = 0;
   }
 
 }

@@ -6,6 +6,7 @@ public class PlayRoot : Spatial {
   private Player _player = null;
   private FollowCamera _camera = null;
   private Level _level = null;
+  private ulong _startTime = 0;
 
   [Signal]
   public delegate void TransitionRoot(RootScenes to);
@@ -29,13 +30,12 @@ public class PlayRoot : Spatial {
     _level = GD.Load<PackedScene>(path).Instance() as Level;
     AddChild(_level);
     _player.Translation = _level.Entrance();
+    _player.Initialize();
     _player.Visible = true;
     _camera.Visible = true;
   }
 
-  public override void _Ready() {
-    _player = GetNode<Player>("Player");
-    _camera = GetNode<FollowCamera>("FollowCamera");
+  private void _StartLevel() {
     if (LevelOverride != null && LevelOverride.Length > 0)
     {
       _InitializeLevel(LevelOverride);
@@ -48,7 +48,29 @@ public class PlayRoot : Spatial {
       Debug.Assert(levelPath.Length > 0);
       _InitializeLevel(levelPath);
     }
+    _startTime = OS.GetTicksMsec();
   }
 
+  private void _OnPlayerDied() {
+    ++_main.Player.Deaths;
+    var time = OS.GetTicksMsec() - _startTime;
+    GD.Print($"Run time: {time}ms");
+    _main.Player.PlayTime += time / 1000;
+    GD.Print("Player died.");
+    _StartLevel();
+  }
+
+  private void _OnPlayerDamaged() {
+    ++_main.Player.Collisions;
+    GD.Print("Player damaged");
+  }
+
+  public override void _Ready() {
+    _player = GetNode<Player>("Player");
+    _player.Connect("Died", this, "_OnPlayerDied");
+    _player.Connect("Damaged", this, "_OnPlayerDamaged");
+    _camera = GetNode<FollowCamera>("FollowCamera");
+    _StartLevel();
+  }
 
 }
