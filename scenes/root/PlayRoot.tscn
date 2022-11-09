@@ -11,8 +11,6 @@ Levels = PoolStringArray(  )
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
 visible = false
-axis_lock_motion_z = true
-move_lock_z = true
 Speed = Vector3( 6, 6, 6 )
 
 [node name="FollowCamera" parent="." instance=ExtResource( 5 )]
