@@ -19,6 +19,10 @@ public class SecondaryTitle : VBoxContainer {
     EmitSignal("TransitionRoot", RootScenes.Play);
   }
 
+  private void _OnRebirthPressed() {
+    EmitSignal("Transition", MenuScenes.Rebirth);
+  }
+
   public override void _EnterTree() {
     _main = GetNode<GameMain>("/root/Main");
   }
@@ -29,14 +33,21 @@ public class SecondaryTitle : VBoxContainer {
     if (_main.Player.Progress == 0)
     {
       playButton.Text = "New Game";
-      rebirthButton.Disabled = true;
     }
     else
     {
       playButton.Text = "Continue";
     }
+    if (_main.Player.IsInitialized())
+    {
+      rebirthButton.Disabled = true;
+    }
+    else
+    {
+      rebirthButton.Connect("pressed", this, "_OnRebirthPressed");
+    }
     playButton.Connect("pressed", this, "_OnPlayPressed");
-    GetNode("Exit").Connect("pressed", this, "_OnExitPressed");
+    GetNode<Button>("Exit").Connect("pressed", this, "_OnExitPressed");
   }
 
 }

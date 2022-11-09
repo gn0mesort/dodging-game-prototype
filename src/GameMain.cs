@@ -45,9 +45,13 @@ public class GameMain : Node {
     }
     else
     {
-      Player = new PlayerData();
-      GD.Print("Initialized player data.");
+      InitializePlayerData();
     }
+  }
+
+  public void InitializePlayerData() {
+    Player = new PlayerData();
+    GD.Print("Initialized player data.");
   }
 
   public void StorePlayerData() {
