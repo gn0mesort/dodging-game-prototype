@@ -35,6 +35,18 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
   [Export]
   public uint MaxShield { get; set; } = 1;
 
+  public void LockMotion() {
+    AxisLockMotionX = AxisLockMotionY = AxisLockMotionZ = true;
+  }
+
+  public void UnlockMotion() {
+    AxisLockMotionX = AxisLockMotionY = AxisLockMotionZ = false;
+  }
+
+  public void ToggleMotion() {
+    AxisLockMotionX = AxisLockMotionY = AxisLockMotionZ = !AxisLockMotionX;
+  }
+
   public void RestoreHealth(uint amount) {
     _health = Utility.Clamp(_health + amount, 0, MaxHealth);
     GD.Print($"Restored {amount} HP for a total of {_health} HP");
@@ -64,7 +76,6 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
   private void _OnRotateTimeout() {
     _canRotate = true;
   }
-
 
   protected override void _SetOrigin(Vector3 origin) {
     _origin = origin;

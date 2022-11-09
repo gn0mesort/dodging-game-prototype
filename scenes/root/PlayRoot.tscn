@@ -17,3 +17,11 @@ Speed = Vector3( 6, 6, 6 )
 visible = false
 Target = NodePath("../Player")
 DepthOffset = -4.0
+
+[node name="LeadIn" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[node name="LeadOut" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
