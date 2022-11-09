@@ -35,6 +35,10 @@ public class PlayerData {
     return res;
   }
 
+  public bool IsInitialized() {
+    return Deaths == 0 && Collisions == 0 && Progress == 0 && PlayTime == 0;
+  }
+
   public byte[] GetBytes() {
     var res = new byte[REQUIRED_BUFFER_SIZE];
     // File Header
