@@ -24,13 +24,26 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
   public delegate void Died();
 
   [Signal]
-  public delegate void Damaged();
+  public delegate void HealthDamaged(uint remaining);
+
+  [Signal]
+  public delegate void ShieldDamaged(uint remaining);
 
   [Export]
   public uint MaxHealth { get; set; } = 2;
 
   [Export]
   public uint MaxShield { get; set; } = 1;
+
+  public void RestoreHealth(uint amount) {
+    _health = Utility.Clamp(_health + amount, 0, MaxHealth);
+    GD.Print($"Restored {amount} HP for a total of {_health} HP");
+  }
+
+  public void RestoreShield(uint amount) {
+    _shield = Utility.Clamp(_shield + amount, 0, MaxShield);
+    GD.Print($"Restored {amount} Shield for a total of {_shield} Shield");
+  }
 
   public void ModifyVelocity(float x, float y, float z, float rotation) {
   }
@@ -159,15 +172,29 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
       return;
     }
     var other = collision.Collider as Node;
-    // TODO: Inspect colliding body more thoroughly. Is it a power up?
-    other.QueueFree();
-    --_health;
-    EmitSignal("Damaged");
-    if (_health == 0)
+    if (other is Pickup)
     {
-      EmitSignal("Died");
+      var pickup = other as Pickup;
+      pickup.ApplyEffect(this);
     }
-    // TODO: Player is affected by the collision and potentially signals to listeners.
+    else
+    {
+      if (_shield != 0)
+      {
+        --_shield;
+        EmitSignal("ShieldDamaged", _shield);
+      }
+      else
+      {
+        --_health;
+        EmitSignal("HealthDamaged", _health);
+      }
+      if (_health == 0)
+      {
+        EmitSignal("Died");
+      }
+    }
+    other.QueueFree();
   }
 
   public override void _PhysicsProcess(float delta) {
