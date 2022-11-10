@@ -22,6 +22,16 @@ public class GameMain : Node {
     _current = to;
     var scenePaths = new string[]{ "MenuRoot", "PlayRoot", "GameCompleteRoot", "GameOverRoot" };
     GetTree().ChangeScene($"res://scenes/root/{scenePaths[((int) to) - 1]}.tscn");
+    Resume();
+  }
+
+  public bool IsPaused() {
+    return GetTree().Paused;
+  }
+
+  public void TogglePaused() {
+    var tree = GetTree();
+    tree.Paused = !tree.Paused;
   }
 
   public void Pause() {
