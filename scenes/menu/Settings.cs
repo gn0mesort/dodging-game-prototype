@@ -9,8 +9,12 @@ public class Settings : GridContainer {
   [Signal]
   public delegate void TransitionRoot(RootScenes to);
 
+  [Signal]
+  public delegate void RequestBack();
+
   private void _OnBackPressed() {
     EmitSignal("Transition", MenuScenes.Secondary);
+    EmitSignal("RequestBack");
   }
 
   public override void _Ready() {

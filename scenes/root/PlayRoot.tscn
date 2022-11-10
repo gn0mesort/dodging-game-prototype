@@ -4,23 +4,27 @@
 [ext_resource path="res://scenes/entity/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/entity/FollowCamera.tscn" type="PackedScene" id=5]
 
-[node name="PlayRoot" type="Spatial"]
+[node name="PlayRoot" type="Node"]
+pause_mode = 2
 script = ExtResource( 1 )
 Levels = PoolStringArray( "res://scenes/level/Test.tscn", "res://scenes/level/Test2.tscn" )
 
-[node name="Player" parent="." instance=ExtResource( 2 )]
+[node name="World" type="Spatial" parent="."]
+pause_mode = 1
+
+[node name="Player" parent="World" instance=ExtResource( 2 )]
 visible = false
 Speed = Vector3( 6, 6, 6 )
 
-[node name="FollowCamera" parent="." instance=ExtResource( 5 )]
+[node name="FollowCamera" parent="World" instance=ExtResource( 5 )]
 visible = false
 Target = NodePath("../Player")
 DepthOffset = -4.0
 
-[node name="LeadIn" type="Timer" parent="."]
+[node name="LeadIn" type="Timer" parent="World"]
 wait_time = 3.0
 one_shot = true
 
-[node name="LeadOut" type="Timer" parent="."]
+[node name="LeadOut" type="Timer" parent="World"]
 wait_time = 3.0
 one_shot = true
