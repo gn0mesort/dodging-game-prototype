@@ -6,8 +6,7 @@
 
 [node name="PlayRoot" type="Spatial"]
 script = ExtResource( 1 )
-LevelOverride = "res://scenes/level/Test.tscn"
-Levels = PoolStringArray(  )
+Levels = PoolStringArray( "res://scenes/level/Test.tscn", "res://scenes/level/Test2.tscn" )
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
 visible = false
