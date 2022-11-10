@@ -36,15 +36,15 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
   public uint MaxShield { get; set; } = 1;
 
   public void LockMotion() {
-    AxisLockMotionX = AxisLockMotionY = AxisLockMotionZ = true;
+    _canRotate = !(AxisLockMotionX = AxisLockMotionY = AxisLockMotionZ = true);
   }
 
   public void UnlockMotion() {
-    AxisLockMotionX = AxisLockMotionY = AxisLockMotionZ = false;
+    _canRotate = !(AxisLockMotionX = AxisLockMotionY = AxisLockMotionZ = false);
   }
 
   public void ToggleMotion() {
-    AxisLockMotionX = AxisLockMotionY = AxisLockMotionZ = !AxisLockMotionX;
+    _canRotate = !(AxisLockMotionX = AxisLockMotionY = AxisLockMotionZ = !AxisLockMotionX);
   }
 
   public void RestoreHealth(uint amount) {
