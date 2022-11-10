@@ -218,6 +218,7 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
   public void Initialize() {
     _health = MaxHealth;
     _shield = 0;
+    RotationDegrees = new Vector3();
   }
 
 }
