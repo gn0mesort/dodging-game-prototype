@@ -1,8 +1,10 @@
 using Godot;
 using System.Diagnostics;
 
-public class PlayRoot : Spatial {
+public class PlayRoot : Node {
+  private PackedScene _pauseScreen = null;
   private GameMain _main = null;
+  private Spatial _world = null;
   private Player _player = null;
   private FollowCamera _camera = null;
   private Level _level = null;
@@ -23,6 +25,7 @@ public class PlayRoot : Spatial {
   public override void _EnterTree() {
     _main = GetNode<GameMain>("/root/Main");
     Connect("TransitionRoot", _main, "TransitionRoot");
+    _pauseScreen = GD.Load<PackedScene>("res://scenes/play/PauseScreen.tscn");
   }
 
   private void _InitializeLevel(string path) {
@@ -32,7 +35,8 @@ public class PlayRoot : Spatial {
     }
     _exited = false;
     _level = GD.Load<PackedScene>(path).Instance() as Level;
-    AddChild(_level);
+    _world.AddChild(_level);
+    _player.Initialize();
     _player.Translation = _level.Entrance();
     // Lock motion during lead
     _player.LockMotion();
@@ -61,7 +65,6 @@ public class PlayRoot : Spatial {
     ++_main.Player.Deaths;
     _UpdatePlayTime();
     GD.Print("Player died.");
-    _player.Initialize();
     _StartLevel();
   }
 
@@ -100,14 +103,15 @@ public class PlayRoot : Spatial {
   }
 
   public override void _Ready() {
-    _player = GetNode<Player>("Player");
+    _world = GetNode<Spatial>("World");
+    _player = GetNode<Player>("World/Player");
     _player.Connect("Died", this, "_OnPlayerDied");
     _player.Connect("HealthDamaged", this, "_OnPlayerDamaged");
     _player.Connect("ShieldDamaged", this, "_OnPlayerDamaged");
-    _camera = GetNode<FollowCamera>("FollowCamera");
-    _leadIn = GetNode<Timer>("LeadIn");
+    _camera = GetNode<FollowCamera>("World/FollowCamera");
+    _leadIn = GetNode<Timer>("World/LeadIn");
     _leadIn.Connect("timeout", this, "_OnLeadInTimeout");
-    _leadOut = GetNode<Timer>("LeadOut");
+    _leadOut = GetNode<Timer>("World/LeadOut");
     _leadOut.Connect("timeout", this, "_OnLeadOutTimeout");
     _StartLevel();
   }
@@ -125,6 +129,36 @@ public class PlayRoot : Spatial {
     if (_level != null && !_exited && _player.Translation.z < _level.Exit().z)
     {
       _EndLevel();
+    }
+  }
+
+  private void _OnRequestResume() {
+    GetNode("PauseScreen").QueueFree();
+    _main.Resume();
+  }
+
+  private void _OnRequestRestartLevel() {
+    _UpdatePlayTime();
+    _StartLevel();
+    _OnRequestResume();
+  }
+
+  public override void _UnhandledInput(InputEvent ev) {
+    if (ev.IsActionPressed("play_pause"))
+    {
+      _main.TogglePaused();
+      if (_main.IsPaused())
+      {
+        var pauseScreen = _pauseScreen.Instance();
+        AddChild(pauseScreen);
+        pauseScreen.Connect("RequestResume", this, "_OnRequestResume");
+        pauseScreen.Connect("RequestRestartLevel", this, "_OnRequestRestartLevel");
+      }
+      else
+      {
+        GetNode("PauseScreen").QueueFree();
+      }
+      GetTree().SetInputAsHandled();
     }
   }
 }

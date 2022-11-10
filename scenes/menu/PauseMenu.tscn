@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scenes/menu/PauseMenu.cs" type="Script" id=1]
+
+[node name="PauseMenu" type="GridContainer"]
+margin_right = 103.0
+margin_bottom = 134.0
+script = ExtResource( 1 )
+
+[node name="Label" type="Label" parent="."]
+margin_right = 103.0
+margin_bottom = 14.0
+text = "Game Paused"
+
+[node name="Resume" type="Button" parent="."]
+margin_top = 18.0
+margin_right = 103.0
+margin_bottom = 38.0
+text = "Resume"
+
+[node name="RestartLevel" type="Button" parent="."]
+margin_top = 42.0
+margin_right = 103.0
+margin_bottom = 62.0
+text = "Restart Level"
+
+[node name="Settings" type="Button" parent="."]
+margin_top = 66.0
+margin_right = 103.0
+margin_bottom = 86.0
+text = "Settings"
+
+[node name="ReturnToTitle" type="Button" parent="."]
+margin_top = 90.0
+margin_right = 103.0
+margin_bottom = 110.0
+text = "Return to Title"
+
+[node name="ExitGame" type="Button" parent="."]
+margin_top = 114.0
+margin_right = 103.0
+margin_bottom = 134.0
+text = "Exit Game"
