@@ -34,12 +34,11 @@ public class PlayRoot : Spatial {
     _level = GD.Load<PackedScene>(path).Instance() as Level;
     AddChild(_level);
     _player.Translation = _level.Entrance();
-    _player.Initialize();
     // Lock motion during lead
     _player.LockMotion();
     _player.Visible = true;
     _camera.Visible = true;
-    GD.Print("Level Start");
+    GD.Print($"Level {_main.Player.Progress} Start");
     _leadIn.Start();
   }
 
@@ -56,15 +55,13 @@ public class PlayRoot : Spatial {
       Debug.Assert(levelPath.Length > 0);
       _InitializeLevel(levelPath);
     }
-    _startTime = OS.GetTicksMsec();
   }
 
   private void _OnPlayerDied() {
     ++_main.Player.Deaths;
-    var time = OS.GetTicksMsec() - _startTime;
-    GD.Print($"Run time: {time}ms");
-    _main.Player.PlayTime += time / 1000;
+    _UpdatePlayTime();
     GD.Print("Player died.");
+    _player.Initialize();
     _StartLevel();
   }
 
@@ -74,14 +71,32 @@ public class PlayRoot : Spatial {
   }
 
   private void _OnLeadInTimeout() {
+    _startTime = OS.GetTicksMsec();
     _player.UnlockMotion();
   }
 
+  private void _UpdatePlayTime() {
+    var time = OS.GetTicksMsec() - _startTime;
+    GD.Print($"Run time: {time}ms");
+    _main.Player.PlayTime += time / 1000;
+  }
+
   private void _OnLeadOutTimeout() {
+    // We're not going to have 2^16 levels hopefully
+    var oldProgress = _main.Player.Progress;
+    _main.Player.Progress = (ushort) Utility.Clamp(_main.Player.Progress + 1, 0, Levels.Length - 1);
+    _main.StorePlayerData();
     if (LevelOverride != null && LevelOverride.Length > 0)
     {
       EmitSignal("TransitionRoot", RootScenes.Menu);
+      return;
     }
+    else if (oldProgress == _main.Player.Progress)
+    {
+      EmitSignal("TransitionRoot", RootScenes.GameComplete);
+      return;
+    }
+    _StartLevel();
   }
 
   public override void _Ready() {
@@ -100,7 +115,8 @@ public class PlayRoot : Spatial {
   private void _EndLevel() {
     _exited = true;
     _player.LockMotion();
-    GD.Print("Level End");
+    GD.Print($"Level {_main.Player.Progress} End");
+    _UpdatePlayTime();
     _leadOut.Start();
   }
 

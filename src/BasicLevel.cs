@@ -5,6 +5,9 @@ public class BasicLevel : Level {
   private Position3D _exit = null;
 
   [Export]
+  public string Name { get; set; } = "";
+
+  [Export]
   public NodePath EntrancePosition { get; set; } = null;
 
   [Export]
