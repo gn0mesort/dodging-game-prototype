@@ -58,6 +58,7 @@ public class GameMain : Node {
     var saveData = new File();
     saveData.Open("user://save.bin", File.ModeFlags.Write);
     saveData.StoreBuffer(Player.GetBytes());
+    saveData.Close();
     GD.Print($"Wrote \"{Player}\" to file.");
   }
 
