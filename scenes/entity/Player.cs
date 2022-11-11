@@ -16,9 +16,14 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
   private Controller _controls = new Controller((int) Controls.Max);
   private Tween _tween = null;
   private Timer _rotateTimeout = null;
+  private Timer _collideTimeout = null;
   private bool _canRotate = true;
+  private bool _invulnerable = false;
   private uint _health = 0;
   private uint _shield = 0;
+  private float _rotationModifier = 1f;
+  private float _depthSpeedModifier = 1f;
+  private Vector3 _speedModifier = new Vector3(1f, 1f, 1f);
 
   [Signal]
   public delegate void Died();
@@ -58,6 +63,8 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
   }
 
   public void ModifyVelocity(float x, float y, float z, float rotation) {
+    _speedModifier = new Vector3(x, y, z);
+    _rotationModifier = 1f / rotation;
   }
 
   private void _OnTweenCompleted(object obj, string key) {
@@ -77,6 +84,11 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
     _canRotate = true;
   }
 
+  private void _OnCollideTimeout() {
+    _invulnerable = false;
+    _depthSpeedModifier *= 2f;
+  }
+
   protected override void _SetOrigin(Vector3 origin) {
     _origin = origin;
   }
@@ -89,9 +101,11 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
     _UpdateMovementBounds(_GetOrigin(), MovementBounds);
     _tween = GetNode<Tween>("Tween");
     _rotateTimeout = GetNode<Timer>("RotateTimeout");
+    _collideTimeout = GetNode<Timer>("CollideTimeout");
 
     _tween.Connect("tween_completed", this, "_OnTweenCompleted");
     _rotateTimeout.Connect("timeout", this, "_OnRotateTimeout");
+    _collideTimeout.Connect("timeout", this, "_OnCollideTimeout");
     Initialize();
   }
 
@@ -131,8 +145,8 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
     default:
       return;
     }
-    _tween.InterpolateProperty(this, "rotation_degrees", RotationDegrees, angle, 0.25f, Tween.TransitionType.Linear,
-                               Tween.EaseType.InOut);
+    _tween.InterpolateProperty(this, "rotation_degrees", RotationDegrees, angle, 0.25f * _rotationModifier,
+                               Tween.TransitionType.Linear, Tween.EaseType.InOut);
     _tween.Start();
     _canRotate = false;
   }
@@ -174,7 +188,9 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
       velocity *= new Vector3(0f, 0f, 1f);
       Translation = direction + (Translation * new Vector3(0f, 0f, 1f));
     }
-    return MoveAndCollide(Speed * velocity * delta);
+    var computed = Speed * _speedModifier * velocity;
+    computed.z *= _depthSpeedModifier;
+    return MoveAndCollide(computed * delta);
   }
 
   private void _HandleCollision(KinematicCollision collision) {
@@ -188,7 +204,7 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
       var pickup = other as Pickup;
       pickup.ApplyEffect(this);
     }
-    else
+    else if (!_invulnerable)
     {
       if (_shield != 0)
       {
@@ -200,10 +216,9 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
         --_health;
         EmitSignal("HealthDamaged", _health);
       }
-      if (_health == 0)
-      {
-        EmitSignal("Died");
-      }
+      _invulnerable = true;
+      _depthSpeedModifier /= 2f;
+      _collideTimeout.Start();
     }
     other.QueueFree();
   }
@@ -213,6 +228,10 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
     _HandleRotation();
     var collision = _HandleMovement(delta);
     _HandleCollision(collision);
+    if (_health == 0)
+    {
+      EmitSignal("Died");
+    }
   }
 
   public void Initialize() {
