@@ -1,9 +1,23 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://scenes/entity/FollowCamera.cs" type="Script" id=1]
+[ext_resource path="res://scenes/entity/ShakeTween.cs" type="Script" id=2]
 
 [node name="FollowCamera" type="Camera"]
 script = ExtResource( 1 )
+ShakeFrequency = 15.0
+ShakeAmplitude = 0.1
 
-[node name="Tween" type="Tween" parent="."]
+[node name="MoveTween" type="Tween" parent="."]
 playback_process_mode = 0
+
+[node name="ShakeTween" type="Tween" parent="."]
+playback_process_mode = 0
+script = ExtResource( 2 )
+
+[node name="Frequency" type="Timer" parent="ShakeTween"]
+process_mode = 0
+
+[node name="Duration" type="Timer" parent="ShakeTween"]
+process_mode = 0
+one_shot = true
