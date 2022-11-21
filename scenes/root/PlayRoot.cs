@@ -46,6 +46,7 @@ public class PlayRoot : Node {
     _player.Translation = _level.Entrance();
     // Lock motion during lead
     _player.LockMotion();
+    _camera.Initialize();
     _player.Visible = true;
     _camera.Visible = true;
     GD.Print($"Level \"{_level.LevelName}\" Start");
