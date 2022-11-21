@@ -7,6 +7,7 @@
 [node name="PlayRoot" type="Node"]
 pause_mode = 2
 script = ExtResource( 1 )
+TutorialLevel = "res://scenes/level/Tutorial.tscn"
 Levels = PoolStringArray( "res://scenes/level/Test.tscn", "res://scenes/level/Test2.tscn" )
 
 [node name="World" type="Spatial" parent="."]

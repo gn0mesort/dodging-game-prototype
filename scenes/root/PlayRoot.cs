@@ -20,7 +20,13 @@ public class PlayRoot : Node {
   public string LevelOverride { get; set; } = "";
 
   [Export]
+  public string TutorialLevel { get; set; } = null;
+
+  [Export]
   public string[] Levels { get; set; } = null;
+
+  [Export]
+  public bool InitializePlayerFlagsOnStart { get; set; } = false;
 
   public override void _EnterTree() {
     _main = GetNode<GameMain>("/root/Main");
@@ -42,7 +48,7 @@ public class PlayRoot : Node {
     _player.LockMotion();
     _player.Visible = true;
     _camera.Visible = true;
-    GD.Print($"Level {_main.Player.Progress} Start");
+    GD.Print($"Level \"{_level.LevelName}\" Start");
     _leadIn.Start();
   }
 
@@ -51,11 +57,15 @@ public class PlayRoot : Node {
     {
       _InitializeLevel(LevelOverride);
     }
+    else if (TutorialLevel != null && TutorialLevel.Length > 0 &&
+             (_main.Player.Flags & PlayerData.TUTORIAL_COMPLETE_BIT) == 0)
+    {
+      _InitializeLevel(TutorialLevel);
+    }
     else
     {
-      var index = _main.Player.Progress + (_main.Player.Flags & PlayerData.TUTORIAL_COMPLETE_FLAG);
-      Debug.Assert(Levels.Length > index);
-      var levelPath = Levels[index];
+      Debug.Assert(Levels.Length > _main.Player.Progress);
+      var levelPath = Levels[_main.Player.Progress];
       Debug.Assert(levelPath != null);
       Debug.Assert(levelPath.Length > 0);
       _InitializeLevel(levelPath);
@@ -88,17 +98,25 @@ public class PlayRoot : Node {
   private void _OnLeadOutTimeout() {
     // We're not going to have 2^16 levels hopefully
     var oldProgress = _main.Player.Progress;
-    _main.Player.Progress = (ushort) Utility.Clamp(_main.Player.Progress + 1, 0, Levels.Length - 1);
-    _main.StorePlayerData();
-    if (LevelOverride != null && LevelOverride.Length > 0)
+    if ((_main.Player.Flags & PlayerData.TUTORIAL_COMPLETE_BIT) == 0)
     {
-      EmitSignal("TransitionRoot", RootScenes.Menu);
-      return;
+      _main.Player.Flags |= PlayerData.TUTORIAL_COMPLETE_BIT;
+      _main.StorePlayerData();
     }
-    else if (oldProgress == _main.Player.Progress)
+    else
     {
-      EmitSignal("TransitionRoot", RootScenes.GameComplete);
-      return;
+      _main.Player.Progress = (ushort) Utility.Clamp(_main.Player.Progress + 1, 0, Levels.Length - 1);
+      _main.StorePlayerData();
+      if (LevelOverride != null && LevelOverride.Length > 0)
+      {
+        EmitSignal("TransitionRoot", RootScenes.Menu);
+        return;
+      }
+      else if (oldProgress == _main.Player.Progress)
+      {
+        EmitSignal("TransitionRoot", RootScenes.GameComplete);
+        return;
+      }
     }
     _StartLevel();
   }
@@ -114,13 +132,18 @@ public class PlayRoot : Node {
     _leadIn.Connect("timeout", this, "_OnLeadInTimeout");
     _leadOut = GetNode<Timer>("World/LeadOut");
     _leadOut.Connect("timeout", this, "_OnLeadOutTimeout");
+    if (InitializePlayerFlagsOnStart)
+    {
+      _main.InitializePlayerData(false);
+      _main.StorePlayerData();
+    }
     _StartLevel();
   }
 
   private void _EndLevel() {
     _exited = true;
     _player.LockMotion();
-    GD.Print($"Level {_main.Player.Progress} End");
+    GD.Print($"Level \"{_level.LevelName}\" End");
     _UpdatePlayTime();
     _leadOut.Start();
   }

@@ -10,7 +10,7 @@
 
 [node name="Test" type="Spatial"]
 script = ExtResource( 1 )
-Name = "Test"
+LevelName = "Test Level"
 EntrancePosition = NodePath("Entrance")
 ExitPosition = NodePath("Exit")
 
