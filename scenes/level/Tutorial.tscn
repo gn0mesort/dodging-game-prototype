@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://src/BasicLevel.cs" type="Script" id=1]
+
+[node name="Tutorial" type="Spatial"]
+script = ExtResource( 1 )
+LevelName = "Tutorial"
+EntrancePosition = NodePath("Entrance")
+ExitPosition = NodePath("Exit")
+
+[node name="Entrance" type="Position3D" parent="."]
+
+[node name="Exit" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20 )

@@ -7,7 +7,7 @@ public class PlayerData {
   protected const String FILE_MAGIC = "SAVEME\x0d\x0a\x1a\x0a";
   protected const uint FILE_VERSION = 1;
 
-  public const ushort TUTORIAL_COMPLETE_FLAG = 0x00_01;
+  public const ushort TUTORIAL_COMPLETE_BIT = 0x00_01;
 
   public ushort Deaths { get; set; } = 0;
   public ushort Collisions { get; set; } = 0;

@@ -6,6 +6,7 @@
 
 [node name="FieldCollider" type="Spatial"]
 script = ExtResource( 3 )
+LevelName = "Field Collision Test"
 EntrancePosition = NodePath("Entrance")
 ExitPosition = NodePath("Exit")
 
