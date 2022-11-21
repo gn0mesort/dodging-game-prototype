@@ -36,8 +36,9 @@ versions of this file type may use different values to indicate their structure.
 The file data is always a 16 byte sequence consisting of unsigned integers. `DEATHS` stores the number of times the
 player  has died. It is a 16-bit (two byte) field. `COLLISIONS` stores the number of times the player has collided
 with an object during play. It is a 16-bit field. `PROGRESS` stores the maximum stage the player has reached during
-play. It is a 16-bit field. `PADDING` is a 16-bit wide space that stores no value (i.e., it must always be exactly
-`0000`). Finally, `PLAY_TIME` is a 64-bit (eight byte) field that stores the current elapsed play time in seconds.
+play. It is a 16-bit field. `FLAGS` is a 16-bit wide space that stores up to 16 player flag values. Currently, only
+the first bit is used. `FLAGS` bit `0` controls whether or not the game should present a tutorial level to the player.
+Finally, `PLAY_TIME` is a 64-bit (eight byte) field that stores the current elapsed play time in seconds.
 
 
 ## Remarks
