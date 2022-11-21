@@ -59,8 +59,10 @@ public class GameMain : Node {
     }
   }
 
-  public void InitializePlayerData() {
+  public void InitializePlayerData(bool retainFlags = true) {
+    var flags = Player.Flags;
     Player = new PlayerData();
+    Player.Flags = flags;
     GD.Print("Initialized player data.");
   }
 

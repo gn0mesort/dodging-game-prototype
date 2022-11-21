@@ -53,8 +53,9 @@ public class PlayRoot : Node {
     }
     else
     {
-      Debug.Assert(Levels.Length > _main.Player.Progress);
-      var levelPath = Levels[_main.Player.Progress];
+      var index = _main.Player.Progress + (_main.Player.Flags & PlayerData.TUTORIAL_COMPLETE_FLAG);
+      Debug.Assert(Levels.Length > index);
+      var levelPath = Levels[index];
       Debug.Assert(levelPath != null);
       Debug.Assert(levelPath.Length > 0);
       _InitializeLevel(levelPath);
