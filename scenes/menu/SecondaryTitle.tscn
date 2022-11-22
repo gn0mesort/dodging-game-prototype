@@ -18,22 +18,34 @@ margin_bottom = 14.0
 margin_top = 18.0
 margin_right = 82.0
 margin_bottom = 38.0
+focus_neighbour_bottom = NodePath("../Rebirth")
+focus_next = NodePath("../Rebirth")
 text = "New Game"
 
 [node name="Rebirth" type="Button" parent="."]
 margin_top = 42.0
 margin_right = 82.0
 margin_bottom = 62.0
+focus_neighbour_top = NodePath("../Play")
+focus_neighbour_bottom = NodePath("../Settings")
+focus_next = NodePath("../Settings")
+focus_previous = NodePath("../Play")
 text = "Rebirth"
 
 [node name="Settings" type="Button" parent="."]
 margin_top = 66.0
 margin_right = 82.0
 margin_bottom = 86.0
+focus_neighbour_top = NodePath("../Rebirth")
+focus_neighbour_bottom = NodePath("../Exit")
+focus_next = NodePath("../Exit")
+focus_previous = NodePath("../Rebirth")
 text = "Settings"
 
 [node name="Exit" type="Button" parent="."]
 margin_top = 90.0
 margin_right = 82.0
 margin_bottom = 110.0
+focus_neighbour_top = NodePath("../Settings")
+focus_previous = NodePath("../Settings")
 text = "Exit"

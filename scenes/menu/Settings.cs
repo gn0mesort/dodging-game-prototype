@@ -18,6 +18,8 @@ public class Settings : GridContainer {
   }
 
   public override void _Ready() {
-    GetNode<Button>("Back").Connect("pressed", this, "_OnBackPressed");
+    var back = GetNode<Button>("Back");
+    back.Connect("pressed", this, "_OnBackPressed");
+    back.GrabFocus();
   }
 }

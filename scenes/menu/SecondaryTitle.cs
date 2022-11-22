@@ -53,6 +53,7 @@ public class SecondaryTitle : VBoxContainer {
     playButton.Connect("pressed", this, "_OnPlayPressed");
     GetNode<Button>("Settings").Connect("pressed", this, "_OnSettingsPressed");
     GetNode<Button>("Exit").Connect("pressed", this, "_OnExitPressed");
+    playButton.GrabFocus();
   }
 
 }

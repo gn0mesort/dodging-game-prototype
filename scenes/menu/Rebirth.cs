@@ -21,7 +21,9 @@ public class Rebirth : CenterContainer {
   }
 
   public override void _Ready() {
-    GetNode<Button>("VBoxContainer/VBoxContainer2/Confirm").Connect("pressed", this, "_OnConfirmPressed");
+    var confirm = GetNode<Button>("VBoxContainer/VBoxContainer2/Confirm");
+    confirm.Connect("pressed", this, "_OnConfirmPressed");
     GetNode<Button>("VBoxContainer/VBoxContainer2/Back").Connect("pressed", this, "_OnBackPressed");
+    confirm.GrabFocus();
   }
 }
