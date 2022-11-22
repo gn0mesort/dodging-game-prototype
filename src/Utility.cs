@@ -9,7 +9,7 @@ public static class Utility {
     return Math.Min(Math.Max(x, min), max);
   }
 
-  public static int Clamp(ushort x, ushort min, ushort max) {
+  public static ushort Clamp(ushort x, ushort min, ushort max) {
     return Math.Min(Math.Max(x, min), max);
   }
 }
