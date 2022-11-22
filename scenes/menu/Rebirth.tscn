@@ -40,10 +40,14 @@ margin_bottom = 80.0
 [node name="Confirm" type="Button" parent="VBoxContainer/VBoxContainer2"]
 margin_right = 242.0
 margin_bottom = 20.0
+focus_neighbour_bottom = NodePath("../Back")
+focus_next = NodePath("../Back")
 text = "Be Reborn"
 
 [node name="Back" type="Button" parent="VBoxContainer/VBoxContainer2"]
 margin_top = 24.0
 margin_right = 242.0
 margin_bottom = 44.0
+focus_neighbour_top = NodePath("../Confirm")
+focus_previous = NodePath("../Confirm")
 text = "Back"

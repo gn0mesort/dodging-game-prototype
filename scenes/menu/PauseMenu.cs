@@ -41,10 +41,12 @@ public class PauseMenu : Control {
   }
 
   public override void _Ready() {
-    GetNode<Button>("Resume").Connect("pressed", this, "_OnResumePressed");
+    var resume = GetNode<Button>("Resume");
+    resume.Connect("pressed", this, "_OnResumePressed");
     GetNode<Button>("RestartLevel").Connect("pressed", this, "_OnRestartLevelPressed");
     GetNode<Button>("Settings").Connect("pressed", this, "_OnSettingsPressed");
     GetNode<Button>("ReturnToTitle").Connect("pressed", this, "_OnReturnToTitlePressed");
     GetNode<Button>("ExitGame").Connect("pressed", this, "_OnExitGamePressed");
+    resume.GrabFocus();
   }
 }

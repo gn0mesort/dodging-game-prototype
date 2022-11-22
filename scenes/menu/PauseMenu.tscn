@@ -16,28 +16,44 @@ text = "Game Paused"
 margin_top = 18.0
 margin_right = 103.0
 margin_bottom = 38.0
+focus_neighbour_bottom = NodePath("../RestartLevel")
+focus_next = NodePath("../RestartLevel")
 text = "Resume"
 
 [node name="RestartLevel" type="Button" parent="."]
 margin_top = 42.0
 margin_right = 103.0
 margin_bottom = 62.0
+focus_neighbour_top = NodePath("../Resume")
+focus_neighbour_bottom = NodePath("../Settings")
+focus_next = NodePath("../Settings")
+focus_previous = NodePath("../Resume")
 text = "Restart Level"
 
 [node name="Settings" type="Button" parent="."]
 margin_top = 66.0
 margin_right = 103.0
 margin_bottom = 86.0
+focus_neighbour_top = NodePath("../RestartLevel")
+focus_neighbour_bottom = NodePath("../ReturnToTitle")
+focus_next = NodePath("../ReturnToTitle")
+focus_previous = NodePath("../RestartLevel")
 text = "Settings"
 
 [node name="ReturnToTitle" type="Button" parent="."]
 margin_top = 90.0
 margin_right = 103.0
 margin_bottom = 110.0
+focus_neighbour_top = NodePath("../Settings")
+focus_neighbour_bottom = NodePath("../ExitGame")
+focus_next = NodePath("../ExitGame")
+focus_previous = NodePath("../Settings")
 text = "Return to Title"
 
 [node name="ExitGame" type="Button" parent="."]
 margin_top = 114.0
 margin_right = 103.0
 margin_bottom = 134.0
+focus_neighbour_top = NodePath("../ReturnToTitle")
+focus_previous = NodePath("../ReturnToTitle")
 text = "Exit Game"
