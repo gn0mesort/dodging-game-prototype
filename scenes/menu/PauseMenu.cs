@@ -1,20 +1,40 @@
 using Godot;
 
+/**
+ * @brief Behavior script for the pause menu.
+ */
 public class PauseMenu : Control {
+  /**
+   * @brief A Signal emitted to request a transition of the root scene.
+   *
+   * @param to The root scene to transition to.
+   */
   [Signal]
   public delegate void TransitionRoot(RootScenes to);
 
+  /**
+   * @brief A Signal emitted to request the game resume.
+   */
   [Signal]
   public delegate void RequestResume();
 
+  /**
+   * @brief A Signal emitted to request the level restart.
+   */
   [Signal]
   public delegate void RequestRestartLevel();
 
+  /**
+   * @brief A Signal emitted to request the settings menu.
+   */
   [Signal]
   public delegate void RequestSettings();
 
   private Main _main = null;
 
+  /**
+   * @brief Initialization method.
+   */
   public override void _EnterTree() {
     _main = GetNode<Main>("/root/Main");
     Connect("TransitionRoot", _main, "TransitionRoot");
@@ -40,6 +60,9 @@ public class PauseMenu : Control {
     EmitSignal("RequestSettings");
   }
 
+  /**
+   * @brief Post-_EnterTree initialization/
+   */
   public override void _Ready() {
     var resume = GetNode<Button>("Resume");
     resume.Connect("pressed", this, "_OnResumePressed");

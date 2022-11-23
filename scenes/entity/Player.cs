@@ -1,6 +1,12 @@
 using Godot;
 
+/**
+ * @brief Behavior script for the main Player entity.
+ */
 public class Player : BoundedKinematicBody, IVelocityModifiable {
+  /**
+   * @brief An enumeration representing different Player inputs.
+   */
   public enum Controls {
     None = -1,
     Left = 0,
@@ -25,43 +31,97 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
   private float _depthSpeedModifier = 1f;
   private Vector3 _speedModifier = new Vector3(1f, 1f, 1f);
 
+  /**
+   * @brief A Signal emitted when the Player dies (i.e., health == 0).
+   */
   [Signal]
   public delegate void Died();
 
+  /**
+   * @brief A Signal emitted when the Player takes health damage.
+   *
+   * This is emitted even if the Player dies in the same frame.
+   *
+   * @param remaining The Player's remaining health.
+   */
   [Signal]
   public delegate void HealthDamaged(uint remaining);
 
+  /**
+   * @brief A Signal emitted when the Player takes shield damage.
+   *
+   * This is emitted even if the Player dies in the same frame.
+   *
+   * @param remaining The Player's remaining shield.
+   */
   [Signal]
   public delegate void ShieldDamaged(uint remaining);
 
+  /**
+   * @brief The Player's maximum health value.
+   */
   [Export]
   public uint MaxHealth { get; set; } = 2;
 
+  /**
+   * @brief The Player's maximum shield value.
+   */
   [Export]
   public uint MaxShield { get; set; } = 1;
 
+  /**
+   * @brief Lock Player motion and rotation on all axes.
+   */
   public void LockMotion() {
     _canRotate = !(AxisLockMotionX = AxisLockMotionY = AxisLockMotionZ = true);
   }
 
+  /**
+   * @brief Unlock Player motion and rotation on all axes.
+   */
   public void UnlockMotion() {
     _canRotate = !(AxisLockMotionX = AxisLockMotionY = AxisLockMotionZ = false);
   }
 
+  /**
+   * @brief Toggle Player motion and rotation on all axes.
+   */
   public void ToggleMotion() {
     _canRotate = !(AxisLockMotionX = AxisLockMotionY = AxisLockMotionZ = !AxisLockMotionX);
   }
 
+  /**
+   * @brief Restore Player health.
+   *
+   * @param amount The amount of health to restore.
+   */
   public void RestoreHealth(uint amount) {
     _health = Utility.Clamp(_health + amount, 0, MaxHealth);
     GD.Print($"Restored {amount} HP for a total of {_health} HP");
   }
 
+  /**
+   * @brief Restore Player shield.
+   *
+   * @param amount The amount of shield to restore.
+   */
   public void RestoreShield(uint amount) {
     _shield = Utility.Clamp(_shield + amount, 0, MaxShield);
     GD.Print($"Restored {amount} Shield for a total of {_shield} Shield");
   }
 
+  /**
+   * @brief Modify the velocity of the target object by the given factor.
+   *
+   * Each factor is applied as-if by multiplication. That is to say, ModifyVelocity(0.5, 0.5, 0.5, 0.5) will halve all
+   * the velocity of the target object along all three axes and halve the speed at which it can rotate. Similarly,
+   * ModifyVelocity(1, 1, 1, 1) will restore the default behavior.
+   *
+   * @param x The X-axis velocity modifier.
+   * @param y The Y-axis velocity modifier.
+   * @param z The Z-axis velocity modifier.
+   * @param rotation The rotational velocity modifier.
+   */
   public void ModifyVelocity(float x, float y, float z, float rotation) {
     _speedModifier = new Vector3(x, y, z);
     _rotationModifier = 1f / rotation;
@@ -97,6 +157,9 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
     return _origin;
   }
 
+  /**
+   * @brief Post-_EnterTree initialization.
+   */
   public override void _Ready() {
     _UpdateMovementBounds(_GetOrigin(), MovementBounds);
     _tween = GetNode<Tween>("Tween");
@@ -223,6 +286,11 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
     other.QueueFree();
   }
 
+  /**
+   * @brief Per-frame physics processing.
+   *
+   * @param delta The amount of time that has passed since the previous physics frame.
+   */
   public override void _PhysicsProcess(float delta) {
     _ReadControls();
     _HandleRotation();
@@ -234,6 +302,11 @@ public class Player : BoundedKinematicBody, IVelocityModifiable {
     }
   }
 
+  /**
+   * @brief Reset the Player to its initial state.
+   *
+   * This resets health to MaxHealth and shield to 0.
+   */
   public void Initialize() {
     _health = MaxHealth;
     _shield = 0;

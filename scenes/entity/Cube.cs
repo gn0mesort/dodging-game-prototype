@@ -1,12 +1,21 @@
 using Godot;
 
+/**
+ * @brief Behavior script for Cube entities.
+ */
 public class Cube : BoundedKinematicBody {
+  /**
+   * @brief An enumeration representing the axes on which Cubes can move.
+   */
   public enum Axis {
     None = 0,
     X,
     Y
   }
 
+  /**
+   * @brief The current axis on which the Cube will move or None if the Cube is stationary.
+   */
   [Export]
   public Axis MovementAxis { get; set; } = Axis.None;
 
@@ -21,12 +30,20 @@ public class Cube : BoundedKinematicBody {
     return _origin;
   }
 
+  /**
+   * @brief Post-_EnterTree initialization.
+   */
   public override void _Ready() {
     _SetOrigin(Translation);
     _UpdateMovementBounds(_GetOrigin(), MovementBounds);
   }
 
 
+  /**
+   * @brief Per-frame physics processing.
+   *
+   * @param delta The amount of time that has passed since the previous physics frame.
+   */
   public override void _PhysicsProcess(float delta) {
     var velocity = new Vector3();
     switch (MovementAxis)
@@ -46,8 +63,7 @@ public class Cube : BoundedKinematicBody {
       velocity = _direction * new Vector3(0f, 1f, 0f) * Speed;
       break;
     }
-    var collision = MoveAndCollide(velocity * delta);
-    // TODO: logic to handle colliding into the player.
+    MoveAndCollide(velocity * delta);
     Translation = _BoundTranslation(Translation);
   }
 }

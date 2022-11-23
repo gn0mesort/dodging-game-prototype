@@ -1,5 +1,8 @@
 using Godot;
 
+/**
+ * @brief Behavior script for Field entities.
+ */
 public class Field : Area {
   private void _OnBodyEntered(Node body) {
     if (body is IVelocityModifiable)
@@ -17,6 +20,9 @@ public class Field : Area {
     }
   }
 
+  /**
+   * @brief Initialization method.
+   */
   public override void _EnterTree() {
     Connect("body_entered", this, "_OnBodyEntered");
     Connect("body_exited", this, "_OnBodyExited");

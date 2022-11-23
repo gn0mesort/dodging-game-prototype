@@ -1,9 +1,20 @@
 using Godot;
 
+/**
+ * @brief A tweened camera shake effect.
+ *
+ * This must have a Camera node as a parent.
+ */
 public class ShakeTween : Tween {
+  /**
+   * @brief The Tween transition type to use.
+   */
   [Export]
   public Tween.TransitionType Transition { get; set; } = Tween.TransitionType.Sine;
 
+  /**
+   * @brief The Tween easing type to use.
+   */
   [Export]
   public Tween.EaseType Easing { get; set; } = Tween.EaseType.InOut;
 
@@ -12,6 +23,13 @@ public class ShakeTween : Tween {
   private Timer _frequency = null;
   private Timer _duration = null;
 
+  /**
+   * @brief Start shaking the parent camera.
+   *
+   * @param duration The duration (in seconds) to shake the camera for.
+   * @param frequency The frequency (in Hz) of the shaking motion.
+   * @param amplitude The amplitude (i.e., maximum and minimum values) of the shaking motion.
+   */
   public void Shake(float duration, float frequency, float amplitude) {
     _duration.WaitTime = duration;
     _frequency.WaitTime = 1f / frequency;
@@ -21,6 +39,9 @@ public class ShakeTween : Tween {
     _StartShaking();
   }
 
+  /**
+   * @brief Immediately stop shaking the parent camera.
+   */
   public void Stop() {
     _frequency.Stop();
     _duration.Stop();
@@ -52,6 +73,9 @@ public class ShakeTween : Tween {
     _frequency.Stop();
   }
 
+  /**
+   * @brief Post-_EnterTree initialization.
+   */
   public override void _Ready() {
     _target = GetParent<Camera>();
     _frequency = GetNode<Timer>("Frequency");
