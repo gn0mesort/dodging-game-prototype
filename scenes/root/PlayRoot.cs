@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 public class PlayRoot : Node {
   private PackedScene _pauseScreen = null;
-  private GameMain _main = null;
+  private Main _main = null;
   private Spatial _world = null;
   private Player _player = null;
   private FollowCamera _camera = null;
@@ -29,7 +29,7 @@ public class PlayRoot : Node {
   public bool InitializePlayerFlagsOnStart { get; set; } = false;
 
   public override void _EnterTree() {
-    _main = GetNode<GameMain>("/root/Main");
+    _main = GetNode<Main>("/root/Main");
     Connect("TransitionRoot", _main, "TransitionRoot");
     _pauseScreen = GD.Load<PackedScene>("res://scenes/play/PauseScreen.tscn");
   }

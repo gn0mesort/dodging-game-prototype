@@ -13,10 +13,10 @@ public class PauseMenu : Control {
   [Signal]
   public delegate void RequestSettings();
 
-  private GameMain _main = null;
+  private Main _main = null;
 
   public override void _EnterTree() {
-    _main = GetNode<GameMain>("/root/Main");
+    _main = GetNode<Main>("/root/Main");
     Connect("TransitionRoot", _main, "TransitionRoot");
   }
 
