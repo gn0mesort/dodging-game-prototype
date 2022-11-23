@@ -1,5 +1,4 @@
-/** Branch-free control processing structure.
- *
+/**
  * Copyright (C) 2022 Alexander Rothman <gnomesort@megate.ch>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,17 +17,19 @@
 using System;
 using System.Diagnostics;
 using Godot;
-
+/**
+ * @brief Branch-free control processing structure.
+ */
 public class Controller {
   /**
-   * Constant indicating no control is pressed.
+   * @brief Constant indicating no control is pressed.
    */
   public const int NONE = -1;
 
   private readonly ulong[] _controls;
 
   /**
-   * Constructs a new controller with controlCount controls.
+   * @brief Constructs a new controller with controlCount controls.
    *
    * @param controlCount The number of controls to allocate.
    */
@@ -39,7 +40,7 @@ public class Controller {
   }
 
   /**
-   * Set the given control to the desired state unconditionally.
+   * @brief Set the given control to the desired state unconditionally.
    *
    * @param control The control to be set.
    * @param state The state (on or off) to set the control to.
@@ -52,7 +53,7 @@ public class Controller {
   }
 
   /**
-   * Set the given control conditionally.
+   * @brief Set the given control conditionally.
    *
    * @param condition The condition upon which to set the control.
    * @param control The control to set.
@@ -64,7 +65,7 @@ public class Controller {
   }
 
   /**
-   * Release the given control unconditionally.
+   * @brief Release the given control unconditionally.
    *
    * @param control The control to release.
    */
@@ -74,7 +75,7 @@ public class Controller {
   }
 
   /**
-   * Release the given control conditionally.
+   * @brief Release the given control conditionally.
    *
    * @param condition The condition upon which to release the control.
    * @param control The control to release.
@@ -85,7 +86,7 @@ public class Controller {
   }
 
   /**
-   * Get the monotonic time (in microseconds) at which the given control was pressed.
+   * @brief Get the monotonic time (in microseconds) at which the given control was pressed.
    *
    * Time 0 is program start up.
    *
@@ -99,7 +100,7 @@ public class Controller {
   }
 
   /**
-   * Check if a control is pressed.
+   * @brief Check if a control is pressed.
    *
    * @param control The control to check.
    *
@@ -111,7 +112,7 @@ public class Controller {
   }
 
   /**
-   * Check if a control is released.
+   * @brief Check if a control is released.
    *
    * @param control The control to check.
    *
@@ -123,7 +124,7 @@ public class Controller {
   }
 
   /**
-   * Return which of two controls was pressed first.
+   * @brief Return which of two controls was pressed first.
    *
    * If one control is pressed and the other is released, the pressed control will be returned.
    *
@@ -157,7 +158,7 @@ public class Controller {
   }
 
   /**
-   * Get the string representation of a Controller.
+   * @brief Get the string representation of a Controller.
    *
    * @return a string displaying the current Control timestamps.
    */

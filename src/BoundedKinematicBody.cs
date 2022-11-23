@@ -1,13 +1,24 @@
 using Godot;
 
+/**
+ * @brief A KinematicBody that can only move within certain specific X and Y axis bounds.
+ *
+ * This is used by the Player and Cube entities.
+ */
 public abstract class BoundedKinematicBody : KinematicBody {
   protected Vector2 _bounds = new Vector2();
   protected Vector2 _maxPosition = new Vector2();
   protected Vector2 _minPosition = new Vector2();
 
+  /**
+   * @brief A Vector3 representing the body's speed when moving along each axis.
+   */
   [Export]
   public Vector3 Speed { get; set; } = new Vector3(1f, 1f, 1f);
 
+  /**
+   * @brief A Vector2 representing the bounds within which the body can move along the X and Y axes.
+   */
   [Export]
   public Vector2 MovementBounds {
     get { return _bounds; }

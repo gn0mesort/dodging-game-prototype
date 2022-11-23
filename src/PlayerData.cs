@@ -1,20 +1,60 @@
 using System;
 using System.Text;
 
+/**
+ * @brief In-Memory save file representation.
+ */
 public class PlayerData {
   protected const int REQUIRED_BUFFER_SIZE = 32;
   protected const ushort FILE_TAG = 0x8a8b;
   protected const String FILE_MAGIC = "SAVEME\x0d\x0a\x1a\x0a";
   protected const uint FILE_VERSION = 1;
 
+  /**
+   * @brief A bitmask representing no bits set in the Flags property.
+   */
+  public const ushort NONE_BIT = 0x00_00;
+
+  /**
+   * @brief A bitmask that indicates the player has cleared the tutorial level.
+   */
   public const ushort TUTORIAL_COMPLETE_BIT = 0x00_01;
 
+  /**
+   * @brief The number of times the player has died.
+   */
   public ushort Deaths { get; set; } = 0;
+
+  /**
+   * @brief The number of times the player has collided with damaging objects.
+   */
   public ushort Collisions { get; set; } = 0;
+
+  /**
+   * @brief The player's progress (i.e., the index of the next level to play).
+   */
   public ushort Progress { get; set; } = 0;
+
+  /**
+   * @brief A set of bit Flags representing general information about the player.
+   */
   public ushort Flags { get; set; } = 0;
+
+  /**
+   * @brief The total time (in seconds) that the game has been in the Play state.
+   */
   public ulong PlayTime { get; set; } = 0;
 
+  /**
+   * @brief Convert a byte array into a PlayerData object.
+   *
+   * @param buffer A buffer containing a valid PlayerData structure. This must be as-if it was returned by
+   *               PlayerData.GetBytes()
+   *
+   * @return A PlayerData value equivalent to the data stored in the input buffer.
+   *
+   * @throw ArgumentException If the data in the input buffer is not as-if it was returned by PlayerData.GetBytes().
+   */
   public static PlayerData FromBytes(byte[] buffer) {
     // Verify Buffer Size
     if (buffer.Length < REQUIRED_BUFFER_SIZE)
@@ -39,10 +79,24 @@ public class PlayerData {
     return res;
   }
 
+  /**
+   * @brief Checks whether or not a PlayerData value is in its initial state.
+   *
+   * This does not consider whether PlayerData.Flags has been set to 0.
+   *
+   * @return True if all properties are 0. False in all other cases.
+   */
   public bool IsInitialized() {
     return Deaths == 0 && Collisions == 0 && Progress == 0 && PlayTime == 0;
   }
 
+  /**
+   * @brief Convert a PlayerData object into a byte array suitable for writing to storage.
+   *
+   * For more information on the structure of this array see docs/save_file_format_v1.md
+   *
+   * @return A byte array representing the PlayerData.
+   */
   public byte[] GetBytes() {
     var res = new byte[REQUIRED_BUFFER_SIZE];
     // File Header
@@ -60,6 +114,11 @@ public class PlayerData {
     return res;
   }
 
+  /**
+   * @brief Convert a PlayerData object into a String.
+   *
+   * @return A String representation of the current PlayerData values.
+   */
   public override string ToString() {
     return $"PlayerData{{ Deaths: {Deaths}, Collisions: {Collisions}, Progress: {Progress}, Flags: {Flags}, " +
            $"PlayTime: {PlayTime} }}";
