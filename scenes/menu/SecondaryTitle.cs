@@ -3,9 +3,20 @@ using Godot;
 using MenuScenes = MenuRoot.MenuScenes;
 
 public class SecondaryTitle : VBoxContainer {
+
+  /**
+   * @brief A Signal emitted to request a transition between menu scenes.
+   *
+   * @param to The MenuScene to transition to.
+   */
   [Signal]
   public delegate void Transition(MenuScenes to);
 
+  /**
+   * @brief A Signal emitted to request a transition between root scenes.
+   *
+   * @param to The RootScene to transition to.
+   */
   [Signal]
   public delegate void TransitionRoot(RootScenes to);
 
@@ -27,10 +38,16 @@ public class SecondaryTitle : VBoxContainer {
     EmitSignal("Transition", MenuScenes.Rebirth);
   }
 
+  /**
+   * @brief Initialization method.
+   */
   public override void _EnterTree() {
     _main = GetNode<Main>("/root/Main");
   }
 
+  /**
+   * @brief Post-_EnterTree initialization.
+   */
   public override void _Ready() {
     var playButton = GetNode<Button>("Play");
     var rebirthButton = GetNode<Button>("Rebirth");

@@ -1,6 +1,12 @@
 using Godot;
 
+/**
+ * @brief Behavior script for the root menu scene.
+ */
 public class MenuRoot : Node {
+  /**
+   * @brief An enumeration of submenus.
+   */
   public enum MenuScenes {
     Primary,
     Secondary,
@@ -37,6 +43,9 @@ public class MenuRoot : Node {
     AddChild(_child);
   }
 
+  /**
+   * @brief Initialization method.
+   */
   public override void _EnterTree() {
     _main = GetNode<Main>("/root/Main");
     // Load potential substates
@@ -46,6 +55,9 @@ public class MenuRoot : Node {
     _rebirth = GD.Load<PackedScene>("res://scenes/menu/Rebirth.tscn");
   }
 
+  /**
+   * @brief Post-_EnterTree initialization.
+   */
   public override void _Ready() {
     // If we're coming from a cold start then display Title A. Otherwise, display Title B.
     if (_main.PreviousScene() == RootScenes.Exit)

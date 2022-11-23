@@ -1,6 +1,9 @@
 using Godot;
 using System.Diagnostics;
 
+/**
+ * @brief Behavior script for the root play scene.
+ */
 public class PlayRoot : Node {
   private PackedScene _pauseScreen = null;
   private Main _main = null;
@@ -13,21 +16,45 @@ public class PlayRoot : Node {
   private ulong _startTime = 0;
   private bool _exited = false;
 
+  /**
+   * @brief A Signal emitted to request a transition between root scenes.
+   *
+   * @param to The RootScene to transition to.
+   */
   [Signal]
   public delegate void TransitionRoot(RootScenes to);
 
+  /**
+   * @brief A resource path indicating a level to load in place of the usual tutorial and array levels.
+   */
   [Export]
   public string LevelOverride { get; set; } = "";
 
+  /**
+   * @brief A resource path indicating a level to load as the tutorial level.
+   *
+   * This is only considered if (Main.Player.Flags & PlayerData.TUTORIAL_COMPLETE_BIT) == 0
+   */
   [Export]
   public string TutorialLevel { get; set; } = null;
 
+  /**
+   * @brief An array of resource paths indicating levels to progress through during play.
+   */
   [Export]
   public string[] Levels { get; set; } = null;
 
+  /**
+   * @brief If this is set to true then PlayerData will be cleared completely (including flags) upon scene start.
+   *
+   * This is for debugging purposes.
+   */
   [Export]
   public bool InitializePlayerFlagsOnStart { get; set; } = false;
 
+  /**
+   * @brief Initialization method.
+   */
   public override void _EnterTree() {
     _main = GetNode<Main>("/root/Main");
     Connect("TransitionRoot", _main, "TransitionRoot");
@@ -122,6 +149,9 @@ public class PlayRoot : Node {
     _StartLevel();
   }
 
+  /**
+   * @brief Post-_EnterTree initialization.
+   */
   public override void _Ready() {
     _world = GetNode<Spatial>("World");
     _player = GetNode<Player>("World/Player");
@@ -149,6 +179,11 @@ public class PlayRoot : Node {
     _leadOut.Start();
   }
 
+  /**
+   * @brief Per-frame physics processing.
+   *
+   * @param delta The amount of time that has passed since the previous physics frame.
+   */
   public override void _PhysicsProcess(float delta) {
     // Less than is farther forward in this context
     if (_level != null && !_exited && _player.Translation.z < _level.Exit().z)
@@ -168,6 +203,11 @@ public class PlayRoot : Node {
     _OnRequestResume();
   }
 
+  /**
+   * @brief Handling for otherwise unhandled InputEvents.
+   *
+   * @param ev The event that triggered handling.
+   */
   public override void _UnhandledInput(InputEvent ev) {
     if (ev.IsActionPressed("play_pause"))
     {
