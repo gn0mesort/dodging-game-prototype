@@ -9,7 +9,7 @@ public class SecondaryTitle : VBoxContainer {
   [Signal]
   public delegate void TransitionRoot(RootScenes to);
 
-  private GameMain _main = null;
+  private Main _main = null;
 
   private void _OnExitPressed() {
     EmitSignal("TransitionRoot", RootScenes.Exit);
@@ -28,7 +28,7 @@ public class SecondaryTitle : VBoxContainer {
   }
 
   public override void _EnterTree() {
-    _main = GetNode<GameMain>("/root/Main");
+    _main = GetNode<Main>("/root/Main");
   }
 
   public override void _Ready() {

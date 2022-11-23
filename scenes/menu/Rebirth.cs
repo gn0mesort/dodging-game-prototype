@@ -10,7 +10,7 @@ public class Rebirth : CenterContainer {
   public delegate void TransitionRoot(RootScenes to);
 
   private void _OnConfirmPressed() {
-    var main = GetNode<GameMain>("/root/Main");
+    var main = GetNode<Main>("/root/Main");
     main.InitializePlayerData();
     main.StorePlayerData();
     _OnBackPressed();

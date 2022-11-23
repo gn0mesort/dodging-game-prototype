@@ -13,14 +13,14 @@ public class GameEndHandler : Node {
   [Signal]
   public delegate void TransitionRoot(RootScenes to);
 
-  private GameMain _main = null;
+  private Main _main = null;
 
   private void _OnTrigger() {
     EmitSignal("TransitionRoot", NextScene);
   }
 
   public override void _EnterTree() {
-    _main = GetNode<GameMain>("/root/Main");
+    _main = GetNode<Main>("/root/Main");
     Connect("TransitionRoot", _main, "TransitionRoot");
   }
 

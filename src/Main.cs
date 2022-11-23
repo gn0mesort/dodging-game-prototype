@@ -1,6 +1,6 @@
 using Godot;
 
-public class GameMain : Node {
+public class Main : Node {
   private RootScenes _previous = RootScenes.Exit;
   private RootScenes _current = RootScenes.Menu;
 
