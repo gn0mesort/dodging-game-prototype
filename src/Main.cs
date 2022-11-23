@@ -1,16 +1,38 @@
 using Godot;
 
+/**
+ * @brief Main game functionality.
+ *
+ * An instance of this node should be globally available.
+ */
 public class Main : Node {
   private RootScenes _previous = RootScenes.Exit;
   private RootScenes _current = RootScenes.Menu;
 
+  /**
+   * @brief The save data for the player.
+   *
+   * This is written to the disk when the game exits.
+   */
   public PlayerData Player { get; private set; } = null;
 
+  /**
+   * @brief Exit the game gracefully.
+   *
+   * @param code The exit code to report. On some systems only the low 8-bits will be reported.
+   */
   public void ExitGame(int code) {
     OS.ExitCode = code;
     GetTree().Notification(NotificationWmQuitRequest);
   }
 
+  /**
+   * @brief Transition between root game scenes.
+   *
+   * This will unpause the game if it was paused before the transition.
+   *
+   * @param to The scene to transition to as identified by a RootScenes value.
+   */
   public void TransitionRoot(RootScenes to) {
     GD.Print(to);
     if (to == RootScenes.Exit)
@@ -25,23 +47,42 @@ public class Main : Node {
     Resume();
   }
 
+  /**
+   * @brief Check whether or not the game is paused.
+   *
+   * @return True if the game is paused. False in all other cases.
+   */
   public bool IsPaused() {
     return GetTree().Paused;
   }
 
+  /**
+   * @brief Toggle the pause state of the game.
+   */
   public void TogglePaused() {
     var tree = GetTree();
     tree.Paused = !tree.Paused;
   }
 
+  /**
+   * @brief Pause the game unconditionally.
+   */
   public void Pause() {
     GetTree().Paused = true;
   }
 
+  /**
+   * @brief Resume the game unconditionally.
+   */
   public void Resume() {
     GetTree().Paused = false;
   }
 
+  /**
+   * @brief Loads PlayerData out of the file "user://save.bin".
+   *
+   * If "user://save.bin" does not exist than the PlayerData is initialized.
+   */
   public void LoadPlayerData() {
     var saveData = new File();
     if (saveData.FileExists("user://save.bin"))
@@ -59,6 +100,16 @@ public class Main : Node {
     }
   }
 
+  /**
+   * @brief Initializes the PlayerData.
+   *
+   * During normal operation this will initialize the PlayerData object held by the Main node but not clear the
+   * PlayerData.Flags value. This ensures that flagged behavior (e.g., skipping the tutorial level) doesn't change
+   * when the player chooses to be "reborn".
+   *
+   * @param retainFlags If true then the PlayerData.Flags value is saved before initialization. If false then the
+   *                    PlayerData will be completely cleared. Defaults to true.
+   */
   public void InitializePlayerData(bool retainFlags = true) {
     var flags = Player.Flags;
     Player = new PlayerData();
@@ -69,6 +120,9 @@ public class Main : Node {
     GD.Print("Initialized player data.");
   }
 
+  /**
+   * @brief Write PlayerData to the file "user://save.bin".
+   */
   public void StorePlayerData() {
     var saveData = new File();
     saveData.Open("user://save.bin", File.ModeFlags.Write);
@@ -77,18 +131,36 @@ public class Main : Node {
     GD.Print($"Wrote \"{Player}\" to file.");
   }
 
+  /**
+   * @brief Get the previous root scene.
+   *
+   * @return The RootScene value of the previous root scene.
+   */
   public RootScenes PreviousScene() {
     return _previous;
   }
 
+  /**
+   * @brief Get the current root scene.
+   *
+   * @return The RootScene value of the current root scene.
+   */
   public RootScenes CurrentScene() {
     return _current;
   }
 
+  /**
+   * @brief Post-_EnterTree initialization.
+   */
   public override void _Ready() {
     LoadPlayerData();
   }
 
+  /**
+   * @brief Deinitialization method.
+   *
+   * Due to Main being an autoload Node, this should only be called when the game exits.
+   */
   public override void _ExitTree() {
     StorePlayerData();
   }
