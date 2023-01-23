@@ -127,7 +127,11 @@ public class Main : Node {
    *                    PlayerData will be completely cleared. Defaults to true.
    */
   public void InitializePlayerData(bool retainFlags = true) {
-    var flags = Player.Flags;
+    var flags = (ushort) 0;
+    if (Player != null)
+    {
+      flags = Player.Flags;
+    }
     Player = new PlayerData();
     if (retainFlags)
     {
